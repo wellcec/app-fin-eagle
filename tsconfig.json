@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2021",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "NodeNext",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": [
+        "./*"
+      ]
+    },
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "jsx": "react"
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "preload.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

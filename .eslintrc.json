@@ -1,0 +1,91 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "standard-with-typescript",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "eslint:recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks"
+  ],
+  "rules": {
+    "linebreak-style": 0,
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "no-trailing-spaces": [
+      "error",
+      {
+        "ignoreComments": true
+      }
+    ],
+    // "no-plusplus": "off",
+    // "import/named": "off",
+    // "react/no-danger": "off",
+    // "no-param-reassign": "off",
+    // "import/no-unresolved": "off",
+    // "react/forbid-prop-types": "off",
+    // "react/no-array-index-key": "off",
+    // "import/no-named-as-default": "off",
+    // "sonarjs/cognitive-complexity": "off",
+    // "react/jsx-props-no-spreading": "off",
+    // "import/no-named-as-default-member": "off",
+    // "react/jsx-no-useless-fragment": "off",
+    // "default-param-last": 0,
+    // "no-undef": "off",
+    // "no-extra-boolean-cast": "off",
+    // "import/extensions": "off",
+    // "import/no-extraneous-dependencies": "off",
+    // "no-empty-function": "off",
+    // "@typescript-eslint/no-empty-function": "off",
+    // "no-underscore-dangle": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/promise-function-async": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/consistent-type-imports": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    ],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": [
+          "function-declaration",
+          "arrow-function"
+        ],
+        "unnamedComponents": "arrow-function"
+      }
+    ]
+  }
+}
