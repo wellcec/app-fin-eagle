@@ -18,10 +18,6 @@ const useBuildCharts = (): IUtils => {
       return compareAsc(a.date, b.date)
     })
 
-    const identity = <T, C>(arg: T, arg2: C): [T, C] => {
-      return arg
-    }
-
     for (const transaction of buildTransactions) {
       const isExpense = transaction.segment === 'Despesa'
       const isReceive = transaction.segment === 'Receita'
