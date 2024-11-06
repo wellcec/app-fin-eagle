@@ -2,6 +2,7 @@ import { SegmentTransactionType } from './transactions'
 
 export type ScheduleType = {
   id?: string
+  title: string
   description: string
   segment: SegmentTransactionType
   date?: Date

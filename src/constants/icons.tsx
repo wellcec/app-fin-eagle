@@ -17,6 +17,7 @@ import iconCalendar from '../assets/icons/icon-calendar.svg'
 import iconChartSimpleBar from '../assets/icons/icon-chart-simple-bar.svg'
 import iconChartSimpleLine from '../assets/icons/icon-chart-simple-line.svg'
 import iconChartSimplePizza from '../assets/icons/icon-chart-simple-pizza.svg'
+import iconRevenue from '../assets/icons/icon-revenue.svg'
 
 import colors from '../layout/theme/colors'
 
@@ -89,4 +90,8 @@ export const IconChartSimpleLine = ({ color = colors.text.quaternary, size = SIZ
 
 export const IconChartSimplePizza = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
   <SVG src={iconChartSimplePizza} width={size} height={size} fill={color} />
+)
+
+export const IconRevenue = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconRevenue} width={size} height={size} fill={color} />
 )

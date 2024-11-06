@@ -89,9 +89,10 @@ const schedulesRepository = (): ISchedulesRepository => {
       const date = new Date()
 
       const query = `
-      INSERT INTO Schedules (id, description, segment, isRecurrent, date, createdAt)
+      INSERT INTO Schedules (id, title, description, segment, isRecurrent, date, createdAt)
       VALUES (
         '${Guid.create()}',
+        '${schedule.title}',
         '${schedule.description}',
         '${schedule.segment}',
         '${schedule.isRecurrent}',

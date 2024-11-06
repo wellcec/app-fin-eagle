@@ -233,7 +233,7 @@ const Stats = (): React.JSX.Element => {
                 ]}
                 colors={[Segments.Receita.color, Segments.Despesa.color]}
                 margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-                height={450}
+                height={downMD ? 350 : 450}
               />
             )}
 
