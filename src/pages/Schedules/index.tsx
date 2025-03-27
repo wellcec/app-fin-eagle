@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getDaysInMonth, format, startOfMonth, addMonths, subMonths, endOfMonth } from 'date-fns'
 import { blue } from '@mui/material/colors'
 import AddIcon from '@mui/icons-material/Add'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { Avatar, Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Theme, Typography, Paper as PaperMui, Slide } from '@mui/material'
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
   },
   boxDaySize: {
-    height: 85,
+    height: 70,
     width: 100,
 
     '@media (min-height: 800px)': {
@@ -75,7 +76,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: 12,
     width: '100%',
     height: '100%',
-    textAlign: 'start'
+    textAlign: 'start',
+
+    '@media (max-height: 799px)': {
+      '& h6': {
+        fontSize: 14
+      }
+    }
   },
   boxSchedulesDetails: {
     borderRadius: 8
@@ -93,6 +100,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 const Schedules = (): React.JSX.Element => {
+  const [isAdding, setIsAdding] = useState<boolean>(false)
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [currentMonth, setCurrentMonth] = useState<number>(0)
   const [currentYear, setCurrentYear] = useState<number>(1990)
@@ -211,6 +219,10 @@ const Schedules = (): React.JSX.Element => {
     )
   }
 
+  const handleAdding = (): void => {
+    setIsAdding(!isAdding)
+  }
+
   const handlePreviousMonth = (): void => {
     const startMonth = startOfMonth(currentDate)
     const newDate = subMonths(startMonth, 1)
@@ -277,6 +289,7 @@ const Schedules = (): React.JSX.Element => {
           setTitle('')
           getSchedulesForDay()
           getCurrentDate()
+          setIsAdding(!isAdding)
           return
         }
 
@@ -406,145 +419,193 @@ const Schedules = (): React.JSX.Element => {
             </Box>
             ?
           </Typography>
+
+          {/* <Button variant="contained" color="success" onClick={handleAdding}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Box>
+                {isAdding ? <ArrowBackIosIcon /> : <AddIcon />}
+              </Box>
+            </Box>
+          </Button> */}
         </Box>
 
         {steps === STEPS.adding && (
           <Slide direction="left" in={steps === STEPS.adding} mountOnEnter unmountOnExit>
-            <Box display="flex" px={2} pb={2} gap={1} >
-              <Box width={SCREEN_SIZE}>
-                <Box display="flex" gap={2} flex={1} mb={1}>
-                  <InputForm fullWidth title="Lembrar de">
-                    <Select
-                      variant="outlined"
-                      size="small"
-                      value={segment}
-                      onChange={(event) => { setSegment(event.target.value as SegmentTransactionType) }}
-                      IconComponent={IconArrowSelect}
-                    >
-                      <MenuItem value="Lembrete">
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={Segments.Lembrete.color} size={SMALL_BALL_SIZE} />
-                          <Box>
-                            Lembrete
-                          </Box>
-                        </Box>
-                      </MenuItem>
-
-                      <MenuItem value="Despesa">
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={Segments.Despesa.color} size={SMALL_BALL_SIZE} />
-                          <Box>
-                            Despesa
-                          </Box>
-                        </Box>
-                      </MenuItem>
-
-                      <MenuItem value="Receita">
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={Segments.Receita.color} size={SMALL_BALL_SIZE} />
-                          <Box>
-                            Receita
-                          </Box>
-                        </Box>
-                      </MenuItem>
-                    </Select>
-                  </InputForm>
-
-                  <InputForm fullWidth title="Título" propField="title">
-                    <InputText
-                      placeholder="Informe um título"
-                      value={title}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => { setTitle(event.target.value) }}
-                    />
-                  </InputForm>
-                </Box>
-
-                <Box mb={1}>
-                  <InputForm fullWidth title="Sobre" propField="description">
-                    <InputText
-                      multiline
-                      rows={8}
-                      value={description}
-                      placeholder="Informe uma descrição"
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => { setDescription(event.target.value) }}
-                    />
-                  </InputForm>
-                </Box>
-
+            <Box display="block" px={2} pb={2} gap={1}>
+              <Box display="flex" flexDirection="column" justifyContent="end" width={SCREEN_SIZE}>
                 <Box display="flex" justifyContent="end" mb={2}>
-                  <Box>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isRecurrent}
-                            onChange={(event) => { setIsRecurrent(event.target.checked) }}
-                            icon={<RadioButtonUncheckedIcon />}
-                            checkedIcon={<CheckCircleIcon color="primary" />}
-                          />
-                        }
-                        label="Recorrente?"
-                      />
-                    </FormGroup>
-                  </Box>
-
-                  <Button variant="contained" color="success" onClick={handleSaveSchedule}>
+                  <Button variant="outlined" color="success" onClick={handleAdding}>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Box>
-                        <AddIcon />
+                        {isAdding ? <ArrowBackIosIcon fontSize="small" /> : <AddIcon fontSize="small" />}
                       </Box>
 
                       <Box>
-                        Adicionar
+                        {isAdding ? 'Voltar' : 'Novo'}
                       </Box>
                     </Box>
                   </Button>
                 </Box>
+
+                {(schedulesForDay.length === 0 && !isAdding) && (
+                  <Box textAlign="center">
+                    <Typography variant="subtitle1" color="primary">
+                      <i>
+                        Nenhum lembrete pra esse dia
+                      </i>
+                    </Typography>
+                  </Box>
+                )}
               </Box>
 
-              {schedulesForDay.length > 0 && (
+              {isAdding && (
+                <Box width={SCREEN_SIZE}>
+                  <Box display="flex" gap={2} flex={1} mb={1}>
+                    <InputForm fullWidth title="Lembrar de">
+                      <Select
+                        variant="outlined"
+                        size="small"
+                        value={segment}
+                        onChange={(event) => { setSegment(event.target.value as SegmentTransactionType) }}
+                        IconComponent={IconArrowSelect}
+                      >
+                        <MenuItem value="Lembrete">
+                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                            <BallColor color={Segments.Lembrete.color} size={SMALL_BALL_SIZE} />
+                            <Box>
+                              Lembrete
+                            </Box>
+                          </Box>
+                        </MenuItem>
+
+                        <MenuItem value="Despesa">
+                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                            <BallColor color={Segments.Despesa.color} size={SMALL_BALL_SIZE} />
+                            <Box>
+                              Despesa
+                            </Box>
+                          </Box>
+                        </MenuItem>
+
+                        <MenuItem value="Receita">
+                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                            <BallColor color={Segments.Receita.color} size={SMALL_BALL_SIZE} />
+                            <Box>
+                              Receita
+                            </Box>
+                          </Box>
+                        </MenuItem>
+                      </Select>
+                    </InputForm>
+
+                    <InputForm fullWidth title="Título" propField="title">
+                      <InputText
+                        placeholder="Informe um título"
+                        value={title}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => { setTitle(event.target.value) }}
+                      />
+                    </InputForm>
+                  </Box>
+
+                  <Box mb={1}>
+                    <InputForm fullWidth title="Sobre" propField="description">
+                      <InputText
+                        multiline
+                        rows={8}
+                        value={description}
+                        placeholder="Informe uma descrição"
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => { setDescription(event.target.value) }}
+                      />
+                    </InputForm>
+                  </Box>
+
+                  <Box display="flex" justifyContent="end" mb={2}>
+                    <Box>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isRecurrent}
+                              onChange={(event) => { setIsRecurrent(event.target.checked) }}
+                              icon={<RadioButtonUncheckedIcon />}
+                              checkedIcon={<CheckCircleIcon color="primary" />}
+                            />
+                          }
+                          label="Recorrente?"
+                        />
+                      </FormGroup>
+                    </Box>
+
+                    <Button variant="contained" color="success" onClick={handleSaveSchedule}>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Box>
+                          <AddIcon />
+                        </Box>
+
+                        <Box>
+                          Salvar
+                        </Box>
+                      </Box>
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+
+              {(schedulesForDay.length > 0 && !isAdding) && (
                 <Box mt={2} width={SCREEN_SIZE}>
                   {schedulesForDay.map((item, index) => (
-                    <Box
-                      my={1}
-                      px={2}
-                      py={1}
-                      key={`schedulesForDay-${index}`}
-                      className={styles.boxSchedulesDetails}
-                      sx={{ border: `1px solid ${Segments[item.segment].color}` }}
-                    >
-                      <Box display="flex" justifyContent="space-between">
-                        <Box>
-                          <Typography variant="body1" sx={{ color: Segments[item.segment].color }} fontWeight={600}>
-                            {item.segment}
-                          </Typography>
+                    <>
+                      <Box
+                        my={1}
+                        px={2}
+                        py={1}
+                        key={`schedulesForDay-${index}`}
+                        className={styles.boxSchedulesDetails}
+                        sx={{ border: `1px solid ${Segments[item.segment].color}` }}
+                      >
+                        <Box display="flex" justifyContent="space-between">
+                          <Box>
+                            <Typography variant="body1" sx={{ color: Segments[item.segment].color }} fontWeight={600}>
+                              {item.segment}
+                            </Typography>
+                          </Box>
+
+                          <Box>
+                            <Typography variant="body1" color="GrayText">
+                              {item.isRecurrent === 1 ? <Typography color="InfoText">Recorrente</Typography> : 'Não recorrente'}
+                            </Typography>
+                          </Box>
                         </Box>
 
-                        <Box>
-                          <Typography variant="body1" color="GrayText">
-                            {item.isRecurrent === 1 ? <Typography color="InfoText">Recorrente</Typography> : 'Não recorrente'}
-                          </Typography>
+                        <Box display="flex">
+                          <Box display="flex" alignItems="center" flex={1}>
+                            <Typography variant="subtitle2" color="primary" >
+                              {item.title}
+                            </Typography>
+                          </Box>
+
+                          <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
+                            <IconButton title="Ver descrição" onClick={() => { handleShowSchedule(item) }}>
+                              <IconRevenue color={Segments[item.segment].color} />
+                            </IconButton>
+
+                            <IconButton title="Excluir" onClick={() => { handleDeleteSchedule(item?.id ?? '') }}>
+                              <IconDelete />
+                            </IconButton>
+                          </Box>
                         </Box>
                       </Box>
 
-                      <Box display="flex">
-                        <Box display="flex" alignItems="center" flex={1}>
-                          <Typography variant="subtitle2" color="primary" >
-                            {item.title}
+                      {schedulesForDay.length === 0 && (
+                        <Box>
+                          <Typography variant="subtitle2" color="primary">
+                            <i>
+                              Nenhum lembrete cadastrado
+                            </i>
                           </Typography>
                         </Box>
-
-                        <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-                          <IconButton title="Ver descrição" onClick={() => { handleShowSchedule(item) }}>
-                            <IconRevenue color={Segments[item.segment].color} />
-                          </IconButton>
-
-                          <IconButton title="Excluir" onClick={() => { handleDeleteSchedule(item?.id ?? '') }}>
-                            <IconDelete />
-                          </IconButton>
-                        </Box>
-                      </Box>
-                    </Box>
+                      )}
+                    </>
                   ))}
                 </Box>
               )}

@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme: Theme) => {
       position: 'relative',
       paddingTop: theme.spacing(5),
       padding: theme.spacing(3),
-      overflow: 'hidden',
+      // overflow: 'hidden',
 
       '@media (max-height: 950px)': {
-        overflowY: 'auto',
-        height: 'calc(100vh - 120px)'
+        overflowY: 'auto'
+        // height: 'calc(100vh - 120px)'
       },
 
       [theme.breakpoints.down('sm')]: {

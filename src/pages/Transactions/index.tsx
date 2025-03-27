@@ -284,7 +284,7 @@ const Transactions = (): React.JSX.Element => {
             </Box>
 
             <Box>
-              <Button variant="contained" color="success" onClick={() => { setOpenAddTransaction(!openAddTransaction) }}>
+              <Button variant="outlined" color="success" onClick={() => { setOpenAddTransaction(!openAddTransaction) }}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <Box>
                     <AddIcon />
