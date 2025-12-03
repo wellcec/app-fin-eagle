@@ -51,7 +51,11 @@ const useUtils = (): IUtils => {
     if (!value) {
       return 'R$ 0,00'
     }
-    return formatFormCurrency(formatNumber(value, 'float'))
+
+    const rounded = Number(value.toFixed(2))
+    const output = formatFormCurrency(formatNumber(rounded, 'float'))
+
+    return output
   }
 
   return {
