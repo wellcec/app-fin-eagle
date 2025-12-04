@@ -109,7 +109,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, prop: string): void => {
     const { value } = event.target
-    const numericValue = formatNumberInput(value, 'float')
+    const numericValue = formatNumberInput(value)
     const formattedValue = formatFormCurrency(numericValue)
 
     formik.setFieldValue(prop, formattedValue)

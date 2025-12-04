@@ -9,6 +9,7 @@ import Categories from '../pages/Categories'
 import Transactions from '~/pages/Transactions'
 import Stats from '~/pages/Stats'
 import Schedules from '~/pages/Schedules'
+import Limits from '~/pages/Limits'
 
 const SwitchRoutes = (): React.JSX.Element => (
   <>
@@ -22,6 +23,7 @@ const SwitchRoutes = (): React.JSX.Element => (
           <Route path="/transactions" element={<WithLayoutRoute layout={BaseLayout} component={Transactions} />} />
           <Route path="/stats" element={<WithLayoutRoute layout={BaseLayout} component={Stats} />} />
           <Route path="/schedules" element={<WithLayoutRoute layout={BaseLayout} component={Schedules} />} />
+          <Route path="/limits" element={<WithLayoutRoute layout={BaseLayout} component={Limits} />} />
         </>
       }
     />

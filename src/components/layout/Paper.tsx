@@ -37,11 +37,7 @@ const Paper = ({ children, className = '', fullWidth = false, grid = false, colo
       className={`${grid ? styles.paperGrid : styles.paper} ${className} ${fullWidthClass}`}
       style={{
         ...(color && {
-          border: `1px solid ${color}`,
-          // borderLeft: `6px solid ${color}`,
-          // borderLeftStyle: 'solid',
-          // borderEndStartRadius: 12,
-          // borderStartStartRadius: 12,
+          border: `1px solid ${color}`
         })
       }}
     >

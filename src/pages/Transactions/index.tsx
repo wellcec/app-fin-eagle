@@ -380,13 +380,15 @@ const Transactions = (): React.JSX.Element => {
           <Paper grid>
             <Box display="flex" justifyContent="end" gap={2}>
               <Typography variant="h6" component="div" color={Segments.Receita.color}>
-                + {formatCurrencyString(valuesTransactions.receive)}
+                +{formatCurrencyString(valuesTransactions.receive)}
               </Typography>
               <Typography variant="h6" component="div" color={Segments.Despesa.color}>
-                - {formatCurrencyString(valuesTransactions.expense)}
+                -{formatCurrencyString(valuesTransactions.expense)}
               </Typography>
               <Typography variant="h6" component="div" color={valuesTransactions.total > 0 ? Segments.Receita.color : Segments.Despesa.color}>
-                = {(valuesTransactions.total < 0 ? '-' : '+') + formatCurrencyString(valuesTransactions.total)}
+                =
+                {' '}
+                {formatCurrencyString(valuesTransactions.total)}
               </Typography>
             </Box>
           </Paper>

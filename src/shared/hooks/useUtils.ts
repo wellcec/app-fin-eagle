@@ -1,9 +1,10 @@
 interface IUtils {
   formatFormCurrency: (valorNumerico: number) => string
   formatNumber: (value: string | number, type: 'int' | 'float') => number
-  formatNumberInput: (value: string | number, type: 'int' | 'float') => number
+  formatNumberInput: (value: string | number) => number
   formatCurrencyRequest: (value: string) => number
   formatCurrencyString: (value: number) => string
+  currencyToNumber: (value: string) => number
 }
 
 const useUtils = (): IUtils => {
@@ -13,7 +14,7 @@ const useUtils = (): IUtils => {
       currency: 'BRL'
     })
 
-    return formatter.format(valorNumerico / 100)
+    return formatter.format(valorNumerico)
   }
 
   const formatNumber = (value: string | number, type: 'int' | 'float'): number => {
@@ -31,20 +32,16 @@ const useUtils = (): IUtils => {
     return parseFloat(current)
   }
 
-  const formatNumberInput = (value: string | number, type: 'int' | 'float'): number => {
+  const formatNumberInput = (value: string | number): number => {
     const numericValue = value.toString().replace(/\D/g, '')
     const current = numericValue === '' ? '0' : numericValue
 
-    if (type === 'int') {
-      return parseInt(current, 10)
-    }
-
-    return parseFloat(current)
+    return parseFloat(current) / 100
   }
 
   const formatCurrencyRequest = (value: string): number => {
     const cleared = value.replace('R$ ', '')
-    return formatNumberInput(cleared, 'float') / 100
+    return formatNumberInput(cleared)
   }
 
   const formatCurrencyString = (value: number): string => {
@@ -53,13 +50,18 @@ const useUtils = (): IUtils => {
     }
 
     const rounded = Number(value.toFixed(2))
-    const output = formatFormCurrency(formatNumber(rounded, 'float'))
+    const output = formatFormCurrency(rounded)
 
     return output
   }
 
+  const currencyToNumber = (value: string): number => {
+    const cleared = value.trim().replace('R$', '').replace(/\./g, '').replace(',', '.')
+    return parseFloat(cleared)
+  }
+
   return {
-    formatFormCurrency, formatNumber, formatCurrencyRequest, formatCurrencyString, formatNumberInput
+    formatFormCurrency, formatNumber, formatCurrencyRequest, formatCurrencyString, formatNumberInput, currencyToNumber
   }
 }
 

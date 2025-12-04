@@ -19,7 +19,6 @@ const App = (): React.JSX.Element => {
           <Theme>
             <ProviderAlerts value={{ alert, setAlert }}>
               <Alerts />
-
               <SwitchRoutes />
             </ProviderAlerts>
           </Theme>

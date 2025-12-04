@@ -1,6 +1,6 @@
 {
-  "name": "fineagle",
-  "productName": "FinEagle",
+  "name": "granna",
+  "productName": "Granna",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
@@ -52,7 +52,7 @@
     "@mui/material": "^5.13.4",
     "@mui/styled-engine-sc": "^5.8.0",
     "@mui/styles": "^5.13.2",
-    "@mui/x-charts": "^7.12.0",
+    "@mui/x-charts": "^8.20.0",
     "@mui/x-date-pickers": "^7.11.1",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.12",

@@ -21,10 +21,10 @@ import { styled, type CSSObject } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
 
 import animation from '~/assets/animations/money-animation.json'
-import iconLogo from '../assets/images/logo64.png'
+import iconLogo from '../assets/images/logogranna.png'
 import colors from '../layout/theme/colors'
 
-import { IconMenuHamburguer, IconSingleArrowLeftCircule } from '../constants/icons'
+import { IconMenuHamburguer } from '../constants/icons'
 import { DEFAULT_THEME } from '../constants'
 import { MenuItems } from '../constants/menus'
 import { Player } from '@lottiefiles/react-lottie-player'
@@ -187,15 +187,19 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
         open={downSM ? openDrawer : true}
       >
         <Box
-          p={2.1}
           display="flex"
           minHeight={100}
           alignItems="center"
-          justifyContent={openDrawer ? 'space-between' : 'center'}
+          justifyContent="center"
         >
           {openDrawer && (
-            <Box display="flex" gap="10px" alignItems="center" ml={6}>
-              <Box width={120} height={100}>
+            <Box
+              display="flex"
+              alignItems="center"
+              style={{ cursor: 'pointer' }}
+              onClick={() => { setOpenDrawer(!openDrawer) }}
+            >
+              <Box width={210} height={200}>
                 <Player
                   src={animation}
                   className="player"
@@ -206,15 +210,12 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
             </Box>
           )}
 
-          <IconButton onClick={() => { setOpenDrawer(!openDrawer) }}>
-            {openDrawer && (
-              <IconSingleArrowLeftCircule />
-            )}
-
-            {!openDrawer && (
+          {!openDrawer && (
+            <IconButton onClick={() => { setOpenDrawer(!openDrawer) }}>
               <IconMenuHamburguer />
-            )}
-          </IconButton>
+            </IconButton>
+          )}
+
         </Box>
 
         <List sx={{ flex: 1 }}>
@@ -242,9 +243,9 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
           ))}
         </List>
 
-        <Box textAlign="center" mb={2}>
+        <Box textAlign="center" pt={1} mb={2} sx={{ borderTop: `1px solid ${colors.text.light}` }}>
           <Typography variant="body2" color="primary">
-            FinEagle v1.0.1
+            Granna v1.0.1
           </Typography>
         </Box>
       </Drawer>

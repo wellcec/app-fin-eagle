@@ -57,6 +57,7 @@ const Stats = (): React.JSX.Element => {
   const { buildSimpleChart, buildSimplePieChartByMonth } = useBuildCharts()
   const { getTransactions } = transactionsRepository()
   const { formatCurrencyString } = useUtils()
+
   const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
   const downLG = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
@@ -219,21 +220,23 @@ const Stats = (): React.JSX.Element => {
 
             {currentChart === 'SimpleMonth' && (
               <BarChart
-                borderRadius={5}
+                borderRadius={15}
                 series={viewChart}
+                dataset={viewMonthsChart}
+                yAxis={[{ position: 'left', width: 60 }]}
                 xAxis={[
                   {
                     data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]),
                     scaleType: 'band',
                     tickSize: 10,
-                    // @ts-expect-error
                     categoryGapRatio: 0.8,
-                    barGapRatio: 0.2
+                    barGapRatio: 0.2,
+                    height: 30
                   }
                 ]}
                 colors={[Segments.Receita.color, Segments.Despesa.color]}
-                margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-                height={downMD ? 350 : 450}
+                height={downMD ? 550 : 620}
+                width={downMD ? 500 : 1200}
               />
             )}
 
@@ -293,7 +296,8 @@ const Stats = (): React.JSX.Element => {
 
             {currentChart === 'SimpleLineMonth' && (
               <LineChart
-                height={downSM ? 250 : 350}
+                height={downMD ? 550 : 620}
+                width={downMD ? 500 : 1200}
                 series={viewChart}
                 xAxis={[{ scaleType: 'point', data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]) }]}
                 colors={[Segments.Receita.color, Segments.Despesa.color]}
