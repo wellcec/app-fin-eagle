@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Divider, Grid, Hidden, IconButton, MenuItem, Select, Theme, Typography, useMediaQuery } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
+import StarIcon from '@mui/icons-material/Star'
 import * as Yup from 'yup'
 
 import ContainerMain from '~/components/layout/ContainerMain'
@@ -24,6 +25,9 @@ import BallColor from '~/components/atoms/BallColor'
 import { SegmentTransactionType } from '~/client/models/transactions'
 import Chip from '~/components/atoms/Chip'
 import transactionsRepository from '~/client/repository/transactionsRepository'
+import CheckBoxGoal from '~/components/atoms/inputs/CheckBoxGoal'
+import useUtils from '~/shared/hooks/useUtils'
+import colors from '~/layout/theme/colors'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -32,11 +36,15 @@ const IconArrowSelect = (): React.JSX.Element => {
 interface TypeForm {
   name: string
   type: SegmentTransactionType
+  isGoal: number
+  valueGoal: string
 }
 
 const DEFAULT_VALUES: TypeForm = {
   name: '',
-  type: 'Receita'
+  type: 'Receita',
+  isGoal: 0,
+  valueGoal: ''
 }
 
 const emptyFilter: SampleFilterType = {
@@ -59,12 +67,20 @@ const Categories = (): React.JSX.Element => {
   const { getCategories, createCategory, deleteCategory } = categoriesRepository()
   const { transactionByCategory } = transactionsRepository()
   const { notifyError, notifySuccess, notifyWarning } = useAlerts()
+  const { formatNumberInput, formatFormCurrency, formatCurrencyRequest, formatCurrencyString } = useUtils()
 
   const formik = useFormik({
     initialValues: DEFAULT_VALUES,
     validationSchema: Yup.object({
       name: Yup.string().required(PREENCHIMENTO_OBRIGATORIO),
-      type: Yup.string().required(PREENCHIMENTO_OBRIGATORIO)
+      type: Yup.string().required(PREENCHIMENTO_OBRIGATORIO),
+      isGoal: Yup.number().notRequired(),
+      valueGoal: Yup.string().when('isGoal', ([isGoal], schema) => {
+        if (isGoal === 1) {
+          return schema.required('Valor da meta é obrigatório');
+        }
+        return schema.notRequired();
+      })
     }),
     validateOnBlur: true,
     validateOnChange: true,
@@ -72,7 +88,9 @@ const Categories = (): React.JSX.Element => {
       const newCategory: CategoryType = {
         name: data.name,
         segment: data.type,
-        color
+        color,
+        isGoal: data.isGoal,
+        valueGoal: data.isGoal === 1 ? formatCurrencyRequest(data.valueGoal) : 0
       }
 
       createCategory(newCategory).then(
@@ -151,6 +169,17 @@ const Categories = (): React.JSX.Element => {
 
   const handleCloseDelete = (): void => { setConfirmOpen(false) }
 
+  const handleChangeStatus = (checked: boolean): void => {
+    formik.setFieldValue('isGoal', checked ? 1 : 0)
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, prop: string): void => {
+    const { value } = event.target
+    const numericValue = formatNumberInput(value)
+    const formattedValue = formatFormCurrency(numericValue)
+
+    formik.setFieldValue(prop, formattedValue)
+  }
   useEffect(() => {
     getAll()
   }, [])
@@ -198,15 +227,24 @@ const Categories = (): React.JSX.Element => {
                   <Typography variant="body2">{item.name}</Typography>
                 </Grid>
 
-                <Grid item xs={2} display="flex" flexWrap="wrap" gap={2}>
+                <Grid item xs={1} display="flex" flexWrap="wrap" gap={2}>
                   <BallColor color={item.color} size={SMALL_BALL_SIZE} />
                 </Grid>
 
-                <Grid item xs={5} display="flex" flexWrap="wrap" gap={2}>
+                <Grid item xs={2} display="flex" flexWrap="wrap" gap={2}>
                   <Chip
                     label={Segments[item.segment].title}
                     color={Segments[item.segment].color}
                   />
+                </Grid>
+
+                <Grid item xs={4}>
+                  {item.isGoal === 1 && (
+                    <Box display="flex" alignItems="end" gap={1}>
+                      <StarIcon htmlColor={colors.danger.main} />
+                      <Typography variant="body1">{formatCurrencyString(item.valueGoal ?? 0)}</Typography>
+                    </Box>
+                  )}
                 </Grid>
 
                 <Grid item xs={12} md={3} display="flex" alignItems="flex-end" justifyContent="flex-end" gap={1}>
@@ -253,7 +291,7 @@ const Categories = (): React.JSX.Element => {
                   </InputForm>
                 </Box>
 
-                <Box>
+                <Box mb={2}>
                   <InputForm fullWidth title="Tipo*" helperText formik={formik} propField="type">
                     <Select
                       variant="outlined"
@@ -282,6 +320,30 @@ const Categories = (): React.JSX.Element => {
                     </Select>
                   </InputForm>
                 </Box>
+
+                {formik.values.type === 'Despesa' && (
+                  <Box mb={2}>
+                    <CheckBoxGoal
+                      checked={formik.values.isGoal === 1}
+                      onChange={(_, checked) => { handleChangeStatus(checked) }}
+                    />
+                  </Box>
+                )}
+
+                {formik.values.isGoal === 1 && (
+                  <Box>
+                    <InputForm fullWidth title="Quanto*" helperText formik={formik} propField="valueGoal">
+                      <InputText
+                        placeholder="Informe um valor"
+                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                        {...formik.getFieldProps('valueGoal')}
+                        error={formik.touched.valueGoal && !!formik.errors.valueGoal}
+                        value={formik.values.valueGoal}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChange(event, 'valueGoal') }}
+                      />
+                    </InputForm>
+                  </Box>
+                )}
               </Box>
             </Grid>
 

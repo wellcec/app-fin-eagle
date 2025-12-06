@@ -54,49 +54,51 @@ const CategoryScore = (): React.JSX.Element => {
   }, [])
 
   return (
-    <Paper>
-      <Box display="flex" justifyContent="center" gap={2.3}>
-        <Box>
-          <Box textAlign="center" mb={2}>
-            <Typography variant="subtitle1" fontWeight={500}>
-              Categoria que mais arrecadou
-            </Typography>
+    <Box flex="auto">
+      <Paper>
+        <Box display="flex" justifyContent="center" gap={2.3}>
+          <Box>
+            <Box textAlign="center" mb={2}>
+              <Typography variant="subtitle1" fontWeight={500}>
+                Categoria que mais arrecadou
+              </Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="center">
+              <Box className={styles.boxValue} sx={{ border: `solid 10px ${Segments.Receita.color}` }}>
+                <Box className={styles.categoryName}>
+                  {receive?.categoryName}
+                </Box>
+
+                <Box>
+                  {formatCurrencyString(receive?.total ?? 0)}
+                </Box>
+              </Box>
+            </Box>
           </Box>
 
-          <Box display="flex" justifyContent="center">
-            <Box className={styles.boxValue} sx={{ border: `solid 10px ${Segments.Receita.color}` }}>
-              <Box className={styles.categoryName}>
-                {receive?.categoryName}
-              </Box>
+          <Box>
+            <Box textAlign="center" mb={2}>
+              <Typography variant="subtitle1" fontWeight={500}>
+                Categoria que mais gastou
+              </Typography>
+            </Box>
 
-              <Box>
-                {formatCurrencyString(receive?.total ?? 0)}
+            <Box display="flex" justifyContent="center">
+              <Box className={styles.boxValue} sx={{ border: `solid 10px ${Segments.Despesa.color}` }}>
+                <Box className={styles.categoryName}>
+                  {expense?.categoryName}
+                </Box>
+
+                <Box>
+                  {formatCurrencyString(expense?.total ?? 0)}
+                </Box>
               </Box>
             </Box>
           </Box>
         </Box>
-
-        <Box>
-          <Box textAlign="center" mb={2}>
-            <Typography variant="subtitle1" fontWeight={500}>
-              Categoria que mais gastou
-            </Typography>
-          </Box>
-
-          <Box display="flex" justifyContent="center">
-            <Box className={styles.boxValue} sx={{ border: `solid 10px ${Segments.Despesa.color}` }}>
-              <Box className={styles.categoryName}>
-                {expense?.categoryName}
-              </Box>
-
-              <Box>
-                {formatCurrencyString(expense?.total ?? 0)}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    </Paper>
+      </Paper>
+    </Box>
   )
 }
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Divider, MenuItem, Select } from '@mui/material'
+import StarIcon from '@mui/icons-material/Star'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import dayjs from 'dayjs'
@@ -21,6 +22,7 @@ import useTestsForm from '~/shared/hooks/useTestForm'
 import useAlerts from '~/shared/alerts/useAlerts'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import { IconDoubleArrowDown } from '~/constants/icons'
+import colors from '~/layout/theme/colors'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -221,6 +223,9 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
                         <Box>
                           {item.name}
                         </Box>
+                        {item.isGoal === 1 && (
+                          <StarIcon htmlColor={colors.danger.main} />
+                        )}
                       </Box>
                     </MenuItem>
                   ))}

@@ -20,16 +20,17 @@ interface ITransactionRepository {
 const transactionsRepository = (): ITransactionRepository => {
   const getTransactions = async (filter: FilterTransactionType): Promise<TransactionsResponseType> => {
     try {
-      const { term, category, segment, page, take } = filter
+      const { term, category, segment, isGoal, page, take } = filter
       const offset = (page - 1) * take
 
       const _description = term !== '' ? ` AND (t.description LIKE '%${term}%' OR t.description LIKE '%${term}%' OR c.name LIKE '%${term}%') ` : ''
       const _category = category !== '' ? ` AND t.idCategory = '${category}'` : ''
       const _segment = segment !== '' ? ` AND c.Segment = '${segment}'` : ''
+      const _isGoal = isGoal ? ` AND c.isGoal = '${isGoal}'` : ''
 
       const formattedStartDate = format(filter.startDate, DEFAULT_FORMAT_DATE)
       const formattedEndDate = format(filter.endDate, DEFAULT_FORMAT_DATE)
-      const _datefilter = ` t.date BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`
+      const _datefilter = ` AND t.date BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'`
 
       const query = `
         SELECT 
@@ -41,12 +42,16 @@ const transactionsRepository = (): ITransactionRepository => {
           t.date,
           c.name,
           c.color,
+          c.isGoal,
+          c.valueGoal,
           t.createdAt
         FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id
         WHERE 
+          1=1
           ${_datefilter}
           ${_segment}
+          ${_isGoal}
           ${_description}
           ${_category}
         ORDER BY  t.date DESC
@@ -57,8 +62,10 @@ const transactionsRepository = (): ITransactionRepository => {
         SELECT Count(*) as Total FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id
         WHERE 
+          1=1
           ${_datefilter}
           ${_segment}
+          ${_isGoal}
           ${_description}
           ${_category}
       `
@@ -136,7 +143,7 @@ const transactionsRepository = (): ITransactionRepository => {
         SELECT 
             SUM(CASE WHEN c.segment = 'Despesa' THEN t.value ELSE 0 END) AS TotalDespesa,
             SUM(CASE WHEN c.segment = 'Receita' THEN t.value ELSE 0 END) AS TotalReceita,
-            SUM(t.value) AS TotalGeral
+            SUM(CASE WHEN c.segment = 'Receita' THEN t.value ELSE -t.value END) AS TotalGeral
         FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id;
       `

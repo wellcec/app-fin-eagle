@@ -18,6 +18,9 @@ import iconChartSimpleBar from '../assets/icons/icon-chart-simple-bar.svg'
 import iconChartSimpleLine from '../assets/icons/icon-chart-simple-line.svg'
 import iconChartSimplePizza from '../assets/icons/icon-chart-simple-pizza.svg'
 import iconRevenue from '../assets/icons/icon-revenue.svg'
+import iconBalance from '../assets/icons/icon-balance.svg'
+import iconRevenueDashboard from '../assets/icons/icon-receives.svg'
+import iconDowns from '../assets/icons/icon-downs.svg'
 
 import colors from '../layout/theme/colors'
 
@@ -94,4 +97,16 @@ export const IconChartSimplePizza = ({ color = colors.text.quaternary, size = SI
 
 export const IconRevenue = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
   <SVG src={iconRevenue} width={size} height={size} fill={color} />
+)
+
+export const IconBalance = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconBalance} width={size} height={size} fill={color} />
+)
+
+export const IconRevenues = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconRevenueDashboard} width={size} height={size} fill={color} />
+)
+
+export const IconDowns = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconDowns} width={size} height={size} fill={color} />
 )

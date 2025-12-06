@@ -12,17 +12,20 @@ export const Segments = {
   Receita: {
     code: 0,
     title: 'Receita',
-    color: '#50ad6e'
+    color: '#50ad6e',
+    colorTranslucent: 'rgba(80, 173, 110, 0.1)'
   },
   Despesa: {
     code: 1,
     title: 'Despesa',
-    color: '#C3284C'
+    color: '#C3284C',
+    colorTranslucent: 'rgba(195, 40, 76, 0.1)'
   },
   Lembrete: {
     code: 2,
     title: 'Lembrete',
-    color: '#FFC654'
+    color: '#FFC654',
+    colorTranslucent: 'rgba(255, 198, 84, 0.1)'
   }
 }
 

@@ -9,6 +9,7 @@ export type TransactionType = {
   date?: Date
   name?: string
   color?: string
+  isGoal?: number
   createdAt?: Date
 }
 
@@ -18,6 +19,7 @@ export type FilterTransactionType = {
   segment: string
   startDate: string
   endDate: string
+  isGoal?: number
   page: number
   take: number
 }

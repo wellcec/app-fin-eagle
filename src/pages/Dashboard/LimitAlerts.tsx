@@ -55,18 +55,18 @@ const LimitAlerts = (): React.JSX.Element => {
                 <strong>Limite Excedido: {limit.categoryName}</strong>
               </AlertTitle>
               <Box>
-                <Typography variant="body2">
+                <Typography variant="body2" fontWeight={400}>
                   Você ultrapassou o limite mensal desta categoria em{' '}
                   <strong>{formatCurrencyString(limit.overage)}</strong>
                 </Typography>
                 <Box mt={1} display="flex" gap={2} flexWrap="wrap">
-                  <Typography variant="caption">
+                  <Typography variant="body2" fontWeight={400}>
                     Limite: {formatCurrencyString(limit.limitAmount)}
                   </Typography>
-                  <Typography variant="caption">
+                  <Typography variant="body2" fontWeight={400}>
                     Gasto: {formatCurrencyString(limit.currentSpending)}
                   </Typography>
-                  <Typography variant="caption">
+                  <Typography variant="body2" fontWeight={400}>
                     Excesso: {limit.percentageUsed.toFixed(0)}%
                   </Typography>
                 </Box>

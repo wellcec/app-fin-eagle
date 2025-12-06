@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ArrowUp from '@mui/icons-material/KeyboardDoubleArrowUp'
 import ArrowDown from '@mui/icons-material/KeyboardDoubleArrowDown'
+import StarIcon from '@mui/icons-material/Star'
 import { compareAsc, compareDesc, endOfDay, endOfMonth, format, getDate, getDay, getMonth, getYear, startOfDay, startOfMonth } from 'date-fns'
 
 import { FilterTransactionType, TransactionType } from '~/client/models/transactions'
@@ -24,6 +25,7 @@ import InputForm from '~/components/atoms/inputs/InputForm'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
 import useAlerts from '~/shared/alerts/useAlerts'
 import Dialog from '~/components/molecules/Dialog'
+import colors from '~/layout/theme/colors'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -430,7 +432,12 @@ const Transactions = (): React.JSX.Element => {
                     </Grid>
 
                     <Grid item xs={2} display="flex">
-                      <Chip label={item.name ?? ''} color={item.color ?? ''} />
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <Chip label={item.name ?? ''} color={item.color ?? ''} />
+                        {item.isGoal === 1 && (
+                          <StarIcon htmlColor={colors.danger.main} />
+                        )}
+                      </Box>
                     </Grid>
 
                     <Grid item xs={6} display="flex">

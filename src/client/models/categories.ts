@@ -5,6 +5,8 @@ export type CategoryType = {
   name: string
   segment: SegmentTransactionType
   color: string
+  isGoal: number
+  valueGoal?: number
   createdAt?: Date
   updatedAt?: Date
 }

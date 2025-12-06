@@ -31,6 +31,8 @@ db.serialize(() => {
   "name" VARCHAR(50) NOT NULL,
   "segment" VARCHAR(10) NOT NULL,
   "color" VARCHAR(20) NOT NULL DEFAULT '',
+  "isGoal" INTEGER NOT NULL DEFAULT 0,
+  "valueGoal" REAL NOT NULL DEFAULT 0,
   "createdAt" DATETIME NOT NULL DEFAULT '',
   "updatedAt" DATETIME NOT NULL DEFAULT ''
   );
@@ -109,7 +111,7 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    skipTaskbar: true,
+    // skipTaskbar: true,
     autoHideMenuBar: true,
     icon: path.join(__dirname, '../src/assets/images/logogranna.png'),
     webPreferences: {
@@ -136,6 +138,11 @@ const createWindow = (): void => {
     mainWindow.loadFile(...fileRoute)
   }
 
+  mainWindow.on('closed', () => {
+    // mainWindow = undefined
+    app.quit()
+  })
+
   ipcMain.handle('db-query', async (event, sqlQuery) => {
     return await new Promise(res => {
       db.all(sqlQuery, (err, rows) => {
@@ -159,9 +166,11 @@ app.on('ready', createWindow)
 // explicitly with Cmd + Q.
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // if (process.platform !== 'darwin') {
+  //   app.quit()
+  // }
+
+  app.quit()
 })
 
 app.on('activate', () => {
