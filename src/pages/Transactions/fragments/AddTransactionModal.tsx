@@ -145,7 +145,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
       handleClose={handleClose}
     >
       <Box minWidth={450} mb={3}>
-        <Box display="flex" gap={DEFAULT_GAP_IZE} mb={2}>
+        <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
           <Box flex={1}>
             <InputForm fullWidth title="Quanto" helperText formik={formik} propField="value">
               <InputText
@@ -176,7 +176,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
           </Box>
         </Box>
 
-        <Box display="flex" gap={DEFAULT_GAP_IZE} mb={2}>
+        <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
           <Box flex={1}>
             <InputForm fullWidth title="Ganhou ou gastou">
               <Select

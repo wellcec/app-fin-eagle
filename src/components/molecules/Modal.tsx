@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => {
       maxWidth: '90%',
       maxHeight: '100%',
       position: 'relative',
-      paddingTop: theme.spacing(5),
+      paddingTop: theme.spacing(7),
       padding: theme.spacing(3),
       // overflow: 'hidden',
 
@@ -82,7 +82,7 @@ const Modal = ({
           <Paper className={styles.paper} style={{ border: color ? `2px solid ${color}` : 'none' }}>
             {title && (
               <Box className={styles.title}>
-                <Typography variant="h6" color="text.main">
+                <Typography variant="h6" color="text.main" fontWeight={400}>
                   {title}
                 </Typography>
               </Box>

@@ -111,8 +111,10 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    // skipTaskbar: true,
+    titleBarStyle: 'default',
+    resizable: true,
     autoHideMenuBar: true,
+    center: true,
     icon: path.join(__dirname, '../src/assets/images/logogranna.png'),
     webPreferences: {
       nodeIntegration: true,
@@ -120,8 +122,11 @@ const createWindow = (): void => {
       preload: path.join(__dirname, 'preload.js')
     },
 
-    darkTheme: true,
-    center: true
+    // skipTaskbar: true, // Oculta icone do aplicativo na barra de tarefas
+    // frame: false, // Remove a barra de título padrão
+    // transparent: true, // Permite fundo transparente
+    // backgroundColor: '#00000000', // Fundo transparente
+    // roundedCorners: true, // Cantos arredondados (Windows 11)
   })
   // and load the index.html of the app.
 

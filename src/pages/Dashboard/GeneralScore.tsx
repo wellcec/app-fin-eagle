@@ -33,7 +33,7 @@ const GeneralScore = (): React.JSX.Element => {
   }, [])
 
   return (
-    <Box display="flex" flexWrap="wrap" gap={2.3} mb={2.3}>
+    <Box display="flex" flexWrap="wrap" gap={3}>
       <Box flex="auto">
         <GeneralScoreItem
           label="Saldo"

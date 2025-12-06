@@ -19,11 +19,10 @@ import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
 const useStyles = makeStyles(() => ({
   paperChart: {
     width: '100%',
-    overflow: 'auto'
-  },
-  buttonChoose: {
-    maxHeight: 'none',
-    width: 175
+    overflow: 'auto',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 }))
 
@@ -147,7 +146,28 @@ const Stats = (): React.JSX.Element => {
     <ContainerMain title="Estatísticas" fullCard={false} >
       <Box display="flex" justifyContent="end" mb={2}>
         <Paper fullWidth>
-          <Box display="flex" flexWrap="nowrap" gap={2} alignItems="end" justifyContent="center">
+          <Box display="flex" flexWrap="wrap" gap={2} alignItems="end" justifyContent="center">
+            <Box display="flex" flexWrap="wrap" gap={2} alignItems="center" justifyContent="center">
+              {TypesCharts.map((item, index) => (
+                <React.Fragment key={`type-chart-${index}`}>
+                  <Button
+                    variant={currentChart === item.key ? 'contained' : 'outlined'}
+                    onClick={() => { handleChooseChart(item) }}
+                  >
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box>
+                        {item.icon(currentChart === item.key ? '#fff' : undefined)}
+                      </Box>
+
+                      <Box>
+                        {item.title}
+                      </Box>
+                    </Box>
+                  </Button>
+                </React.Fragment>
+              ))}
+            </Box>
+
             <Box display="flex" alignItems="end" gap={1.1}>
               <Box width={200}>
                 <InputForm fullWidth title="Data inicial">
@@ -187,28 +207,6 @@ const Stats = (): React.JSX.Element => {
 
       <Box display="flex" height={1} overflow="auto" flexGrow={1}>
         <Paper className={styles.paperChart}>
-          <Box display="flex" flexWrap="wrap" gap={2} alignItems="center" justifyContent="center" mb={3}>
-            {TypesCharts.map((item, index) => (
-              <React.Fragment key={`type-chart-${index}`}>
-                <Button
-                  className={styles.buttonChoose}
-                  variant={currentChart === item.key ? 'contained' : 'outlined'}
-                  onClick={() => { handleChooseChart(item) }}
-                >
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Box>
-                      {item.icon(currentChart === item.key ? '#fff' : undefined)}
-                    </Box>
-
-                    <Box>
-                      {item.title}
-                    </Box>
-                  </Box>
-                </Button>
-              </React.Fragment>
-            ))}
-          </Box>
-
           <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
             <Box mb={4}>
               <Typography variant="h6" color="text.main">
@@ -299,6 +297,7 @@ const Stats = (): React.JSX.Element => {
                 height={downMD ? 550 : 620}
                 width={downMD ? 500 : 1200}
                 series={viewChart}
+                yAxis={[{ position: 'left', width: 60 }]}
                 xAxis={[{ scaleType: 'point', data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]) }]}
                 colors={[Segments.Receita.color, Segments.Despesa.color]}
               />

@@ -9,7 +9,6 @@ const colors = {
     main: DEFAULT_THEME.primary,
     footer: '#0B2049',
     dark: '#0b2049d1'
-    // light: color.primary,
   },
   secondary: {
     main: '#EFEFEF',
@@ -24,7 +23,6 @@ const colors = {
     light: '#ECF8FF',
     main: '#A2EAF3',
     secondary: '#6EDFEE'
-    // dark: '#1BD4ED',
   },
   text: {
     main: '#0B2049',
