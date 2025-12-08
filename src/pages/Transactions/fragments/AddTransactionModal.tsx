@@ -15,7 +15,7 @@ import InputForm from '~/components/atoms/inputs/InputForm'
 import InputText from '~/components/atoms/inputs/InputText'
 import useUtils from '~/shared/hooks/useUtils'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
-import { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, MEDIUM_BALL_SIZE, Segments } from '~/constants'
+import { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, MEDIUM_BALL_SIZE, Segments } from '~/constants'
 import BallColor from '~/components/atoms/BallColor'
 import categoriesRepository from '~/client/repository/categoriesRepository'
 import useTestsForm from '~/shared/hooks/useTestForm'
@@ -52,7 +52,7 @@ interface IProps {
 const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps): React.JSX.Element => {
   const [action, setAction] = useState<ActionsType>(ACTIONS.create)
   const [categories, setCategories] = useState<CategoryType[]>([])
-  const [segment, setSegment] = useState<SegmentTransactionType>('Receita')
+  const [segment, setSegment] = useState<SegmentTransactionType>(DefaultsSegments.Receive)
   const [dateTransaction, setDateTransaction] = useState<string>('')
 
   const { notifyError, notifySuccess } = useAlerts()
@@ -253,7 +253,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
         <Button variant="outlined" color="primary" onClick={handleClose}>
           Cancelar
         </Button>
-        <Button variant="contained" color={segment === 'Receita' ? 'success' : 'error'} onClick={() => formik.submitForm()}>
+        <Button variant="contained" color={segment === DefaultsSegments.Receive ? 'success' : 'error'} onClick={() => formik.submitForm()}>
           Salvar
         </Button>
       </Box>

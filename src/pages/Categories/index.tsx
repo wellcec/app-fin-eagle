@@ -8,7 +8,7 @@ import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import { ACTIONS, ActionsType, SampleFilterType } from '~/models'
-import DEFAULT_PAGESIZE, { DEFAULT_GAP_IZE, MEDIUM_BALL_SIZE, Segments, SMALL_BALL_SIZE } from '~/constants'
+import DEFAULT_PAGESIZE, { DEFAULT_GAP_IZE, DefaultsSegments, MEDIUM_BALL_SIZE, Segments, SMALL_BALL_SIZE } from '~/constants'
 import useDebounce from '~/shared/hooks/useDebounce'
 import categoriesRepository from '~/client/repository/categoriesRepository'
 import { CategoryType } from '~/client/models/categories'
@@ -42,7 +42,7 @@ interface TypeForm {
 
 const DEFAULT_VALUES: TypeForm = {
   name: '',
-  type: 'Receita',
+  type: DefaultsSegments.Receive,
   isGoal: 0,
   valueGoal: ''
 }
@@ -321,7 +321,7 @@ const Categories = (): React.JSX.Element => {
                   </InputForm>
                 </Box>
 
-                {formik.values.type === 'Despesa' && (
+                {formik.values.type === DefaultsSegments.Expense && (
                   <Box mb={2}>
                     <CheckBoxGoal
                       checked={formik.values.isGoal === 1}

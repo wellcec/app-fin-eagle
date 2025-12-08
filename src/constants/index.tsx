@@ -3,27 +3,35 @@ import React from 'react'
 import { ChartsType } from '~/models/charts'
 import { DefaultThemeType } from '../models'
 import { IconChartSimpleBar, IconChartSimpleLine, IconChartSimplePizza } from '~/constants/icons'
+import { SegmentTransactionType } from '~/client/models/transactions'
+
 export const DEFAULT_THEME: DefaultThemeType = {
   id: 'default',
   primary: '#141422'
 }
 
+export const DefaultsSegments = {
+  Receive: 'Receita' as SegmentTransactionType,
+  Expense: 'Despesa' as SegmentTransactionType,
+  Reminder: 'Lembrete' as SegmentTransactionType
+}
+
 export const Segments = {
   Receita: {
     code: 0,
-    title: 'Receita',
+    title: DefaultsSegments.Receive,
     color: '#50ad6e',
     colorTranslucent: 'rgba(80, 173, 110, 0.1)'
   },
   Despesa: {
     code: 1,
-    title: 'Despesa',
+    title: DefaultsSegments.Expense,
     color: '#C3284C',
     colorTranslucent: 'rgba(195, 40, 76, 0.1)'
   },
   Lembrete: {
     code: 2,
-    title: 'Lembrete',
+    title: DefaultsSegments.Reminder,
     color: '#FFC654',
     colorTranslucent: 'rgba(255, 198, 84, 0.1)'
   }

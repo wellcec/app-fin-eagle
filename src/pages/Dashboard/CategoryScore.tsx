@@ -6,7 +6,7 @@ import { TotalTransactionByCategoryType } from '~/client/models/transactions'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import Paper from '~/components/layout/Paper'
 import useUtils from '~/shared/hooks/useUtils'
-import { Segments } from '~/constants'
+import { DefaultsSegments, Segments } from '~/constants'
 
 const useStyles = makeStyles(() => ({
   boxValue: {
@@ -35,11 +35,11 @@ const CategoryScore = (): React.JSX.Element => {
     getTotalByCategory().then(
       (response) => {
         if (response) {
-          const biggerExpense = response.filter(x => x.segment === 'Despesa').reduce((max, item) =>
+          const biggerExpense = response.filter(x => x.segment === DefaultsSegments.Expense).reduce((max, item) =>
             item.total > max.total ? item : max
           )
 
-          const biggerReceive = response.filter(x => x.segment === 'Receita').reduce((max, item) =>
+          const biggerReceive = response.filter(x => x.segment === DefaultsSegments.Receive).reduce((max, item) =>
             item.total > max.total ? item : max
           )
 

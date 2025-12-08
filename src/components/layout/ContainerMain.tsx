@@ -15,6 +15,12 @@ const useStyles = makeStyles(() => ({
     maxHeight: '100%',
     height: '100%',
     position: 'relative'
+  },
+  titlePage: {
+    border: "1px solid",
+    padding: 16,
+    borderColor: "#3a3a954a",
+    borderRadius: 20
   }
 }))
 
@@ -41,7 +47,15 @@ const ContainerMain = ({ title, fullCard = true, isPaper = true, children }: Pro
 
   return (
     <>
-      <Box display="flex" gap={2} alignItems="center" mb={2} flexGrow={0} justifyContent="space-between">
+      <Box
+        mb={2}
+        gap={2}
+        flexGrow={0}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        className={styles.titlePage}
+      >
         <Box display="flex" gap={2} alignItems="center">
           <Box display="flex" alignItems="center">
             {item?.icon(30)}

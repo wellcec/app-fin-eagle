@@ -78,7 +78,7 @@ const TodaySchedules = (): React.JSX.Element => {
                       icon={<RepeatIcon />}
                       label="Recorrente"
                       size="small"
-                      color="info"
+                      color="warning"
                       variant="outlined"
                     />
                   )}

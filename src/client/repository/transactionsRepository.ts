@@ -3,7 +3,7 @@
 
 import { Guid } from 'guid-typescript'
 import { format } from 'date-fns'
-import { DEFAULT_FORMAT_DATE } from '~/constants'
+import { DEFAULT_FORMAT_DATE, DefaultsSegments } from '~/constants'
 import { FilterTransactionType, TotalTransactionByCategoryType, TotalTransactionDashType, TotalTransactionType, TransactionsResponseType, TransactionType } from '../models/transactions'
 
 const { ipcRenderer } = require('electron')
@@ -141,9 +141,9 @@ const transactionsRepository = (): ITransactionRepository => {
     try {
       const query = `
         SELECT 
-            SUM(CASE WHEN c.segment = 'Despesa' THEN t.value ELSE 0 END) AS TotalDespesa,
-            SUM(CASE WHEN c.segment = 'Receita' THEN t.value ELSE 0 END) AS TotalReceita,
-            SUM(CASE WHEN c.segment = 'Receita' THEN t.value ELSE -t.value END) AS TotalGeral
+            SUM(CASE WHEN c.segment = '${DefaultsSegments.Expense}' THEN t.value ELSE 0 END) AS TotalDespesa,
+            SUM(CASE WHEN c.segment = '${DefaultsSegments.Receive}' THEN t.value ELSE 0 END) AS TotalReceita,
+            SUM(CASE WHEN c.segment = '${DefaultsSegments.Receive}' THEN t.value ELSE -t.value END) AS TotalGeral
         FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id;
       `

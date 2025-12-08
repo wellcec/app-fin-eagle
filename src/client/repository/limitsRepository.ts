@@ -4,7 +4,7 @@ import { Guid } from 'guid-typescript'
 import { format, startOfMonth, endOfMonth } from 'date-fns'
 
 import { LimitType, LimitWithCategoryType, ExceededLimitType } from '../models/limits'
-import { DEFAULT_FORMAT_DATE } from '~/constants'
+import { DEFAULT_FORMAT_DATE, DefaultsSegments } from '~/constants'
 
 const { ipcRenderer } = require('electron')
 
@@ -41,7 +41,7 @@ const limitsRepository = (): ILimitsRepository => {
         INNER JOIN Categories c ON l.idCategory = c.id
         LEFT JOIN Transactions t ON t.idCategory = l.idCategory 
           AND t.date BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'
-          AND c.segment = 'Despesa'
+          AND c.segment = '${DefaultsSegments.Expense}
         GROUP BY l.id, l.idCategory, l.limitAmount, l.period, c.name, c.color
         ORDER BY c.name
       `
@@ -143,7 +143,7 @@ const limitsRepository = (): ILimitsRepository => {
           COALESCE(SUM(t.value), 0) as currentSpending
         FROM Limits l
         INNER JOIN Categories c ON l.idCategory = c.id
-        LEFT JOIN Transactions t ON t.idCategory = l.idCategory AND t.date BETWEEN '${formattedStartDate}' AND '${formattedEndDate}' AND c.segment = 'Despesa'
+        LEFT JOIN Transactions t ON t.idCategory = l.idCategory AND t.date BETWEEN '${formattedStartDate}' AND '${formattedEndDate}' AND c.segment = '${DefaultsSegments.Expense}'
         GROUP BY l.id, c.name, c.color, l.limitAmount
         HAVING currentSpending > l.limitAmount
         ORDER BY (currentSpending - l.limitAmount) DESC

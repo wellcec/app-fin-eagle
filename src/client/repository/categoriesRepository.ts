@@ -4,7 +4,7 @@ import { Guid } from 'guid-typescript'
 import { format } from 'date-fns'
 
 import { CategoryType } from '../models/categories'
-import { DEFAULT_FORMAT_DATE } from '~/constants'
+import { DEFAULT_FORMAT_DATE, DefaultsSegments } from '~/constants'
 
 const { ipcRenderer } = require('electron')
 
@@ -90,7 +90,7 @@ const categoriesRepository = (): ICategoriesRepository => {
           COALESCE(SUM(t.value), 0) as currentAmount
         FROM Categories c
         LEFT JOIN Transactions t ON t.idCategory = c.id 
-          AND c.segment = 'Despesa'
+          AND c.segment = '${DefaultsSegments.Expense}'
         WHERE c.isGoal = 1
         GROUP BY c.id, c.name, c.segment, c.color, c.isGoal, c.valueGoal, c.createdAt, c.updatedAt
         ORDER BY c.name

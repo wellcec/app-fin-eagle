@@ -7,7 +7,7 @@ import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import { ACTIONS, ActionsType, SampleFilterType } from '~/models'
-import DEFAULT_PAGESIZE, { DEFAULT_GAP_IZE, SMALL_BALL_SIZE } from '~/constants'
+import DEFAULT_PAGESIZE, { DEFAULT_GAP_IZE, DefaultsSegments, SMALL_BALL_SIZE } from '~/constants'
 import useDebounce from '~/shared/hooks/useDebounce'
 import limitsRepository from '~/client/repository/limitsRepository'
 import categoriesRepository from '~/client/repository/categoriesRepository'
@@ -126,7 +126,7 @@ const Limits = (): React.JSX.Element => {
   const loadCategories = useCallback(() => {
     getCategories().then(
       (response) => {
-        const expenseCategories = response.filter(cat => cat.segment === 'Despesa')
+        const expenseCategories = response.filter(cat => cat.segment === DefaultsSegments.Expense)
 
         if (expenseCategories.length > 0) {
           setFieldValue('idCategory', expenseCategories[0].id)

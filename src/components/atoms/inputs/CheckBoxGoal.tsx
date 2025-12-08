@@ -34,8 +34,6 @@ const CheckBoxGoal = ({ onChange, checked, ...rest }: IProps): React.JSX.Element
         }
       />
     </FormGroup>
-
-
   )
 }
 

@@ -227,8 +227,7 @@ const Stats = (): React.JSX.Element => {
                     data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]),
                     scaleType: 'band',
                     tickSize: 10,
-                    categoryGapRatio: 0.8,
-                    barGapRatio: 0.2,
+                    categoryGapRatio: 0.9,
                     height: 30
                   }
                 ]}

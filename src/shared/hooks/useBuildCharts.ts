@@ -1,6 +1,6 @@
 import { compareAsc, getMonth } from 'date-fns'
 import { SegmentTransactionType, TransactionType } from '~/client/models/transactions'
-import { Segments } from '~/constants'
+import { DefaultsSegments, Segments } from '~/constants'
 import { BuildChartSimplePieType, BuildChartSimpleType, ChartSimpleType, SimpleBarChartResponseType, SimplePieChartResponseType } from '~/models/charts'
 
 interface IUtils {
@@ -19,8 +19,8 @@ const useBuildCharts = (): IUtils => {
     })
 
     for (const transaction of buildTransactions) {
-      const isExpense = transaction.segment === 'Despesa'
-      const isReceive = transaction.segment === 'Receita'
+      const isExpense = transaction.segment === DefaultsSegments.Expense
+      const isReceive = transaction.segment === DefaultsSegments.Receive
       const date = transaction.date ?? new Date()
       const month = getMonth(date)
 
@@ -43,7 +43,7 @@ const useBuildCharts = (): IUtils => {
     const keysType = Object.keys(Segments) as SegmentTransactionType[]
 
     for (const key of keysType) {
-      if (key === 'Despesa') {
+      if (key === DefaultsSegments.Expense) {
         const buildChart: ChartSimpleType = {
           label: Segments.Despesa.title,
           data: monthsInChart.map(x => x.Expense)
@@ -52,7 +52,7 @@ const useBuildCharts = (): IUtils => {
         builtInChart.push(buildChart)
       }
 
-      if (key === 'Receita') {
+      if (key === DefaultsSegments.Receive) {
         const buildChart: ChartSimpleType = {
           label: Segments.Receita.title,
           data: monthsInChart.map(x => x.Receive)
@@ -93,8 +93,8 @@ const useBuildCharts = (): IUtils => {
     }
 
     return {
-      expense: getTransactionsFiltered(buildTransactions.filter(t => t.segment === 'Despesa')),
-      receive: getTransactionsFiltered(buildTransactions.filter(t => t.segment === 'Receita'))
+      expense: getTransactionsFiltered(buildTransactions.filter(t => t.segment === DefaultsSegments.Expense)),
+      receive: getTransactionsFiltered(buildTransactions.filter(t => t.segment === DefaultsSegments.Receive))
     }
   }
 

@@ -13,7 +13,7 @@ import { FilterTransactionType, TransactionType } from '~/client/models/transact
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
-import DEFAULT_PAGESIZE, { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, LABEL_DAYS, LABEL_MONTHS, Segments } from '~/constants'
+import DEFAULT_PAGESIZE, { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, LABEL_DAYS, LABEL_MONTHS, Segments } from '~/constants'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import AddTransactionModal from './fragments/AddTransactionModal'
 import useUtils from '~/shared/hooks/useUtils'
@@ -77,13 +77,13 @@ const Transactions = (): React.JSX.Element => {
   const [monthFilter, setMonthFilter] = useState<number>(-1)
 
   const styles = useStyles()
-  const { formatCurrencyString } = useUtils()
+  const { formatCurrencyString, normalizeText } = useUtils()
   const { notifyWarning, notifyError, notifySuccess } = useAlerts()
   const { getTransactions, deleteTransaction } = transactionsRepository()
   const { debounceWait } = useDebounce()
 
   const getColorSegment = (item: TransactionType): string => {
-    return Segments[item?.segment ?? 'Receita'].color
+    return Segments[item?.segment ?? DefaultsSegments.Receive].color
   }
 
   const buildViewTransactions = (list: TransactionType[]): ViewTransactionsType[] => {
@@ -127,11 +127,11 @@ const Transactions = (): React.JSX.Element => {
     let expense = 0
 
     for (const t of list) {
-      if (t.segment === 'Receita') {
+      if (t.segment === DefaultsSegments.Receive) {
         receive += t.value
       }
 
-      if (t.segment === 'Despesa') {
+      if (t.segment === DefaultsSegments.Expense) {
         expense += t.value
       }
     }
@@ -221,7 +221,13 @@ const Transactions = (): React.JSX.Element => {
 
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { value } = event.target
-    const newFilter = { ...filter, term: value, page: 1 }
+
+    const newFilter = {
+      ...filter,
+      term: value,
+      page: 1
+    }
+
     setFilter(newFilter)
 
     debounceWait(() => { getAll(newFilter) })
@@ -421,12 +427,12 @@ const Transactions = (): React.JSX.Element => {
                 <Paper grid color={getColorSegment(item)}>
                   <Grid container display="flex" alignItems="center">
                     <Grid display="flex" alignItems="center" item xs={1}>
-                      {item.segment === 'Receita' ? <ArrowUp htmlColor={getColorSegment(item)} /> : <ArrowDown htmlColor={getColorSegment(item)} />}
+                      {item.segment === DefaultsSegments.Receive ? <ArrowUp htmlColor={getColorSegment(item)} /> : <ArrowDown htmlColor={getColorSegment(item)} />}
                     </Grid>
 
                     <Grid item xs={2}>
                       <Typography variant="body1" color={getColorSegment(item)}>
-                        {item.segment === 'Receita' ? '+' : '-'}
+                        {item.segment === DefaultsSegments.Receive ? '+' : '-'}
                         {formatCurrencyString(item.value)}
                       </Typography>
                     </Grid>

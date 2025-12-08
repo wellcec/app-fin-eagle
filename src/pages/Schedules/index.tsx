@@ -5,11 +5,11 @@ import AddIcon from '@mui/icons-material/Add'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import { Avatar, Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Theme, Typography, Paper as PaperMui, Slide } from '@mui/material'
+import { Avatar, Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Theme, Typography, Paper as PaperMui } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 
 import ContainerMain from '~/components/layout/ContainerMain'
-import { DAYS_WEEK, DEFAULT_GAP_IZE, LABEL_MONTHS, Segments, SMALL_BALL_SIZE } from '~/constants'
+import { DAYS_WEEK, DEFAULT_GAP_IZE, DefaultsSegments, LABEL_MONTHS, Segments, SMALL_BALL_SIZE } from '~/constants'
 import Paper from '~/components/layout/Paper'
 import { IconDelete, IconDoubleArrowDown, IconRevenue, IconSingleArrowLeftCircule, IconSingleArrowRightCircule } from '~/constants/icons'
 import InputForm from '~/components/atoms/inputs/InputForm'
@@ -111,7 +111,7 @@ const Schedules = (): React.JSX.Element => {
   const [viewCalendar, setViewCalendar] = useState<ViewCalendarType[]>([])
   const [chooseDay, setChooseDay] = useState<number>(1)
   const [showForm, setShowForm] = useState<boolean>(false)
-  const [segment, setSegment] = useState<SegmentTransactionType>('Lembrete')
+  const [segment, setSegment] = useState<SegmentTransactionType>(DefaultsSegments.Reminder)
   const [description, setDescription] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [isRecurrent, setIsRecurrent] = useState<boolean>(false)
@@ -142,9 +142,9 @@ const Schedules = (): React.JSX.Element => {
       const dateOfSchedule = new Date(strDate)
       const dayAsNumber = (dateOfSchedule.getUTCDate() ?? 0)
 
-      const isExpense = schedule.segment === 'Despesa'
-      const isReceived = schedule.segment === 'Receita'
-      const isReminder = schedule.segment === 'Lembrete'
+      const isExpense = schedule.segment === DefaultsSegments.Expense
+      const isReceived = schedule.segment === DefaultsSegments.Receive
+      const isReminder = schedule.segment === DefaultsSegments.Reminder
 
       const dayFromList = dataToDisplay.find((d) => d.day === dayAsNumber)
       if (!dayFromList) {
@@ -167,15 +167,15 @@ const Schedules = (): React.JSX.Element => {
 
   const getViewCalendar = (day: number, type: SegmentTransactionType): number => {
     const view = viewCalendar.find((v) => v.day === day)
-    if (type === 'Despesa') {
+    if (type === DefaultsSegments.Expense) {
       return view?.expenses ?? 0
     }
 
-    if (type === 'Receita') {
+    if (type === DefaultsSegments.Receive) {
       return view?.received ?? 0
     }
 
-    if (type === 'Lembrete') {
+    if (type === DefaultsSegments.Reminder) {
       return view?.reminders ?? 0
     }
 
@@ -250,7 +250,9 @@ const Schedules = (): React.JSX.Element => {
   }
 
   const handleInitForm = (item: number): void => {
+
     const dateToSearch = new Date(currentYear, currentMonth, item)
+
     getSchedulesByDay(dateToSearch).then(
       (response) => {
         setIsRecurrent(false)
@@ -260,6 +262,7 @@ const Schedules = (): React.JSX.Element => {
         setChooseDay(item)
         setShowForm(!showForm)
         setScheduleToShow(undefined)
+        setIsAdding(false)
         setSteps(STEPS.adding)
       }
     )
@@ -389,16 +392,16 @@ const Schedules = (): React.JSX.Element => {
                       </Typography>
 
                       <Box display="flex" gap={0.6} justifyContent="flex-end">
-                        {getViewCalendar(item, 'Receita') >= 1 && (
-                          <BallColor label={getViewCalendar(item, 'Receita').toString()} color={Segments.Receita.color} size={CUSTOM_BALL_SIZE} />
+                        {getViewCalendar(item, DefaultsSegments.Receive) >= 1 && (
+                          <BallColor label={getViewCalendar(item, DefaultsSegments.Receive).toString()} color={Segments.Receita.color} size={CUSTOM_BALL_SIZE} />
                         )}
 
-                        {getViewCalendar(item, 'Despesa') >= 1 && (
-                          <BallColor label={getViewCalendar(item, 'Despesa').toString()} color={Segments.Despesa.color} size={CUSTOM_BALL_SIZE} />
+                        {getViewCalendar(item, DefaultsSegments.Expense) >= 1 && (
+                          <BallColor label={getViewCalendar(item, DefaultsSegments.Expense).toString()} color={Segments.Despesa.color} size={CUSTOM_BALL_SIZE} />
                         )}
 
-                        {getViewCalendar(item, 'Lembrete') >= 1 && (
-                          <BallColor label={getViewCalendar(item, 'Lembrete').toString()} color={Segments.Lembrete.color} size={CUSTOM_BALL_SIZE} />
+                        {getViewCalendar(item, DefaultsSegments.Reminder) >= 1 && (
+                          <BallColor label={getViewCalendar(item, DefaultsSegments.Reminder).toString()} color={Segments.Lembrete.color} size={CUSTOM_BALL_SIZE} />
                         )}
                       </Box>
                     </Box>
@@ -419,22 +422,18 @@ const Schedules = (): React.JSX.Element => {
             </Box>
             ?
           </Typography>
-
-          {/* <Button variant="contained" color="success" onClick={handleAdding}>
-            <Box display="flex" alignItems="center" gap={1}>
-              <Box>
-                {isAdding ? <ArrowBackIosIcon /> : <AddIcon />}
-              </Box>
-            </Box>
-          </Button> */}
         </Box>
 
         {steps === STEPS.adding && (
-          <Slide direction="left" in={steps === STEPS.adding} mountOnEnter unmountOnExit>
+          <Box>
             <Box display="block" px={2} pb={2} gap={1}>
               <Box display="flex" flexDirection="column" justifyContent="end" width={SCREEN_SIZE}>
-                <Box display="flex" justifyContent="end" mb={2}>
-                  <Button variant="outlined" color="success" onClick={handleAdding}>
+                <Box display="flex" justifyContent={isAdding ? 'start' : 'end'} mb={2}>
+                  <Button
+                    onClick={handleAdding}
+                    color={isAdding ? 'warning' : 'success'}
+                    variant={isAdding ? 'outlined' : 'contained'}
+                  >
                     <Box display="flex" alignItems="center" gap={1}>
                       <Box>
                         {isAdding ? <ArrowBackIosIcon fontSize="small" /> : <AddIcon fontSize="small" />}
@@ -473,7 +472,7 @@ const Schedules = (): React.JSX.Element => {
                           <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
                             <BallColor color={Segments.Lembrete.color} size={SMALL_BALL_SIZE} />
                             <Box>
-                              Lembrete
+                              {DefaultsSegments.Reminder}
                             </Box>
                           </Box>
                         </MenuItem>
@@ -482,7 +481,7 @@ const Schedules = (): React.JSX.Element => {
                           <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
                             <BallColor color={Segments.Despesa.color} size={SMALL_BALL_SIZE} />
                             <Box>
-                              Despesa
+                              {DefaultsSegments.Expense}
                             </Box>
                           </Box>
                         </MenuItem>
@@ -491,7 +490,7 @@ const Schedules = (): React.JSX.Element => {
                           <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
                             <BallColor color={Segments.Receita.color} size={SMALL_BALL_SIZE} />
                             <Box>
-                              Receita
+                              {DefaultsSegments.Receive}
                             </Box>
                           </Box>
                         </MenuItem>
@@ -536,7 +535,7 @@ const Schedules = (): React.JSX.Element => {
                       </FormGroup>
                     </Box>
 
-                    <Button variant="contained" color="success" onClick={handleSaveSchedule}>
+                    <Button variant="contained" color="primary" onClick={handleSaveSchedule}>
                       <Box display="flex" alignItems="center" gap={1}>
                         <Box>
                           <AddIcon />
@@ -610,11 +609,11 @@ const Schedules = (): React.JSX.Element => {
                 </Box>
               )}
             </Box>
-          </Slide>
+          </Box>
         )}
 
         {steps === STEPS.description && (
-          <Slide direction="right" in={steps === STEPS.description} mountOnEnter unmountOnExit>
+          <Box>
             <Box>
               <Box display="flex" alignItems="center" gap={1} mb={1}>
                 <Box>
@@ -628,7 +627,7 @@ const Schedules = (): React.JSX.Element => {
                 </Typography>
               </Box>
 
-              <Divider color={Segments[scheduleToShow?.segment ?? 'Lembrete'].color} />
+              <Divider color={Segments[scheduleToShow?.segment ?? DefaultsSegments.Reminder].color} />
 
               <Box whiteSpace="pre-wrap" py={2} width={SCREEN_SIZE}>
                 <Typography variant="body1" color="primary">
@@ -636,7 +635,7 @@ const Schedules = (): React.JSX.Element => {
                 </Typography>
               </Box>
             </Box>
-          </Slide>
+          </Box>
         )}
       </Modal>
     </>

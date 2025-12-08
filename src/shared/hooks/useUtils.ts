@@ -5,6 +5,7 @@ interface IUtils {
   formatCurrencyRequest: (value: string) => number
   formatCurrencyString: (value: number) => string
   currencyToNumber: (value: string) => number
+  normalizeText: (value: string) => string
 }
 
 const useUtils = (): IUtils => {
@@ -60,8 +61,21 @@ const useUtils = (): IUtils => {
     return parseFloat(cleared)
   }
 
+  const normalizeText = (value: string): string => {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9 ]/g, '')
+  }
+
   return {
-    formatFormCurrency, formatNumber, formatCurrencyRequest, formatCurrencyString, formatNumberInput, currencyToNumber
+    formatFormCurrency,
+    formatNumber,
+    formatCurrencyRequest,
+    formatCurrencyString,
+    formatNumberInput,
+    currencyToNumber,
+    normalizeText
   }
 }
 
