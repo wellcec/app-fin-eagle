@@ -41,7 +41,7 @@ const limitsRepository = (): ILimitsRepository => {
         INNER JOIN Categories c ON l.idCategory = c.id
         LEFT JOIN Transactions t ON t.idCategory = l.idCategory 
           AND t.date BETWEEN '${formattedStartDate}' AND '${formattedEndDate}'
-          AND c.segment = '${DefaultsSegments.Expense}
+          AND c.segment = '${DefaultsSegments.Expense}'
         GROUP BY l.id, l.idCategory, l.limitAmount, l.period, c.name, c.color
         ORDER BY c.name
       `

@@ -120,7 +120,7 @@ const createWindow = (): void => {
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.join(__dirname, 'preload.js')
-    },
+    }
 
     // skipTaskbar: true, // Oculta icone do aplicativo na barra de tarefas
     // frame: false, // Remove a barra de título padrão

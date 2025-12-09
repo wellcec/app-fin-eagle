@@ -280,7 +280,7 @@ const Limits = (): React.JSX.Element => {
                 <Grid item xs={12} md={3}>
                   <Box>
                     <Box display="flex" justifyContent="space-between" mb={0.5}>
-                      <Typography variant="caption">Progresso</Typography>
+                      <Typography variant="caption">Progresso (mês atual)</Typography>
                       <Typography variant="caption" fontWeight={500}>
                         {item.percentageUsed.toFixed(0)}%
                       </Typography>
