@@ -7,7 +7,7 @@ import { SegmentTransactionType } from '~/client/models/transactions'
 
 export const DEFAULT_THEME: DefaultThemeType = {
   id: 'default',
-  primary: '#141422'
+  primary: '#11032d'
 }
 
 export const DefaultsSegments = {

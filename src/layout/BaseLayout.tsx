@@ -20,13 +20,15 @@ import {
 import { styled, type CSSObject } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
 
-import animation from '~/assets/animations/money-animation.json'
+import animation from '~/assets/animations/Rupee Investment.json'
+import animationSeason from '~/assets/animations/Christmas Tree.json'
 import iconLogo from '../assets/images/logogranna.png'
 import colors from '../layout/theme/colors'
 
 import { IconMenuHamburguer } from '../constants/icons'
 import { MenuItems } from '../constants/menus'
 import { Player } from '@lottiefiles/react-lottie-player'
+import Version from './Version'
 
 const drawerWidth = 240
 
@@ -127,6 +129,11 @@ const useStyles = makeStyles(() => ({
         color: colors.text.secondary
       }
     }
+  },
+  borderAnimation: {
+    borderRadius: 10,
+    margin: '24px 16px 10px 16px',
+    border: `1px solid #ffffff59`
   }
 }))
 
@@ -149,6 +156,8 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
   const isCurrentPath = (paths: string[]): boolean => paths.includes(location.pathname)
 
   const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
+
+  const elegibleSeason = (): boolean => (new Date()).getMonth() === 11
 
   return (
     <Box display="flex" height={1} overflow="auto" style={{ overflowX: 'hidden', backgroundColor: colors.background.container }}>
@@ -183,7 +192,7 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
               margin: downSM ? 0 : 2,
               height: downSM ? '100%' : 'calc(100% - 32px)',
               borderRadius: downSM ? 0 : '20px',
-              background: `linear-gradient(180deg, #3a3a95 0%, #617caf 100%)`,
+              background: `linear-gradient(180deg, #3B2667 0%, #190d31 100%)`,
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
             }
           }),
@@ -195,7 +204,7 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
               margin: downSM ? 0 : 2,
               height: downSM ? '100%' : 'calc(100% - 32px)',
               borderRadius: downSM ? 0 : '20px',
-              background: `linear-gradient(180deg, #3a3a95 0%, #617caf 100%)`,
+              background: `linear-gradient(180deg, #3B2667 0%, #190d31 100%)`,
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
             }
           })
@@ -213,6 +222,7 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
         >
           {openDrawer && (
             <Box
+              pt={4}
               display="flex"
               alignItems="center"
               style={{ cursor: 'pointer' }}
@@ -220,7 +230,7 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
             >
               <Box width={210} height={200}>
                 <Player
-                  src={animation}
+                  src={!elegibleSeason() ? animationSeason : animation}
                   className="player"
                   loop
                   autoplay
@@ -234,8 +244,9 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
               <IconMenuHamburguer color={colors.text.secondary} />
             </IconButton>
           )}
-
         </Box>
+
+        <Box className={styles.borderAnimation} />
 
         <List sx={{ flex: 1 }}>
           {MenuItems.map((menuItem, index) => (
@@ -262,10 +273,10 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
           ))}
         </List>
 
-        <Box textAlign="center" pt={1} mb={2} sx={{ borderTop: `1px solid ${colors.text.light}` }}>
-          <Typography variant="body2" color={colors.text.light}>
-            Granna v1.1.0
-          </Typography>
+        <Box className={styles.borderAnimation} />
+
+        <Box textAlign="center" pt={0.5} mb={2}>
+          <Version />
         </Box>
       </Drawer>
 
