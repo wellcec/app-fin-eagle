@@ -98,8 +98,9 @@ db.serialize(() => {
   `)
 })
 
-if (require('electron-squirrel-startup'))
+if (require('electron-squirrel-startup')) {
   app.quit()
+}
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -133,9 +134,7 @@ const createWindow = (): void => {
     mainWindow.loadFile(...fileRoute)
   }
 
-  mainWindow.on('closed', () => {
-    app.quit()
-  })
+  mainWindow.on('closed', () => { app.quit() })
 
   ipcMain.handle('db-query', async (_, sqlQuery) => {
     return await new Promise(res => {
@@ -145,8 +144,9 @@ const createWindow = (): void => {
     })
   })
 
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL)
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.webContents.openDevTools()
+  }
 }
 
 app.on('ready', createWindow)
@@ -154,6 +154,5 @@ app.on('ready', createWindow)
 app.on('window-all-closed', () => { app.quit() })
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0)
-    createWindow()
+  if (BrowserWindow.getAllWindows().length === 0) { createWindow() }
 })
