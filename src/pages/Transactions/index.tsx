@@ -272,6 +272,23 @@ const Transactions = (): React.JSX.Element => {
     getAll(newFilter)
   }
 
+  const getNameMonthCurrentFilter = (): string => {
+    const currentDate = new Date()
+    const currentMonthNumber = getMonth(currentDate)
+
+    if (filter.startDate != '') {
+      const date = new Date(filter.startDate)
+
+      if (currentMonthNumber === getMonth(date)) {
+        return `<b>Nesse mês: </b>`
+      }
+
+      return `Em <b>${LABEL_MONTHS[getMonth(date)]} de ${getYear(date)}</b>: `
+    }
+
+    return ''
+  }
+
   useEffect(() => {
     getAll(filter)
   }, [])
@@ -386,7 +403,15 @@ const Transactions = (): React.JSX.Element => {
       <Box overflow="auto" flexGrow={1} pr={1}>
         <Box pb={1} mb={2} textAlign="center">
           <Paper grid>
-            <Box display="flex" justifyContent="end" gap={2}>
+            <Box display="flex" alignItems="center" justifyContent="end" gap={2}>
+              {(endDate === '' && startDate === '') && (
+                <Typography
+                  variant="subtitle2"
+                  component="div"
+                  dangerouslySetInnerHTML={{ __html: getNameMonthCurrentFilter() }}
+                />
+              )}
+
               <Typography variant="h6" component="div" color={Segments.Receita.color}>
                 +{formatCurrencyString(valuesTransactions.receive)}
               </Typography>

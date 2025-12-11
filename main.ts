@@ -10,7 +10,6 @@ import sqlite3 from 'sqlite3'
 
 const db = new sqlite3.Database('./database.db')
 
-// Initialize database tables
 db.serialize(() => {
   db.run(`
   /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -99,15 +98,10 @@ db.serialize(() => {
   `)
 })
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-
-if (require('electron-squirrel-startup')) {
+if (require('electron-squirrel-startup'))
   app.quit()
-}
 
 const createWindow = (): void => {
-  // Create the browser window.
-
   const mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
@@ -115,6 +109,7 @@ const createWindow = (): void => {
     resizable: true,
     autoHideMenuBar: true,
     center: true,
+    roundedCorners: true, // Cantos arredondados (Windows 11)
     icon: path.join(__dirname, '../src/assets/images/logogranna.png'),
     webPreferences: {
       nodeIntegration: true,
@@ -126,16 +121,11 @@ const createWindow = (): void => {
     // frame: false, // Remove a barra de título padrão
     // transparent: true, // Permite fundo transparente
     // backgroundColor: '#00000000', // Fundo transparente
-    // roundedCorners: true, // Cantos arredondados (Windows 11)
   })
-  // and load the index.html of the app.
 
   const devServerURL = createURLRoute(MAIN_WINDOW_VITE_DEV_SERVER_URL, 'main')
 
-  const fileRoute = createFileRoute(
-    path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
-    'main'
-  )
+  const fileRoute = createFileRoute(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`), 'main')
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(devServerURL)
@@ -144,47 +134,26 @@ const createWindow = (): void => {
   }
 
   mainWindow.on('closed', () => {
-    // mainWindow = undefined
     app.quit()
   })
 
-  ipcMain.handle('db-query', async (event, sqlQuery) => {
+  ipcMain.handle('db-query', async (_, sqlQuery) => {
     return await new Promise(res => {
-      db.all(sqlQuery, (err, rows) => {
+      db.all(sqlQuery, (_, rows) => {
         res(rows)
       })
     })
   })
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL)
+    mainWindow.webContents.openDevTools()
 }
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 
 app.on('ready', createWindow)
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-
-app.on('window-all-closed', () => {
-  // if (process.platform !== 'darwin') {
-  //   app.quit()
-  // }
-
-  app.quit()
-})
+app.on('window-all-closed', () => { app.quit() })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
+  if (BrowserWindow.getAllWindows().length === 0)
     createWindow()
-  }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
