@@ -374,7 +374,7 @@ const Schedules = (): React.JSX.Element => {
 
             <Box display="flex" flexWrap="wrap" className={styles.boxList}>
               {currentListDays.map((item, index) => (
-                <>
+                <React.Fragment key={`fragment-day-${index}`}>
                   {(index === 0) && (
                     <>
                       {emptyInitMonthComponents}
@@ -406,7 +406,7 @@ const Schedules = (): React.JSX.Element => {
                       </Box>
                     </Box>
                   </Button>
-                </>
+                </React.Fragment>
               ))}
             </Box>
           </Box>
@@ -553,7 +553,7 @@ const Schedules = (): React.JSX.Element => {
               {(schedulesForDay.length > 0 && !isAdding) && (
                 <Box mt={2} width={SCREEN_SIZE}>
                   {schedulesForDay.map((item, index) => (
-                    <>
+                    <React.Fragment key={`fragment-schedules-day-${index}`}>
                       <Box
                         my={1}
                         px={2}
@@ -570,7 +570,7 @@ const Schedules = (): React.JSX.Element => {
                           </Box>
 
                           <Box>
-                            <Typography variant="body1" color="GrayText">
+                            <Typography variant="body1" color="GrayText" component="div">
                               {item.isRecurrent === 1 ? <Typography color="InfoText">Recorrente</Typography> : 'Não recorrente'}
                             </Typography>
                           </Box>
@@ -604,7 +604,7 @@ const Schedules = (): React.JSX.Element => {
                           </Typography>
                         </Box>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </Box>
               )}

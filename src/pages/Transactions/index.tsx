@@ -19,7 +19,7 @@ import AddTransactionModal from './fragments/AddTransactionModal'
 import useUtils from '~/shared/hooks/useUtils'
 import Chip from '~/components/atoms/Chip'
 
-import { IconDelete, IconDoubleArrowDown, IconFilter } from '~/constants/icons'
+import { IconDelete, IconDoubleArrowDown, IconFilter, IconTransaction } from '~/constants/icons'
 import useDebounce from '~/shared/hooks/useDebounce'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
@@ -280,7 +280,7 @@ const Transactions = (): React.JSX.Element => {
       const date = new Date(filter.startDate)
 
       if (currentMonthNumber === getMonth(date)) {
-        return `<b>Nesse mês: </b>`
+        return `Neste mês:`
       }
 
       return `Em <b>${LABEL_MONTHS[getMonth(date)]} de ${getYear(date)}</b>: `
@@ -400,33 +400,33 @@ const Transactions = (): React.JSX.Element => {
         </Paper>
       </Box>
 
+      <Box pb={1} mb={2} textAlign="center">
+        <Paper grid>
+          <Box display="flex" alignItems="center" justifyContent="end" gap={2}>
+            {(endDate === '' && startDate === '') && (
+              <Typography
+                variant="subtitle1"
+                component="div"
+                dangerouslySetInnerHTML={{ __html: getNameMonthCurrentFilter() }}
+              />
+            )}
+
+            <Typography variant="h6" component="div" color={Segments.Receita.color}>
+              +{formatCurrencyString(valuesTransactions.receive)}
+            </Typography>
+            <Typography variant="h6" component="div" color={Segments.Despesa.color}>
+              -{formatCurrencyString(valuesTransactions.expense)}
+            </Typography>
+            <Typography variant="h6" component="div" color={valuesTransactions.total > 0 ? Segments.Receita.color : Segments.Despesa.color}>
+              =
+              {' '}
+              {formatCurrencyString(valuesTransactions.total)}
+            </Typography>
+          </Box>
+        </Paper>
+      </Box>
+
       <Box overflow="auto" flexGrow={1} pr={1}>
-        <Box pb={1} mb={2} textAlign="center">
-          <Paper grid>
-            <Box display="flex" alignItems="center" justifyContent="end" gap={2}>
-              {(endDate === '' && startDate === '') && (
-                <Typography
-                  variant="subtitle2"
-                  component="div"
-                  dangerouslySetInnerHTML={{ __html: getNameMonthCurrentFilter() }}
-                />
-              )}
-
-              <Typography variant="h6" component="div" color={Segments.Receita.color}>
-                +{formatCurrencyString(valuesTransactions.receive)}
-              </Typography>
-              <Typography variant="h6" component="div" color={Segments.Despesa.color}>
-                -{formatCurrencyString(valuesTransactions.expense)}
-              </Typography>
-              <Typography variant="h6" component="div" color={valuesTransactions.total > 0 ? Segments.Receita.color : Segments.Despesa.color}>
-                =
-                {' '}
-                {formatCurrencyString(valuesTransactions.total)}
-              </Typography>
-            </Box>
-          </Paper>
-        </Box>
-
         {transactions.length === 0 && (
           <Box pb={1} mb={2} textAlign="center">
             <Paper>
@@ -436,13 +436,11 @@ const Transactions = (): React.JSX.Element => {
         )}
 
         {viewTransactions.map((item, index) => (
-          <>
-            <Box mt={3} mb={3} textAlign="center" key={`viewTransaction-key-${index}`}>
+          <React.Fragment key={`viewTransaction-key-${index}`}>
+            <Box mt={3} mb={3} textAlign="center">
               <Divider>
                 <Box display="flex" justifyContent="center" alignItems="center">
-                  <MoreHorizIcon color="primary" />
                   <Typography variant="body1">{item.dayLocale}</Typography>
-                  <MoreHorizIcon color="primary" />
                 </Box>
               </Divider>
             </Box>
@@ -452,7 +450,15 @@ const Transactions = (): React.JSX.Element => {
                 <Paper grid color={getColorSegment(item)}>
                   <Grid container display="flex" alignItems="center">
                     <Grid display="flex" alignItems="center" item xs={1}>
-                      {item.segment === DefaultsSegments.Receive ? <ArrowUp htmlColor={getColorSegment(item)} /> : <ArrowDown htmlColor={getColorSegment(item)} />}
+                      {item.segment === DefaultsSegments.Receive && (
+                        <Box style={{ transform: 'rotate(180deg)' }}>
+                          <IconTransaction color={getColorSegment(item)} />
+                        </Box>
+                      )}
+
+                      {item.segment === DefaultsSegments.Expense && (
+                        <IconTransaction color={getColorSegment(item)} />
+                      )}
                     </Grid>
 
                     <Grid item xs={2}>
@@ -486,7 +492,7 @@ const Transactions = (): React.JSX.Element => {
                 </Paper>
               </Box>
             ))}
-          </>
+          </React.Fragment>
         ))}
 
         {(totalTransactions >= DEFAULT_PAGESIZE) && !(transactions.length === totalTransactions) && (

@@ -67,7 +67,7 @@ interface IProps {
 }
 
 const Modal = ({
-  color, open, title, handleClose, children
+  color, open, title = undefined, handleClose, children
 }: PropsWithChildren<IProps>): React.JSX.Element => {
   const styles = useStyles()
 
@@ -100,10 +100,6 @@ const Modal = ({
       </Fade>
     </ComponentModal>
   )
-}
-
-Modal.defaultProps = {
-  title: undefined
 }
 
 export default Modal

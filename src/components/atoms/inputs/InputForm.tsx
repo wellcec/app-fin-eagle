@@ -23,7 +23,7 @@ interface IProps {
 }
 
 const InputForm = ({
-  title, fullWidth, formik, helperText, propField, children
+  title, fullWidth, formik = null, helperText = false, propField = '', children
 }: PropsWithChildren<IProps>): React.JSX.Element => {
   const styles = useStyles()
   const field = propField ?? ''
@@ -50,12 +50,6 @@ const InputForm = ({
       </FormControl>
     </>
   )
-}
-
-InputForm.defaultProps = {
-  helperText: false,
-  formik: null,
-  propField: ''
 }
 
 export default InputForm
