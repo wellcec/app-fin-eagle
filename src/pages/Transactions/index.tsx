@@ -3,9 +3,6 @@ import dayjs from 'dayjs'
 import { Box, Button, Divider, Grid, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 import AddIcon from '@mui/icons-material/Add'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import ArrowUp from '@mui/icons-material/KeyboardDoubleArrowUp'
-import ArrowDown from '@mui/icons-material/KeyboardDoubleArrowDown'
 import StarIcon from '@mui/icons-material/Star'
 import { compareAsc, compareDesc, endOfDay, endOfMonth, format, getDate, getDay, getMonth, getYear, startOfDay, startOfMonth } from 'date-fns'
 
@@ -13,7 +10,7 @@ import { FilterTransactionType, TransactionType } from '~/client/models/transact
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
-import DEFAULT_PAGESIZE, { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, LABEL_DAYS, LABEL_MONTHS, Segments } from '~/constants'
+import DEFAULT_PAGESIZE, { DEFAULT_BR_FORMAT_DATE, DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, LABEL_DAYS, LABEL_MONTHS, Segments } from '~/constants'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import AddTransactionModal from './fragments/AddTransactionModal'
 import useUtils from '~/shared/hooks/useUtils'
@@ -77,7 +74,7 @@ const Transactions = (): React.JSX.Element => {
   const [monthFilter, setMonthFilter] = useState<number>(-1)
 
   const styles = useStyles()
-  const { formatCurrencyString, normalizeText } = useUtils()
+  const { formatCurrencyString } = useUtils()
   const { notifyWarning, notifyError, notifySuccess } = useAlerts()
   const { getTransactions, deleteTransaction } = transactionsRepository()
   const { debounceWait } = useDebounce()
@@ -461,6 +458,12 @@ const Transactions = (): React.JSX.Element => {
                       )}
                     </Grid>
 
+                    <Grid item xs={1}>
+                      <Typography variant="body1" color={getColorSegment(item)}>
+                        {format(item.date ?? new Date(), DEFAULT_BR_FORMAT_DATE)}
+                      </Typography>
+                    </Grid>
+
                     <Grid item xs={2}>
                       <Typography variant="body1" color={getColorSegment(item)}>
                         {item.segment === DefaultsSegments.Receive ? '+' : '-'}
@@ -477,7 +480,7 @@ const Transactions = (): React.JSX.Element => {
                       </Box>
                     </Grid>
 
-                    <Grid item xs={6} display="flex">
+                    <Grid item xs={5} display="flex">
                       <Typography variant="body1" className={styles.description}>{item.description}</Typography>
                     </Grid>
 

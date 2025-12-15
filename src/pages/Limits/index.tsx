@@ -210,6 +210,9 @@ const Limits = (): React.JSX.Element => {
 
   useEffect(() => {
     getAll()
+  }, [])
+
+  useEffect(() => {
     loadCategories()
   }, [openModal])
 
