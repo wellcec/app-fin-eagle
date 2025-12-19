@@ -10,7 +10,7 @@ import { FilterTransactionType, TransactionType } from '~/client/models/transact
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
-import DEFAULT_PAGESIZE, { DEFAULT_BR_FORMAT_DATE, DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, LABEL_DAYS, LABEL_MONTHS, Segments } from '~/constants'
+import { DEFAULT_BR_FORMAT_DATE, DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_OVER_PAGESIZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, LABEL_DAYS, LABEL_MONTHS, Segments } from '~/constants'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import AddTransactionModal from './fragments/AddTransactionModal'
 import useUtils from '~/shared/hooks/useUtils'
@@ -42,7 +42,7 @@ const useStyles = makeStyles(() => ({
 const emptyFilter: FilterTransactionType = {
   term: '',
   page: 1,
-  take: DEFAULT_PAGESIZE,
+  take: DEFAULT_OVER_PAGESIZE,
   category: '',
   endDate: format(endOfMonth(new Date()), DEFAULT_FORMAT_DATE),
   startDate: format(startOfMonth(new Date()), DEFAULT_FORMAT_DATE),
@@ -498,7 +498,7 @@ const Transactions = (): React.JSX.Element => {
           </React.Fragment>
         ))}
 
-        {(totalTransactions >= DEFAULT_PAGESIZE) && !(transactions.length === totalTransactions) && (
+        {(totalTransactions >= DEFAULT_OVER_PAGESIZE) && !(transactions.length === totalTransactions) && (
           <Box display="flex" justifyContent="center" mt={3} mb={1}>
             <Button variant="outlined" onClick={handleChangePage}>
               Carregar mais...

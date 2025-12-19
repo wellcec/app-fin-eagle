@@ -46,7 +46,7 @@ export const MEDIUM_BALL_SIZE = 22
 export const SMALL_BALL_SIZE = 16
 
 export const DEFAULT_PAGESIZE = 10
-export const DEFAULT_OVER_PAGESIZE = 10000 * 10000
+export const DEFAULT_OVER_PAGESIZE = 10000
 
 export const DEFAULT_GAP_IZE = 1.5
 
