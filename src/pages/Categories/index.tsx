@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Divider, Grid, Hidden, IconButton, MenuItem, Select, Theme, Typography, useMediaQuery } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
 import StarIcon from '@mui/icons-material/Star'
 import * as Yup from 'yup'
 
@@ -28,6 +27,7 @@ import transactionsRepository from '~/client/repository/transactionsRepository'
 import CheckBoxGoal from '~/components/atoms/inputs/CheckBoxGoal'
 import useUtils from '~/shared/hooks/useUtils'
 import colors from '~/layout/theme/colors'
+import AddButton from '~/components/atoms/buttons/AddButton'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -194,17 +194,7 @@ const Categories = (): React.JSX.Element => {
             </Box>
 
             <Box>
-              <Button variant="contained" color="success" onClick={handleNewCategory}>
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Box>
-                    <AddIcon />
-                  </Box>
-
-                  <Box>
-                    Nova Categoria
-                  </Box>
-                </Box>
-              </Button>
+              <AddButton label="Nova categoria" handleClick={handleNewCategory} />
             </Box>
           </Box>
         </Paper>

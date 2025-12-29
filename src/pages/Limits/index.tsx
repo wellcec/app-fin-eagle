@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Divider, Grid, IconButton, LinearProgress, MenuItem, Select, Theme, Typography, useMediaQuery } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
 import * as Yup from 'yup'
 
 import ContainerMain from '~/components/layout/ContainerMain'
@@ -24,6 +23,7 @@ import Dialog from '~/components/molecules/Dialog'
 import BallColor from '~/components/atoms/BallColor'
 import useUtils from '~/shared/hooks/useUtils'
 import useTestsForm from '~/shared/hooks/useTestForm'
+import AddButton from '~/components/atoms/buttons/AddButton'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -59,7 +59,7 @@ const Limits = (): React.JSX.Element => {
   const { getLimits, createLimit, updateLimit, deleteLimit } = limitsRepository()
   const { getCategories } = categoriesRepository()
   const { notifyError, notifySuccess } = useAlerts()
-  const { formatNumberInput, formatFormCurrency, formatCurrencyString, currencyToNumber, formatCurrencyRequest } = useUtils()
+  const { formatNumberInput, formatFormCurrency, formatCurrencyString, currencyToNumber } = useUtils()
   const { greaterThanZeroCurrency } = useTestsForm()
 
   const formik = useFormik({
@@ -226,17 +226,7 @@ const Limits = (): React.JSX.Element => {
             </Box>
 
             <Box>
-              <Button variant="contained" color="success" onClick={handleNewLimit}>
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Box>
-                    <AddIcon />
-                  </Box>
-
-                  <Box>
-                    Novo Limite
-                  </Box>
-                </Box>
-              </Button>
+              <AddButton label="Novo Limite" handleClick={handleNewLimit} />
             </Box>
           </Box>
         </Paper>

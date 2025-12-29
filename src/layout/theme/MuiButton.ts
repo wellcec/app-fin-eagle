@@ -3,7 +3,6 @@ export const buttonStyle = {
   textTransform: 'none',
   fontWeight: 400,
   borderRadius: 25,
-  lineHeight: '14px',
   padding: '9px 30px',
   minHeight: 35,
   maxHeight: 35

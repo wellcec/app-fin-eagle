@@ -426,7 +426,7 @@ const Schedules = (): React.JSX.Element => {
 
         {steps === STEPS.adding && (
           <Box>
-            <Box display="block" px={2} pb={2} gap={1}>
+            <Box display="block" px={2} gap={1}>
               <Box display="flex" flexDirection="column" justifyContent="end" width={SCREEN_SIZE}>
                 <Box display="flex" justifyContent={isAdding ? 'start' : 'end'} mb={2}>
                   <Button
@@ -435,7 +435,7 @@ const Schedules = (): React.JSX.Element => {
                     variant={isAdding ? 'outlined' : 'contained'}
                   >
                     <Box display="flex" alignItems="center" gap={1}>
-                      <Box>
+                      <Box display="flex">
                         {isAdding ? <ArrowBackIosIcon fontSize="small" /> : <AddIcon fontSize="small" />}
                       </Box>
 
@@ -506,7 +506,7 @@ const Schedules = (): React.JSX.Element => {
                     </InputForm>
                   </Box>
 
-                  <Box mb={1}>
+                  <Box mb={2}>
                     <InputForm fullWidth title="Sobre" propField="description">
                       <InputText
                         multiline
@@ -518,7 +518,9 @@ const Schedules = (): React.JSX.Element => {
                     </InputForm>
                   </Box>
 
-                  <Box display="flex" justifyContent="end" mb={2}>
+                  <Divider />
+
+                  <Box display="flex" justifyContent="end" mt={2}>
                     <Box>
                       <FormGroup>
                         <FormControlLabel
@@ -537,10 +539,6 @@ const Schedules = (): React.JSX.Element => {
 
                     <Button variant="contained" color="primary" onClick={handleSaveSchedule}>
                       <Box display="flex" alignItems="center" gap={1}>
-                        <Box>
-                          <AddIcon />
-                        </Box>
-
                         <Box>
                           Salvar
                         </Box>

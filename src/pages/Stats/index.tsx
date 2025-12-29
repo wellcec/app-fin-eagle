@@ -18,8 +18,6 @@ import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
 
 const useStyles = makeStyles(() => ({
   paperChart: {
-    width: '100%',
-    overflow: 'auto',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
@@ -96,9 +94,6 @@ const Stats = (): React.JSX.Element => {
         switch (typeChart) {
           case 'SimpleMonth':
             setDataSimpleCharts()
-            break
-
-          case 'SimpleLineMonth':
             setDataSimpleCharts()
             break
 
@@ -205,106 +200,111 @@ const Stats = (): React.JSX.Element => {
         </Paper>
       </Box>
 
-      <Box display="flex" height={1} overflow="auto" flexGrow={1}>
-        <Paper className={styles.paperChart}>
-          <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-            <Box mb={4}>
-              <Typography variant="h6" color="text.main">
-                {format(filter.startDate, DEFAULT_BR_FORMAT_DATE)}
-                {' até '}
-                {format(filter.endDate, DEFAULT_BR_FORMAT_DATE)}
-              </Typography>
+      <Box display="flex" height={1} overflow="auto" flexGrow={1} flexDirection="column" justifyItems="center">
+        <Box textAlign="center" mb={2}>
+          <Typography variant="h6" color="text.main">
+            {format(filter.startDate, DEFAULT_BR_FORMAT_DATE)}
+            {' até '}
+            {format(filter.endDate, DEFAULT_BR_FORMAT_DATE)}
+          </Typography>
+        </Box>
+
+        <Box display="flex" width={1} flexDirection="column" justifyContent="center" alignItems="center">
+          {currentChart === 'SimpleMonth' && (
+            <Box display="flex" width={1} gap={4}>
+              <Box flex={1}>
+                <Paper className={styles.paperChart}>
+                  <BarChart
+                    borderRadius={15}
+                    series={viewChart}
+                    dataset={viewMonthsChart}
+                    yAxis={[{ position: 'left', width: 60 }]}
+                    xAxis={[
+                      {
+                        data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]),
+                        scaleType: 'band',
+                        tickSize: 10,
+                        categoryGapRatio: 0.9,
+                        height: 30
+                      }
+                    ]}
+                    colors={[Segments.Receita.color, Segments.Despesa.color]}
+                    height={550}
+                  />
+                </Paper>
+              </Box>
+
+              <Box flex={1}>
+                <Paper>
+                  <LineChart
+                    height={550}
+                    series={viewChart}
+                    yAxis={[{ position: 'left', width: 60 }]}
+                    xAxis={[{ scaleType: 'point', data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]) }]}
+                    colors={[Segments.Receita.color, Segments.Despesa.color]}
+                  />
+                </Paper>
+              </Box>
             </Box>
+          )}
 
-            {currentChart === 'SimpleMonth' && (
-              <BarChart
-                borderRadius={15}
-                series={viewChart}
-                dataset={viewMonthsChart}
-                yAxis={[{ position: 'left', width: 60 }]}
-                xAxis={[
-                  {
-                    data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]),
-                    scaleType: 'band',
-                    tickSize: 10,
-                    categoryGapRatio: 0.9,
-                    height: 30
-                  }
-                ]}
-                colors={[Segments.Receita.color, Segments.Despesa.color]}
-                height={downMD ? 550 : 620}
-                width={downMD ? 500 : 1200}
-              />
-            )}
+          {currentChart === 'SimpleCategories' && (
+            <Grid container>
+              <Grid item xs={12} lg={6} display="flex" flexDirection="column" alignItems="center">
+                <Box textAlign="center" mb={3}>
+                  <Typography variant="h6" color="text.main">
+                    Ganhos
+                  </Typography>
+                </Box>
 
-            {currentChart === 'SimpleCategories' && (
-              <Grid container>
-                <Grid item xs={12} lg={6} display="flex" flexDirection="column" alignItems="center">
-                  <Box textAlign="center" mb={3}>
-                    <Typography variant="h6" color="text.main">
-                      Ganhos
-                    </Typography>
-                  </Box>
-
-                  <PieChart
-                    series={[
-                      {
-                        data: viewPieSimpleChart.receive,
-                        arcLabel: (item) => formatCurrencyString(item.value)
-                      }
-                    ]}
-                    sx={{
-                      [`& .${pieArcLabelClasses.root}`]: {
-                        fill: 'white',
-                        fontWeight: '500'
-                      }
-                    }}
-                    width={chartPieSize.width}
-                    height={chartPieSize.height}
-                  />
-                </Grid>
-
-                <Grid item xs={12} lg={6} display="flex" flexDirection="column" alignItems="center">
-                  <Box textAlign="center" mb={3}>
-                    <Typography variant="h6" color="text.main">
-                      Gastos
-                    </Typography>
-                  </Box>
-
-                  <PieChart
-                    series={[
-                      {
-                        data: viewPieSimpleChart.expense,
-                        arcLabel: (item) => formatCurrencyString(item.value)
-                      }
-                    ]}
-                    sx={{
-                      [`& .${pieArcLabelClasses.root}`]: {
-                        fill: 'white',
-                        fontWeight: '500'
-                      }
-                    }}
-                    width={chartPieSize.width}
-                    height={chartPieSize.height}
-                  />
-                </Grid>
+                <PieChart
+                  series={[
+                    {
+                      data: viewPieSimpleChart.receive,
+                      arcLabel: (item) => formatCurrencyString(item.value)
+                    }
+                  ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: '500'
+                    }
+                  }}
+                  width={chartPieSize.width}
+                  height={chartPieSize.height}
+                />
               </Grid>
-            )}
 
-            {currentChart === 'SimpleLineMonth' && (
-              <LineChart
-                height={downMD ? 550 : 620}
-                width={downMD ? 500 : 1200}
-                series={viewChart}
-                yAxis={[{ position: 'left', width: 60 }]}
-                xAxis={[{ scaleType: 'point', data: viewMonthsChart.map(e => LABEL_MONTHS[e.month]) }]}
-                colors={[Segments.Receita.color, Segments.Despesa.color]}
-              />
-            )}
-          </Box>
-        </Paper>
+              <Grid item xs={12} lg={6} display="flex" flexDirection="column" alignItems="center">
+                <Box textAlign="center" mb={3}>
+                  <Typography variant="h6" color="text.main">
+                    Gastos
+                  </Typography>
+                </Box>
+
+                <PieChart
+                  series={[
+                    {
+                      data: viewPieSimpleChart.expense,
+                      arcLabel: (item) => formatCurrencyString(item.value)
+                    }
+                  ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: 'white',
+                      fontWeight: '500'
+                    }
+                  }}
+                  width={chartPieSize.width}
+                  height={chartPieSize.height}
+                />
+              </Grid>
+            </Grid>
+          )}
+        </Box>
+        {/* </Paper> */}
       </Box>
-    </ContainerMain>
+    </ContainerMain >
   )
 }
 

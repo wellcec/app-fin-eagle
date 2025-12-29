@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ChartsType } from '~/models/charts'
 import { DefaultThemeType } from '../models'
-import { IconChartSimpleBar, IconChartSimpleLine, IconChartSimplePizza } from '~/constants/icons'
+import { IconChartSimpleBar, IconChartSimplePizza } from '~/constants/icons'
 import { SegmentTransactionType } from '~/client/models/transactions'
 
 export const DEFAULT_THEME: DefaultThemeType = {
@@ -75,12 +75,6 @@ export const TypesCharts: ChartsType[] = [
     key: 'SimpleCategories',
     title: 'Balanço por categoria',
     icon: (color) => <IconChartSimplePizza color={color} />
-  },
-  {
-    id: 2,
-    key: 'SimpleLineMonth',
-    title: 'Balanço em linha',
-    icon: (color) => <IconChartSimpleLine color={color} />
   }
 ]
 

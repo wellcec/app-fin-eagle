@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import { Box, Button, Divider, Grid, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
-import AddIcon from '@mui/icons-material/Add'
 import StarIcon from '@mui/icons-material/Star'
 import { compareAsc, compareDesc, endOfDay, endOfMonth, format, getDate, getDay, getMonth, getYear, startOfDay, startOfMonth } from 'date-fns'
 
@@ -23,6 +22,7 @@ import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
 import useAlerts from '~/shared/alerts/useAlerts'
 import Dialog from '~/components/molecules/Dialog'
 import colors from '~/layout/theme/colors'
+import AddButton from '~/components/atoms/buttons/AddButton'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -306,17 +306,7 @@ const Transactions = (): React.JSX.Element => {
             </Box>
 
             <Box>
-              <Button variant="contained" color="success" onClick={() => { setOpenAddTransaction(!openAddTransaction) }}>
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Box>
-                    <AddIcon />
-                  </Box>
-
-                  <Box>
-                    Nova transação
-                  </Box>
-                </Box>
-              </Button>
+              <AddButton label="Nova transação" handleClick={() => { setOpenAddTransaction(!openAddTransaction) }} />
             </Box>
           </Box>
 
