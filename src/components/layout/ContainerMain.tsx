@@ -10,17 +10,11 @@ import { LABEL_DAYS, LABEL_MONTHS } from '~/constants'
 
 const useStyles = makeStyles(() => ({
   paper: {
-    overflowY: 'scroll',
+    overflowY: 'auto',
     boxSizing: 'border-box',
     maxHeight: '100%',
     height: '100%',
     position: 'relative'
-  },
-  titlePage: {
-    border: "1px solid",
-    padding: 16,
-    borderColor: "#3a3a954a",
-    borderRadius: 20
   }
 }))
 
@@ -47,30 +41,30 @@ const ContainerMain = ({ title, fullCard = true, isPaper = true, children }: Pro
 
   return (
     <>
-      <Box
-        mb={2}
-        gap={2}
-        flexGrow={0}
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        className={styles.titlePage}
-      >
-        <Box display="flex" gap={2} alignItems="center">
-          <Box display="flex" alignItems="center">
-            {item?.icon(30)}
+      <Box mb={2}>
+        <Paper>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box display="flex" gap={2} alignItems="center">
+              <Box display="flex" alignItems="center">
+                {item?.icon(30)}
+              </Box>
+
+              <Typography variant="subtitle1" color="text.main">
+                {title}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography variant="body2" color="text.tertiary">
+                {dateText}
+              </Typography>
+            </Box>
           </Box>
-
-          <Typography variant="subtitle1" color="text.main">
-            {title}
-          </Typography>
-        </Box>
-
-        <Box>
-          <Typography variant="body2" color="text.tertiary">
-            {dateText}
-          </Typography>
-        </Box>
+        </Paper>
       </Box>
 
       {fullCard && (

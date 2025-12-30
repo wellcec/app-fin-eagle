@@ -14,7 +14,7 @@ export const SIZE_ICONS_HOME = 20
 
 export const MenuItems: IMenuItem[] = [
   {
-    title: 'Dashboard',
+    title: 'Home',
     path: '/dashboard',
     paths: ['/', '/dashboard'],
     icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconDashboard} width={size} height={size} />)

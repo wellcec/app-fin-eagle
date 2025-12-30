@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Chip, Typography } from '@mui/material'
+import makeStyles from '@mui/styles/makeStyles'
 import RepeatIcon from '@mui/icons-material/Repeat'
 import { format } from 'date-fns'
 
@@ -9,10 +10,19 @@ import { ScheduleType } from '~/client/models/schedules'
 import { DEFAULT_BR_FORMAT_DATE, Segments } from '~/constants'
 import { SegmentTransactionType } from '~/client/models/transactions'
 
+const useStyles = makeStyles(() => ({
+  schedule: {
+    padding: 16,
+    borderRadius: 16,
+    transition: 'all 0.2s'
+  },
+}))
+
 const TodaySchedules = (): React.JSX.Element => {
   const [schedules, setSchedules] = useState<ScheduleType[]>([])
   const [loading, setLoading] = useState(true)
 
+  const styles = useStyles()
   const { getSchedulesByDay } = schedulesRepository()
 
   useEffect(() => {
@@ -42,7 +52,7 @@ const TodaySchedules = (): React.JSX.Element => {
   }
 
   return (
-    <Box mb={2} flex="auto">
+    <Box flex="auto">
       <Paper>
         <Box display="flex" alignItems="center" gap={1} mb={2}>
           <Typography variant="subtitle1" fontWeight={500}>
@@ -57,12 +67,10 @@ const TodaySchedules = (): React.JSX.Element => {
           {schedules.map((schedule, index) => (
             <Box
               key={`schedule-${index}`}
+              className={styles.schedule}
               sx={{
-                p: 2,
-                borderRadius: 4,
                 border: '1px solid',
                 borderColor: getSegmentColor(schedule.segment),
-                transition: 'all 0.2s',
                 '&:hover': {
                   backgroundColor: getSegmentColorTranslucent(schedule.segment)
                 }

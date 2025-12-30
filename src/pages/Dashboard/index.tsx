@@ -9,12 +9,12 @@ import TodaySchedules from './TodaySchedules'
 
 const Dashboard = (): React.JSX.Element => {
   return (
-    <ContainerMain title="Dashboard" fullCard isPaper={false}>
-      <Box display="flex" flexDirection="column" gap={3}>
+    <ContainerMain title="Home" fullCard isPaper={false}>
+      <Box display="flex" flexDirection="column" gap={2}>
         <LimitAlerts />
         <GeneralScore />
 
-        <Box display="flex" flexWrap="wrap" gap={3}>
+        <Box display="flex" flexWrap="wrap" gap={2}>
           <CategoryScore />
           <TodaySchedules />
           <GoalProgress />

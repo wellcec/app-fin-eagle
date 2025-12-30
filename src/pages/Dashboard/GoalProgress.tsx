@@ -32,7 +32,7 @@ const GoalProgress = (): React.JSX.Element => {
   }
 
   return (
-    <Box mb={2} flex="auto" minWidth={670}>
+    <Box flex="auto" minWidth={600}>
       <Paper>
         <Box mb={2}>
           <Typography variant="subtitle1" fontWeight={500}>

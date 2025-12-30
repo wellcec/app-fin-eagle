@@ -54,7 +54,7 @@ const CategoryScore = (): React.JSX.Element => {
   }, [])
 
   return (
-    <Box flex="auto">
+    <Box flex="auto" height={1}>
       <Paper>
         <Box display="flex" justifyContent="center" gap={2.3}>
           <Box>

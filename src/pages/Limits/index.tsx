@@ -113,12 +113,10 @@ const Limits = (): React.JSX.Element => {
   })
 
   const getAll = useCallback(() => {
-    getLimits().then(
-      (response) => {
-        const data = response ?? []
-        setLimits(data)
-      }
-    )
+    getLimits().then((response) => {
+      const data = response ?? []
+      setLimits(data)
+    })
   }, [getLimits])
 
   const { setFieldValue } = formik
