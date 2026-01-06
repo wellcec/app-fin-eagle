@@ -3,9 +3,8 @@ export const buttonStyle = {
   textTransform: 'none',
   fontWeight: 400,
   borderRadius: 25,
-  padding: '9px 30px',
-  minHeight: 35,
-  maxHeight: 35
+  lineHeight: 1.40,
+  padding: '9px 30px'
 }
 export const buttonPrimaryStyle = {
   ...buttonStyle,
