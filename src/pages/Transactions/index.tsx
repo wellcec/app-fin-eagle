@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
-import { Box, Button, Divider, Grid, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
+import { Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, Grid, IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 import StarIcon from '@mui/icons-material/Star'
 import { compareAsc, compareDesc, endOfDay, endOfMonth, format, getDate, getDay, getMonth, getYear, startOfDay, startOfMonth } from 'date-fns'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
 import { FilterTransactionType, TransactionType } from '~/client/models/transactions'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
@@ -46,7 +48,8 @@ const emptyFilter: FilterTransactionType = {
   category: '',
   endDate: format(endOfMonth(new Date()), DEFAULT_FORMAT_DATE),
   startDate: format(startOfMonth(new Date()), DEFAULT_FORMAT_DATE),
-  segment: ''
+  segment: '',
+  isGoal: 0
 }
 
 type ViewTransactionsType = {
@@ -72,6 +75,7 @@ const Transactions = (): React.JSX.Element => {
   const [objToAction, setObjToAction] = useState<TransactionType>()
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false)
   const [monthFilter, setMonthFilter] = useState<number>(-1)
+  const [includeGoalActive, setIncludeGoalActive] = useState<boolean>(false);
 
   const styles = useStyles()
   const { formatCurrencyString } = useUtils()
@@ -287,6 +291,22 @@ const Transactions = (): React.JSX.Element => {
   }
 
   useEffect(() => {
+    const newFilter: FilterTransactionType = {
+      ...filter,
+      isGoal: includeGoalActive ? undefined : 0
+    }
+
+    setFilter(newFilter)
+    getAll(newFilter)
+  }, [includeGoalActive]);
+
+  useEffect(() => {
+    if (startDate !== '' && endDate !== '') {
+      handleFilter()
+    }
+  }, [endDate])
+
+  useEffect(() => {
     getAll(filter)
   }, [])
 
@@ -313,8 +333,8 @@ const Transactions = (): React.JSX.Element => {
           {showFilter && (
             <>
               <Box display="flex" flexWrap="wrap" gap={3} alignItems="end" justifyContent="space-between">
-                <Box display="flex" flexWrap="nowrap" gap={3} alignItems="center" flex={1} justifyContent="center">
-                  <Box width={200}>
+                <Box display="flex" flexWrap="nowrap" gap={3} alignItems="end" flex={1}>
+                  <Box>
                     <InputForm fullWidth title="Data inicial">
                       <InputBasicDate
                         placeholder="Informe uma data"
@@ -327,7 +347,7 @@ const Transactions = (): React.JSX.Element => {
                     </InputForm>
                   </Box>
 
-                  <Box width={200}>
+                  <Box>
                     <InputForm fullWidth title="Data final">
                       <InputBasicDate
                         placeholder="Informe uma data"
@@ -340,7 +360,7 @@ const Transactions = (): React.JSX.Element => {
                     </InputForm>
                   </Box>
 
-                  <Box width={200}>
+                  <Box>
                     <InputForm fullWidth title="Filtre por mês">
                       <Select
                         fullWidth
@@ -371,6 +391,22 @@ const Transactions = (): React.JSX.Element => {
                       </Select>
                     </InputForm>
                   </Box>
+
+                  <Box>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={includeGoalActive}
+                            onChange={(event) => { setIncludeGoalActive(event.target.checked) }}
+                            icon={<RadioButtonUncheckedIcon />}
+                            checkedIcon={<CheckCircleIcon color="primary" />}
+                          />
+                        }
+                        label="Incluir metas?"
+                      />
+                    </FormGroup>
+                  </Box>
                 </Box>
 
                 <Box display="flex" alignItems="center" justifyContent="end" gap={1} mt={2}>
@@ -387,7 +423,7 @@ const Transactions = (): React.JSX.Element => {
         </Paper>
       </Box>
 
-      <Box pb={1} mb={2} textAlign="center">
+      <Box mb={1} textAlign="center">
         <Paper grid>
           <Box display="flex" alignItems="center" justifyContent="end" gap={2}>
             {(endDate === '' && startDate === '') && (
@@ -411,6 +447,12 @@ const Transactions = (): React.JSX.Element => {
             </Typography>
           </Box>
         </Paper>
+      </Box>
+
+      <Box mb={2}>
+        <Typography variant="caption">
+          * Transações de metas não são mostradas por padrão. Utilize o filtro para incluí-las na listagem.
+        </Typography>
       </Box>
 
       <Box overflow="auto" flexGrow={1} pr={1}>

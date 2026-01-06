@@ -1,4 +1,4 @@
-const fontFamily = ['Poppins', 'sans-serif'].join(',')
+const fontFamily = ['Plus Jakarta Sans', 'sans-serif'].join(',')
 
 const textStyle = {
   fontFamily,

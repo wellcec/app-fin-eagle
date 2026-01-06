@@ -26,7 +26,7 @@ const transactionsRepository = (): ITransactionRepository => {
       const _description = term !== '' ? ` AND (t.description LIKE '%${term}%' OR t.description LIKE '%${term}%' OR c.name LIKE '%${term}%') ` : ''
       const _category = category !== '' ? ` AND t.idCategory = '${category}'` : ''
       const _segment = segment !== '' ? ` AND c.Segment = '${segment}'` : ''
-      const _isGoal = isGoal ? ` AND c.isGoal = '${isGoal}'` : ''
+      const _isGoal = isGoal !== undefined ? ` AND c.isGoal = ${isGoal}` : ''
 
       const formattedStartDate = format(filter.startDate, DEFAULT_FORMAT_DATE)
       const formattedEndDate = format(filter.endDate, DEFAULT_FORMAT_DATE)
@@ -69,7 +69,6 @@ const transactionsRepository = (): ITransactionRepository => {
           ${_description}
           ${_category}
       `
-
       const count: TotalTransactionType[] = await ipcRenderer.invoke('db-query', queryCount)
       const rows: TransactionType[] = await ipcRenderer.invoke('db-query', query)
 
@@ -145,7 +144,8 @@ const transactionsRepository = (): ITransactionRepository => {
             SUM(CASE WHEN c.segment = '${DefaultsSegments.Receive}' THEN t.value ELSE 0 END) AS TotalReceita,
             SUM(CASE WHEN c.segment = '${DefaultsSegments.Receive}' THEN t.value ELSE -t.value END) AS TotalGeral
         FROM Transactions t
-        INNER JOIN Categories c ON t.idCategory = c.id;
+        INNER JOIN Categories c ON t.idCategory = c.id
+        WHERE c.isGoal = 0;
       `
 
       const data: TotalTransactionDashType[] = await ipcRenderer.invoke('db-query', query)

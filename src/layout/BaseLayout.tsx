@@ -30,10 +30,11 @@ import { MenuItems } from '../constants/menus'
 import { Player } from '@lottiefiles/react-lottie-player'
 import Version from './Version'
 
-const drawerWidth = 240
+const drawerWidth = 272
+const paperWidth = 240
 
 const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
+  width: paperWidth,
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen
@@ -61,7 +62,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && pr
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
-  padding: theme.spacing(4),
+  padding: theme.spacing(2),
+  marginLeft: theme.spacing(2),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -71,7 +73,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && pr
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 8
   }),
   ...(mobile && {
     marginTop: 75,
@@ -82,7 +83,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && pr
 const useStyles = makeStyles(() => ({
   buttonList: {
     paddingTop: 15,
-    paddingBottom: 15
+    paddingBottom: 15,
+    borderRadius: 10
   },
   menuItemOpened: {
     marginTop: 0,
@@ -94,8 +96,8 @@ const useStyles = makeStyles(() => ({
     }
   },
   divider: {
-    border: colors.secondary.main,
-    background: colors.secondary.main,
+    border: colors.primary.main,
+    background: colors.primary.main,
     borderWidth: 10,
     width: 6,
     height: 20,
@@ -110,30 +112,30 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'rgba(224, 170, 255, 0.15)',
     borderRadius: '12px',
     '& svg': {
-      fill: colors.secondary.main
+      fill: colors.primary.main
     },
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
         fontWeight: 400,
-        color: colors.background.main
+        color: colors.primary.main
       }
     }
   },
   notSelected: {
     borderRadius: '12px',
     '& svg': {
-      fill: colors.text.secondary
+      fill: colors.primary.main
     },
     '& .MuiListItemText-root': {
       '& .MuiTypography-root': {
-        color: colors.text.secondary
+        color: colors.primary.main
       }
     }
   },
   borderAnimation: {
     borderRadius: 10,
     margin: '24px 16px 10px 16px',
-    border: `1px solid #ffffff59`
+    border: `1px solid ${colors.text.light}`
   }
 }))
 
@@ -192,8 +194,6 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
               margin: downSM ? 0 : 2,
               height: downSM ? '100%' : 'calc(100% - 32px)',
               borderRadius: downSM ? 0 : '20px',
-              background: `linear-gradient(180deg, #3B2667 0%, #190d31 100%)`,
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
             }
           }),
           ...(!openDrawer && {
@@ -204,8 +204,6 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
               margin: downSM ? 0 : 2,
               height: downSM ? '100%' : 'calc(100% - 32px)',
               borderRadius: downSM ? 0 : '20px',
-              background: `linear-gradient(180deg, #3B2667 0%, #190d31 100%)`,
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)'
             }
           })
         }}
