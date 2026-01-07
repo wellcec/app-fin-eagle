@@ -32,7 +32,7 @@ const GoalProgress = (): React.JSX.Element => {
   }
 
   return (
-    <Box flex="auto" minWidth={600}>
+    <Box flex="auto" >
       <Paper>
         <Box mb={2}>
           <Typography variant="subtitle1" fontWeight={500}>
@@ -69,7 +69,7 @@ const GoalProgress = (): React.JSX.Element => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={12} md={5}>
+                <Grid item xs={12} md={12} lg={5}>
                   <Box>
                     <Box display="flex" justifyContent="space-between" mb={0.5}>
                       <Typography variant="caption">Progresso</Typography>

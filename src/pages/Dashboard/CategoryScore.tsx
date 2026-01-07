@@ -43,7 +43,7 @@ const CategoryScore = (): React.JSX.Element => {
   }, [])
 
   return (
-    <Box height={1} flex="auto">
+    <Box>
       <Box display="flex" gap={2}>
         <Paper bgColor={colors.success.background} fullWidth>
           <Box display="flex" flexDirection="column" gap={2} justifyContent="center" minWidth={MIN_SIZE_PAPER}>

@@ -22,7 +22,7 @@ const TopExpenses = (): React.JSX.Element => {
   if (expenses.length === 0) return <></>
 
   return (
-    <Box flex="auto">
+    <Box>
       <Paper>
         <Box mb={2}>
           <Typography variant="subtitle1" fontWeight={500}>

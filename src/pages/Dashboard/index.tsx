@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
+
 import ContainerMain from '~/components/layout/ContainerMain'
 import GeneralScore from './GeneralScore'
 import CategoryScore from './CategoryScore'
@@ -22,13 +23,18 @@ const Dashboard = (): React.JSX.Element => {
         <GeneralScore />
       </Box>
 
-      <Box display="flex" flexWrap="wrap" alignItems="center" gap={2} mb={2}>
-        <CategoryScore />
-        <TopExpenses />
-        <LatestTransactions />
-        <TodaySchedules />
-        <GoalProgress />
-      </Box>
+      <Grid container spacing={2} mb={2}>
+        <Grid display="flex" flexDirection="column" item md={12} lg={6} gap={2}>
+          <CategoryScore />
+          <TopExpenses />
+          <GoalProgress />
+        </Grid>
+
+        <Grid display="flex" flexDirection="column" item md={12} lg={6} gap={2}>
+          <LatestTransactions />
+          <TodaySchedules />
+        </Grid>
+      </Grid>
 
       <NoTransactionsWarning />
     </ContainerMain >
