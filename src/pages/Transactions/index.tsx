@@ -19,6 +19,7 @@ import { Titles } from '~/constants/menus'
 import Filters from './fragments/Filters'
 import TransactionItem from './fragments/TransactionItem'
 import useTransactions from '~/shared/hooks/useTransactions'
+import { emptyFilter } from '~/constants/transactions'
 
 const useStyles = makeStyles(() => ({
   toggleMonthFilter: {
@@ -41,17 +42,6 @@ const useStyles = makeStyles(() => ({
     }
   }
 }))
-
-const emptyFilter: FilterTransactionType = {
-  term: '',
-  page: 1,
-  take: DEFAULT_OVER_PAGESIZE,
-  category: '',
-  endDate: format(endOfMonth(new Date()), DEFAULT_FORMAT_DATE),
-  startDate: format(startOfMonth(new Date()), DEFAULT_FORMAT_DATE),
-  segment: '',
-  isGoal: 0
-}
 
 const Transactions = (): React.JSX.Element => {
   const [filter, setFilter] = useState<FilterTransactionType>(emptyFilter)

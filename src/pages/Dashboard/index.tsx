@@ -11,6 +11,7 @@ import { Titles } from '~/constants/menus'
 import QuickActions from './fragments/QuickActions'
 import LatestTransactions from './fragments/LatestTransactions'
 import TopExpenses from './fragments/TopExpenses'
+import NoTransactionsWarning from './NoTransactionsWarning'
 
 const Dashboard = (): React.JSX.Element => {
   return (
@@ -21,14 +22,16 @@ const Dashboard = (): React.JSX.Element => {
         <GeneralScore />
       </Box>
 
-      <Box display="flex" flexWrap="wrap" alignItems="center" gap={2}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={2} mb={2}>
         <CategoryScore />
         <TopExpenses />
         <LatestTransactions />
         <TodaySchedules />
         <GoalProgress />
       </Box>
-    </ContainerMain>
+
+      <NoTransactionsWarning />
+    </ContainerMain >
   )
 }
 
