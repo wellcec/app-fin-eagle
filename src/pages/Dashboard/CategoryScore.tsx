@@ -1,33 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
-import makeStyles from '@mui/styles/makeStyles'
+import { Box, Tooltip, Typography } from '@mui/material'
 
 import { TotalTransactionByCategoryType } from '~/client/models/transactions'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import Paper from '~/components/layout/Paper'
 import useUtils from '~/shared/hooks/useUtils'
-import { DefaultsSegments, Segments } from '~/constants'
+import { DefaultsSegments } from '~/constants'
+import colors from '~/layout/theme/colors'
+import receiveImg from '~/assets/images/receive.png'
+import expenseImg from '~/assets/images/expense.png'
 
-const useStyles = makeStyles(() => ({
-  boxValue: {
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: '50%',
-    height: 120,
-    width: 120,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  categoryName: {
-    fontWeight: '500'
-  }
-}))
+const SIZE_IMG = 60
+const MIN_SIZE_PAPER = 135
 
 const CategoryScore = (): React.JSX.Element => {
   const [expense, setExpense] = useState<TotalTransactionByCategoryType>()
   const [receive, setReceive] = useState<TotalTransactionByCategoryType>()
 
-  const styles = useStyles()
   const { getTotalByCategory } = transactionsRepository()
   const { formatCurrencyString } = useUtils()
 
@@ -54,50 +43,48 @@ const CategoryScore = (): React.JSX.Element => {
   }, [])
 
   return (
-    <Box flex="auto" height={1}>
-      <Paper>
-        <Box display="flex" justifyContent="center" gap={2.3}>
-          <Box>
-            <Box textAlign="center" mb={2}>
-              <Typography variant="subtitle1" fontWeight={500}>
-                Categoria que mais arrecadou
-              </Typography>
+    <Box height={1}>
+      <Box display="flex" gap={2}>
+        <Paper bgColor={colors.success.background}>
+          <Box display="flex" flexDirection="column" gap={2} justifyContent="center" minWidth={MIN_SIZE_PAPER}>
+            <Box textAlign="center">
+              <img src={receiveImg} alt="Receitas" style={{ maxWidth: SIZE_IMG }} />
             </Box>
 
-            <Box display="flex" justifyContent="center">
-              <Box className={styles.boxValue} sx={{ border: `solid 10px ${Segments.Receita.color}` }}>
-                <Box className={styles.categoryName}>
+            <Tooltip title="Categoria que mais arrecadou" placement="right">
+              <Box sx={{ cursor: 'help' }}>
+                <Typography variant="subtitle1" fontWeight={500} textAlign="center" color={colors.success.light}>
                   {receive?.categoryName}
-                </Box>
+                </Typography>
 
-                <Box>
+                <Typography variant="h6" fontWeight={500} textAlign="center" color={colors.success.light}>
                   {formatCurrencyString(receive?.total ?? 0)}
-                </Box>
+                </Typography>
               </Box>
-            </Box>
+            </Tooltip>
           </Box>
+        </Paper>
 
-          <Box>
-            <Box textAlign="center" mb={2}>
-              <Typography variant="subtitle1" fontWeight={500}>
-                Categoria que mais gastou
-              </Typography>
+        <Paper bgColor={colors.error.background}>
+          <Box display="flex" flexDirection="column" gap={2} justifyContent="center" minWidth={MIN_SIZE_PAPER}>
+            <Box textAlign="center">
+              <img src={expenseImg} alt="Despesas" style={{ maxWidth: SIZE_IMG }} />
             </Box>
 
-            <Box display="flex" justifyContent="center">
-              <Box className={styles.boxValue} sx={{ border: `solid 10px ${Segments.Despesa.color}` }}>
-                <Box className={styles.categoryName}>
+            <Tooltip title="Categoria que mais gastou" placement="right">
+              <Box sx={{ cursor: 'help' }}>
+                <Typography variant="subtitle1" fontWeight={500} textAlign="center" color={colors.error.light}>
                   {expense?.categoryName}
-                </Box>
+                </Typography>
 
-                <Box>
+                <Typography variant="h6" fontWeight={500} textAlign="center" color={colors.error.light}>
                   {formatCurrencyString(expense?.total ?? 0)}
-                </Box>
+                </Typography>
               </Box>
-            </Box>
+            </Tooltip>
           </Box>
-        </Box>
-      </Paper>
+        </Paper>
+      </Box>
     </Box>
   )
 }

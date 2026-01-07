@@ -28,6 +28,7 @@ import CheckBoxGoal from '~/components/atoms/inputs/CheckBoxGoal'
 import useUtils from '~/shared/hooks/useUtils'
 import colors from '~/layout/theme/colors'
 import AddButton from '~/components/atoms/buttons/AddButton'
+import { Titles } from '~/constants/menus'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -185,7 +186,7 @@ const Categories = (): React.JSX.Element => {
   }, [])
 
   return (
-    <ContainerMain title="Categorias" fullCard={false}>
+    <ContainerMain title={Titles.CATEGORIES} fullCard={false}>
       <Box display="flex" flexGrow={0} justifyContent="end" mb={2}>
         <Paper fullWidth>
           <Box display="flex" flexWrap="wrap" gap={2} alignItems="center">

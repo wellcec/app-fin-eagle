@@ -24,6 +24,7 @@ import BallColor from '~/components/atoms/BallColor'
 import useUtils from '~/shared/hooks/useUtils'
 import useTestsForm from '~/shared/hooks/useTestForm'
 import AddButton from '~/components/atoms/buttons/AddButton'
+import { Titles } from '~/constants/menus'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -215,7 +216,7 @@ const Limits = (): React.JSX.Element => {
   }, [openModal])
 
   return (
-    <ContainerMain title="Limites" fullCard={false}>
+    <ContainerMain title={Titles.LIMITS} fullCard={false}>
       <Box display="flex" flexGrow={0} justifyContent="end" mb={2}>
         <Paper fullWidth>
           <Box display="flex" flexWrap="wrap" gap={2} alignItems="center">

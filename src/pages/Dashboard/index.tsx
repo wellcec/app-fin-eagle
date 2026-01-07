@@ -6,19 +6,27 @@ import CategoryScore from './CategoryScore'
 import LimitAlerts from './LimitAlerts'
 import GoalProgress from './GoalProgress'
 import TodaySchedules from './TodaySchedules'
+import { Titles } from '~/constants/menus'
+
+import QuickActions from './fragments/QuickActions'
+import LatestTransactions from './fragments/LatestTransactions'
+import TopExpenses from './fragments/TopExpenses'
 
 const Dashboard = (): React.JSX.Element => {
   return (
-    <ContainerMain title="Home" fullCard isPaper={false}>
-      <Box display="flex" flexDirection="column" gap={2}>
+    <ContainerMain title={Titles.DASHBOARD} fullCard isPaper={false}>
+      <Box display="flex" flexDirection="column" gap={2} mb={2}>
         <LimitAlerts />
+        <QuickActions />
         <GeneralScore />
+      </Box>
 
-        <Box display="flex" flexWrap="wrap" gap={2}>
-          <CategoryScore />
-          <TodaySchedules />
-          <GoalProgress />
-        </Box>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={2}>
+        <CategoryScore />
+        <TopExpenses />
+        <LatestTransactions />
+        <TodaySchedules />
+        <GoalProgress />
       </Box>
     </ContainerMain>
   )

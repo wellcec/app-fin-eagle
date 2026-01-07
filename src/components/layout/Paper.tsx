@@ -25,9 +25,10 @@ interface IProps {
   fullWidth?: boolean
   grid?: boolean
   color?: string
+  bgColor?: string
 }
 
-const Paper = ({ children, className = '', fullWidth = false, grid = false, color }: PropsWithChildren<IProps>): React.JSX.Element => {
+const Paper = ({ children, className = '', fullWidth = false, grid = false, color, bgColor }: PropsWithChildren<IProps>): React.JSX.Element => {
   const styles = useStyles()
 
   const fullWidthClass = fullWidth ? styles.fullWidth : ''
@@ -38,6 +39,9 @@ const Paper = ({ children, className = '', fullWidth = false, grid = false, colo
       style={{
         ...(color && {
           border: `1px solid ${color}`
+        }),
+        ...(bgColor && {
+          backgroundColor: bgColor
         })
       }}
     >

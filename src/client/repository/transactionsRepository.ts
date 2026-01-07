@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import { Guid } from 'guid-typescript'
-import { format } from 'date-fns'
+import { format, startOfMonth, endOfMonth } from 'date-fns'
 import { DEFAULT_FORMAT_DATE, DefaultsSegments } from '~/constants'
 import { FilterTransactionType, TotalTransactionByCategoryType, TotalTransactionDashType, TotalTransactionType, TransactionsResponseType, TransactionType } from '../models/transactions'
 
@@ -15,6 +15,7 @@ interface ITransactionRepository {
   deleteTransaction: (id: string) => Promise<boolean>
   transactionByCategory: (categoryId?: string) => Promise<number>
   getTotalByCategory: () => Promise<TotalTransactionByCategoryType[]>
+  getTopExpenses: (month: Date) => Promise<TransactionType[]>
 }
 
 const transactionsRepository = (): ITransactionRepository => {
@@ -184,13 +185,51 @@ const transactionsRepository = (): ITransactionRepository => {
       return []
     }
   }
+
+  const getTopExpenses = async (month: Date): Promise<TransactionType[]> => {
+    try {
+      const startOfMonthDate = format(startOfMonth(month), DEFAULT_FORMAT_DATE)
+      const endOfMonthDate = format(endOfMonth(month), DEFAULT_FORMAT_DATE)
+
+      const query = `
+        SELECT 
+          t.id,
+          t.idCategory,
+          t.value,
+          t.description,
+          c.segment,
+          t.date,
+          c.name,
+          c.color,
+          c.isGoal,
+          c.valueGoal,
+          t.createdAt
+        FROM Transactions t
+        INNER JOIN Categories c ON t.idCategory = c.id
+        WHERE 
+          c.Segment = 'Despesa'
+          AND t.date BETWEEN '${startOfMonthDate}' AND '${endOfMonthDate}'
+        ORDER BY t.value DESC
+        LIMIT 3
+      `
+
+      const rows: TransactionType[] = await ipcRenderer.invoke('db-query', query)
+
+      return rows
+    } catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
   return {
     getAllTransactions,
     getTransactions,
     createTransaction,
     deleteTransaction,
     transactionByCategory,
-    getTotalByCategory
+    getTotalByCategory,
+    getTopExpenses
   }
 }
 

@@ -33,10 +33,10 @@ const LimitAlerts = (): React.JSX.Element => {
   }
 
   return (
-    <Box mb={2}>
+    <Box>
       {visibleLimits.map((limit) => (
         <Collapse key={limit.id} in={!closedAlerts.has(limit.id)}>
-          <Box mb={1}>
+          <Box>
             <Alert
               severity={limit.percentageUsed >= 150 ? 'error' : 'warning'}
               icon={<WarningAmberIcon />}
@@ -54,18 +54,22 @@ const LimitAlerts = (): React.JSX.Element => {
               <AlertTitle>
                 <strong>Limite Excedido: {limit.categoryName}</strong>
               </AlertTitle>
+
               <Box>
                 <Typography variant="body2" fontWeight={400}>
                   Você ultrapassou o limite mensal desta categoria em{' '}
                   <strong>{formatCurrencyString(limit.overage)}</strong>
                 </Typography>
+
                 <Box mt={1} display="flex" gap={2} flexWrap="wrap">
                   <Typography variant="body2" fontWeight={400}>
                     Limite: {formatCurrencyString(limit.limitAmount)}
                   </Typography>
+
                   <Typography variant="body2" fontWeight={400}>
                     Gasto: {formatCurrencyString(limit.currentSpending)}
                   </Typography>
+
                   <Typography variant="body2" fontWeight={400}>
                     Excesso: {limit.percentageUsed.toFixed(0)}%
                   </Typography>

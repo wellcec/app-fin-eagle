@@ -9,6 +9,7 @@ import schedulesRepository from '~/client/repository/schedulesRepository'
 import { ScheduleType } from '~/client/models/schedules'
 import { DEFAULT_BR_FORMAT_DATE, Segments } from '~/constants'
 import { SegmentTransactionType } from '~/client/models/transactions'
+import colors from '~/layout/theme/colors'
 
 const useStyles = makeStyles(() => ({
   schedule: {
@@ -80,6 +81,7 @@ const TodaySchedules = (): React.JSX.Element => {
                 <Typography variant="subtitle1" fontWeight="600" color="text.primary">
                   {schedule.title}
                 </Typography>
+
                 <Box display="flex" gap={1} alignItems="center">
                   {schedule.isRecurrent === 1 && (
                     <Chip
@@ -103,7 +105,7 @@ const TodaySchedules = (): React.JSX.Element => {
               </Box>
 
               {schedule.description && (
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color={colors.text.quaternary}>
                   {schedule.description}
                 </Typography>
               )}

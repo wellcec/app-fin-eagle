@@ -21,6 +21,7 @@ import schedulesRepository from '~/client/repository/schedulesRepository'
 import useAlerts from '~/shared/alerts/useAlerts'
 import ViewCalendarType from '~/models/schedules'
 import Modal from '~/components/molecules/Modal'
+import { Titles } from '~/constants/menus'
 
 const ICON_SIZE = 25
 const CUSTOM_BALL_SIZE = 32
@@ -331,7 +332,7 @@ const Schedules = (): React.JSX.Element => {
 
   return (
     <>
-      <ContainerMain title="Agendamentos" fullCard={false}>
+      <ContainerMain title={Titles.CALENDAR} fullCard={false}>
         <Box display="flex" flexGrow={0} justifyContent="end" mb={2}>
           <PaperMui className={styles.paperSelectMonth}>
             <Box display="flex" flexWrap="wrap" gap={2} alignItems="center" justifyContent="space-around">

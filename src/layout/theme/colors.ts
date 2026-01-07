@@ -34,16 +34,21 @@ const colors = {
     quintenary: '#4368AD'
   },
   danger: {
-    main: '#FFC654'
+    main: '#FFAE1F',
+    background: '#fef5e5'
   },
   error: {
-    main: '#C3284C'
+    main: '#C3284C',
+    light: '#FA896B',
+    background: '#fdede8'
   },
   active: {
     main: '#19BDDD'
   },
   success: {
-    main: '#34C575'
+    main: '#34C575',
+    light: '#13DEB9',
+    background: '#e6fffa'
   }
 }
 

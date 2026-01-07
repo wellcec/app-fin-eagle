@@ -15,6 +15,7 @@ import useUtils from '~/shared/hooks/useUtils'
 import useBuildCharts from '~/shared/hooks/useBuildCharts'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
+import { Titles } from '~/constants/menus'
 
 const useStyles = makeStyles(() => ({
   paperChart: {
@@ -134,11 +135,17 @@ const Stats = (): React.JSX.Element => {
   }
 
   useEffect(() => {
+    if (filter.startDate !== '' && filter.endDate !== '') {
+      handleFilter()
+    }
+  }, [filter])
+
+  useEffect(() => {
     getAll(defaultFilter)
   }, [])
 
   return (
-    <ContainerMain title="Estatísticas" fullCard={false} >
+    <ContainerMain title={Titles.STATS} fullCard={false} >
       <Box display="flex" justifyContent="end" mb={2}>
         <Paper fullWidth>
           <Box display="flex" flexWrap="wrap" gap={2} alignItems="end" justifyContent="center">
