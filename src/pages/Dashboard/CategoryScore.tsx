@@ -43,9 +43,9 @@ const CategoryScore = (): React.JSX.Element => {
   }, [])
 
   return (
-    <Box height={1}>
+    <Box height={1} flex="auto">
       <Box display="flex" gap={2}>
-        <Paper bgColor={colors.success.background}>
+        <Paper bgColor={colors.success.background} fullWidth>
           <Box display="flex" flexDirection="column" gap={2} justifyContent="center" minWidth={MIN_SIZE_PAPER}>
             <Box textAlign="center">
               <img src={receiveImg} alt="Receitas" style={{ maxWidth: SIZE_IMG }} />
@@ -65,7 +65,7 @@ const CategoryScore = (): React.JSX.Element => {
           </Box>
         </Paper>
 
-        <Paper bgColor={colors.error.background}>
+        <Paper bgColor={colors.error.background} fullWidth>
           <Box display="flex" flexDirection="column" gap={2} justifyContent="center" minWidth={MIN_SIZE_PAPER}>
             <Box textAlign="center">
               <img src={expenseImg} alt="Despesas" style={{ maxWidth: SIZE_IMG }} />
