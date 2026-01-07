@@ -23,6 +23,7 @@ const LatestTransactions = (): React.JSX.Element => {
       segment: '',
       endDate: format(endOfMonth(new Date()), DEFAULT_FORMAT_DATE),
       startDate: format(startOfMonth(new Date()), DEFAULT_FORMAT_DATE),
+      isGoal: 0
     }
 
     getTransactions(filter).then(
@@ -57,8 +58,8 @@ const LatestTransactions = (): React.JSX.Element => {
             <React.Fragment key={item.id}>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Box>
-                  <Typography variant="body2" fontWeight={500}>
-                    {item.description}
+                  <Typography variant="body2" fontWeight={500} sx={{ textTransform: 'capitalize' }}>
+                    {item.description !== '' ? item.description : item.name}
                   </Typography>
 
                   <Typography variant="caption" color="text.secondary">

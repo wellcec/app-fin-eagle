@@ -3,7 +3,7 @@ import { Box, Button, Grid, Theme, Typography, useMediaQuery } from '@mui/materi
 import makeStyles from '@mui/styles/makeStyles'
 import dayjs from 'dayjs'
 import { BarChart, LineChart, pieArcLabelClasses, PieChart } from '@mui/x-charts'
-import { endOfDay, endOfMonth, endOfYear, format, startOfDay, startOfMonth, startOfYear, subYears } from 'date-fns'
+import { addDays, endOfDay, endOfMonth, format, startOfDay, startOfMonth, subYears } from 'date-fns'
 
 import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
@@ -30,7 +30,7 @@ const defaultFilter: FilterTransactionType = {
   page: 1,
   take: DEFAULT_OVER_PAGESIZE,
   category: '',
-  endDate: format(new Date(), DEFAULT_FORMAT_DATE),
+  endDate: format(addDays(new Date(), 1), DEFAULT_FORMAT_DATE),
   startDate: format(subYears(new Date(), 1), DEFAULT_FORMAT_DATE),
   segment: ''
 }
@@ -309,9 +309,8 @@ const Stats = (): React.JSX.Element => {
             </Grid>
           )}
         </Box>
-        {/* </Paper> */}
       </Box>
-    </ContainerMain >
+    </ContainerMain>
   )
 }
 
