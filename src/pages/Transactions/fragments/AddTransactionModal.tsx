@@ -8,14 +8,14 @@ import { format } from 'date-fns'
 
 import { SegmentTransactionType, TransactionType } from '~/client/models/transactions'
 import Modal from '~/components/molecules/Modal'
-import { ACTIONS, ActionsType } from '~/models'
+import { ACTIONS, ActionsType, TransactionModalType } from '~/models'
 import { PREENCHIMENTO_OBRIGATORIO } from '~/constants/messages'
 import { CategoryType } from '~/client/models/categories'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import InputText from '~/components/atoms/inputs/InputText'
 import useUtils from '~/shared/hooks/useUtils'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
-import { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments, MEDIUM_BALL_SIZE, Segments } from '~/constants'
+import { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments } from '~/constants'
 import BallColor from '~/components/atoms/BallColor'
 import categoriesRepository from '~/client/repository/categoriesRepository'
 import useTestsForm from '~/shared/hooks/useTestForm'
@@ -47,9 +47,10 @@ interface IProps {
   handleClose: () => void
   callback: () => void
   objToEdit: TransactionType | null
+  type: TransactionModalType
 }
 
-const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps): React.JSX.Element => {
+const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: IProps): React.JSX.Element => {
   const [action, setAction] = useState<ActionsType>(ACTIONS.create)
   const [categories, setCategories] = useState<CategoryType[]>([])
   const [segment, setSegment] = useState<SegmentTransactionType>(DefaultsSegments.Receive)
@@ -126,6 +127,13 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
     return dayjs(d1)
   }
 
+  const handleKeydown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      formik.submitForm();
+    }
+  }
+
   useEffect(() => {
     setFieldValue('date', new Date())
 
@@ -138,124 +146,100 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit }: IProps)
     loadCategories(segment)
   }, [segment])
 
+  useEffect(() => {
+    setSegment(type === 'income' ? DefaultsSegments.Receive : DefaultsSegments.Expense)
+  }, [type])
+
   return (
     <Modal
       title={action === 'create' ? 'Nova Transação' : 'Atualizar Transação'}
       open={open}
       handleClose={handleClose}
     >
-      <Box minWidth={450} mb={3}>
-        <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
-          <Box flex={1}>
-            <InputForm fullWidth title="Quanto" helperText formik={formik} propField="value">
-              <InputText
-                placeholder="Informe um valor"
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                {...formik.getFieldProps('value')}
-                error={formik.touched.value && !!formik.errors.value}
-                value={formik.values.value}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChange(event, 'value') }}
-              />
-            </InputForm>
+      <Box onKeyDown={handleKeydown}>
+        <Box minWidth={450} mb={3}>
+          <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
+            <Box flex={1}>
+              <InputForm fullWidth title="Quanto" helperText formik={formik} propField="value">
+                <InputText
+                  placeholder="Informe um valor"
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  {...formik.getFieldProps('value')}
+                  error={formik.touched.value && !!formik.errors.value}
+                  value={formik.values.value}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChange(event, 'value') }}
+                />
+              </InputForm>
+            </Box>
+
+            <Box flex={1}>
+              <InputForm fullWidth title="Quando" helperText formik={formik} propField="date">
+                <InputBasicDate
+                  placeholder="Informe uma data"
+                  {...formik.getFieldProps('date')}
+                  value={valueDateTransaction()}
+                  error={formik.touched.date && !!formik.errors.date}
+                  onChange={(value: dayjs.Dayjs) => {
+                    const newDate = new Date(value.toISOString())
+                    setFieldValue('date', newDate)
+                    setDateTransaction(format(newDate, DEFAULT_FORMAT_DATE))
+                  }}
+                />
+              </InputForm>
+            </Box>
           </Box>
 
-          <Box flex={1}>
-            <InputForm fullWidth title="Quando" helperText formik={formik} propField="date">
-              <InputBasicDate
-                placeholder="Informe uma data"
-                {...formik.getFieldProps('date')}
-                value={valueDateTransaction()}
-                error={formik.touched.date && !!formik.errors.date}
-                onChange={(value: dayjs.Dayjs) => {
-                  const newDate = new Date(value.toISOString())
-                  setFieldValue('date', newDate)
-                  setDateTransaction(format(newDate, DEFAULT_FORMAT_DATE))
-                }}
-              />
-            </InputForm>
-          </Box>
-        </Box>
-
-        <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
-          <Box flex={1}>
-            <InputForm fullWidth title="Ganhou ou gastou">
-              <Select
-                variant="outlined"
-                size="small"
-                value={segment}
-                onChange={(event) => { setSegment(event.target.value as SegmentTransactionType) }}
-                IconComponent={IconArrowSelect}
-              >
-                <MenuItem value="Receita">
-                  <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                    <BallColor color={Segments.Receita.color} size={MEDIUM_BALL_SIZE} />
-                    <Box>
-                      Receita
-                    </Box>
-                  </Box>
-                </MenuItem>
-
-                <MenuItem value="Despesa">
-                  <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                    <BallColor color={Segments.Despesa.color} size={MEDIUM_BALL_SIZE} />
-                    <Box>
-                      Despesa
-                    </Box>
-                  </Box>
-                </MenuItem>
-              </Select>
-            </InputForm>
-          </Box>
-
-          <Box flex={1}>
-            <InputForm fullWidth title="Com o que" helperText formik={formik} propField="category">
-              {categories.length > 0 && (
-                <Select
-                  variant="outlined"
-                  size="small"
-                  {...formik.getFieldProps('category')}
-                  IconComponent={IconArrowSelect}
-                >
-                  {categories.map((item, index) => (
-                    <MenuItem key={`cat-add-transaction-${index}`} value={item.id}>
-                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                        <BallColor color={item.color} size={22} />
-                        <Box>
-                          {item.name}
+          <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
+            <Box flex={1}>
+              <InputForm fullWidth title="Com o que" helperText formik={formik} propField="category">
+                {categories.length > 0 && (
+                  <Select
+                    variant="outlined"
+                    size="small"
+                    {...formik.getFieldProps('category')}
+                    IconComponent={IconArrowSelect}
+                  >
+                    {categories.map((item, index) => (
+                      <MenuItem key={`cat-add-transaction-${index}`} value={item.id}>
+                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                          <BallColor color={item.color} size={22} />
+                          <Box>
+                            {item.name}
+                          </Box>
+                          {item.isGoal === 1 && (
+                            <StarIcon htmlColor={colors.danger.main} />
+                          )}
                         </Box>
-                        {item.isGoal === 1 && (
-                          <StarIcon htmlColor={colors.danger.main} />
-                        )}
-                      </Box>
-                    </MenuItem>
-                  ))}
-                </Select>
-              )}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              </InputForm>
+            </Box>
+          </Box>
+
+          <Box mb={2}>
+            <InputForm fullWidth title="Algo mais" helperText formik={formik} propField="description">
+              <InputText
+                multiline
+                placeholder="Informe uma descrição"
+                {...formik.getFieldProps('description')}
+                error={formik.touched.description && !!formik.errors.description}
+              />
             </InputForm>
           </Box>
         </Box>
 
-        <Box mb={2}>
-          <InputForm fullWidth title="Algo mais" helperText formik={formik} propField="description">
-            <InputText
-              multiline
-              placeholder="Informe uma descrição"
-              {...formik.getFieldProps('description')}
-              error={formik.touched.description && !!formik.errors.description}
-            />
-          </InputForm>
+        <Divider />
+
+        <Box display="flex" alignItems="center" justifyContent="end" gap={1} mt={2}>
+          <Button variant="outlined" color="primary" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <Button variant="contained" color={segment === DefaultsSegments.Receive ? 'success' : 'error'} onClick={() => formik.submitForm()}>
+            Salvar
+          </Button>
         </Box>
-      </Box>
-
-      <Divider />
-
-      <Box display="flex" alignItems="center" justifyContent="end" gap={1} mt={2}>
-        <Button variant="outlined" color="primary" onClick={handleClose}>
-          Cancelar
-        </Button>
-        <Button variant="contained" color={segment === DefaultsSegments.Receive ? 'success' : 'error'} onClick={() => formik.submitForm()}>
-          Salvar
-        </Button>
       </Box>
     </Modal>
   )

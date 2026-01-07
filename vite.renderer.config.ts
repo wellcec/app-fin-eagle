@@ -4,14 +4,14 @@ import { pluginExposeRenderer } from './vite.base.config'
 import path from 'path'
 
 // https://vitejs.dev/config
-export default defineConfig((env) => {
-  const forgeEnv = env as ConfigEnv<'renderer'>
+export default defineConfig((env: ConfigEnv<'renderer'>) => {
+  const forgeEnv = env
   const { root, mode, forgeConfigSelf } = forgeEnv
   const name = forgeConfigSelf.name ?? ''
 
   console.log('root', root)
 
-  return {
+  const config: UserConfig = {
     root,
     mode,
     base: './',
@@ -26,5 +26,7 @@ export default defineConfig((env) => {
       }
     },
     clearScreen: false
-  } as UserConfig
+  }
+
+  return config
 })

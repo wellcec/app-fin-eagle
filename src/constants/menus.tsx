@@ -1,7 +1,7 @@
 import React from 'react'
 import SVG from 'react-inlinesvg'
 
-import iconDashboard from '../assets/icons/icon-dashboard.svg'
+import iconHome from '../assets/icons/icon-home.svg'
 import iconTransactions from '../assets/icons/icon-transaction.svg'
 import iconCategories from '../assets/icons/icon-categories.svg'
 import iconStats from '../assets/icons/icon-stats.svg'
@@ -24,9 +24,9 @@ export const Titles = {
 export const MenuItems: IMenuItem[] = [
   {
     title: Titles.DASHBOARD,
-    path: '/dashboard',
-    paths: ['/', '/dashboard'],
-    icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconDashboard} width={size} height={size} />)
+    path: '/home',
+    paths: ['/', '/home'],
+    icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconHome} width={size} height={size} />)
   },
   {
     title: Titles.TRANSACTIONS,

@@ -49,3 +49,5 @@ export const ACTIONS = {
   create: 'create' as ActionsType,
   update: 'update' as ActionsType
 }
+
+export type TransactionModalType = 'income' | 'expense'

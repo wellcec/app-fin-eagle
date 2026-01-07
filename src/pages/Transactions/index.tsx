@@ -16,10 +16,12 @@ import useDebounce from '~/shared/hooks/useDebounce'
 import useAlerts from '~/shared/alerts/useAlerts'
 import Dialog from '~/components/molecules/Dialog'
 import { Titles } from '~/constants/menus'
-import Filters from './fragments/Filters'
+import Controls from './fragments/Controls'
 import TransactionItem from './fragments/TransactionItem'
 import useTransactions from '~/shared/hooks/useTransactions'
 import { emptyFilter } from '~/constants/transactions'
+import { TransactionModalType } from '~/models'
+import { Provider } from './fragments/context'
 
 const useStyles = makeStyles(() => ({
   toggleMonthFilter: {
@@ -55,6 +57,7 @@ const Transactions = (): React.JSX.Element => {
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false)
   const [monthFilter, setMonthFilter] = useState<number>(-1)
   const [includeGoalActive, setIncludeGoalActive] = useState<boolean>(false);
+  const [transactionModalType, setTransactionModalType] = useState<TransactionModalType>('income');
 
   const styles = useStyles()
   const { formatCurrencyString } = useUtils()
@@ -62,6 +65,7 @@ const Transactions = (): React.JSX.Element => {
   const { buildValuesTransactions, buildViewTransactions, getNameMonthCurrentFilter } = useTransactions()
   const { getTransactions, deleteTransaction } = transactionsRepository()
   const { debounceWait } = useDebounce()
+
   const { state } = useLocation() as { state: { openAdd: boolean, type: 'Receita' | 'Despesa' } | null }
 
   const viewTransactions = useMemo(() => buildViewTransactions(transactions), [transactions])
@@ -200,6 +204,7 @@ const Transactions = (): React.JSX.Element => {
 
   useEffect(() => {
     if (state?.openAdd) {
+      state.type === 'Despesa' ? setTransactionModalType('expense') : setTransactionModalType('income')
       setOpenAddTransaction(true)
     }
   }, [state])
@@ -225,135 +230,141 @@ const Transactions = (): React.JSX.Element => {
   }, [])
 
   return (
-    <ContainerMain title={Titles.TRANSACTIONS} fullCard={false}>
-      <Filters
-        showFilter={showFilter}
-        startDate={startDate}
-        setStartDate={setStartDate}
-        endDate={endDate}
-        setEndDate={setEndDate}
-        setShowFilter={setShowFilter}
-        includeGoalActive={includeGoalActive}
-        setIncludeGoalActive={setIncludeGoalActive}
-        setOpenAddTransaction={setOpenAddTransaction}
-        openAddTransaction={openAddTransaction}
-        handleChangeSearch={handleChangeSearch}
-        handleClearFilter={handleClearFilter}
-        handleFilter={handleFilter}
-      />
-
-      <Box mb={1}>
-        <Paper grid>
-          <Box>
-            <ToggleButtonGroup
-              exclusive
-              value={monthFilter}
-              onChange={handleSelectMonth}
-              className={styles.toggleMonthFilter}
-            >
-              {LABEL_MONTHS.map((item, index) => (
-                <ToggleButton key={`month-filter-${index}`} value={index}>
-                  {item}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Box>
-        </Paper>
-      </Box>
-
-      <Box mb={1} textAlign="center">
-        <Paper grid>
-          <Box display="flex" alignItems="center" justifyContent="end" gap={2}>
-            {(endDate === '' && startDate === '') && (
-              <Typography
-                variant="subtitle1"
-                component="div"
-                dangerouslySetInnerHTML={{ __html: getNameMonthCurrentFilter(filter) }}
-              />
-            )}
-
-            <Typography variant="h6" component="div" color={Segments.Receita.color}>
-              +{formatCurrencyString(valuesTransactions.receive)}
-            </Typography>
-            <Typography variant="h6" component="div" color={Segments.Despesa.color}>
-              -{formatCurrencyString(valuesTransactions.expense)}
-            </Typography>
-            <Typography variant="h6" component="div" color={valuesTransactions.total > 0 ? Segments.Receita.color : Segments.Despesa.color}>
-              =
-              {' '}
-              {formatCurrencyString(valuesTransactions.total)}
-            </Typography>
-          </Box>
-        </Paper>
-      </Box>
-
-      <Box mb={2}>
-        <Typography variant="caption">
-          * Transações de metas não são mostradas por padrão. Utilize o filtro para incluí-las na listagem.
-        </Typography>
-      </Box>
-
-      <Box overflow="auto" flexGrow={1} pr={1}>
-        {transactions.length === 0 && (
-          <Box pb={1} mb={2} textAlign="center">
-            <Paper>
-              <Typography variant="body2">Nenhuma movimentação encontrada</Typography>
-            </Paper>
-          </Box>
-        )}
-
-        {viewTransactions.map((item, index) => (
-          <React.Fragment key={`viewTransaction-key-${index}`}>
-            <Box mt={3} mb={3} textAlign="center">
-              <Divider>
-                <Box display="flex" justifyContent="center" alignItems="center">
-                  <Typography variant="body1">{item.dayLocale}</Typography>
-                </Box>
-              </Divider>
-            </Box>
-
-            {item.transactions.map((item, index) => (
-              <React.Fragment key={`transaction-key-${index}`}>
-                <TransactionItem transaction={item} handleConfirmDelete={handleConfirmDelete} />
-              </React.Fragment>
-            ))}
-          </React.Fragment>
-        ))}
-
-        {(totalTransactions >= DEFAULT_OVER_PAGESIZE) && !(transactions.length === totalTransactions) && (
-          <Box display="flex" justifyContent="center" mt={3} mb={1}>
-            <Button variant="outlined" onClick={handleChangePage}>
-              Carregar mais...
-            </Button>
-          </Box>
-        )}
-      </Box>
-
-      {openAddTransaction && (
-        <AddTransactionModal
-          objToEdit={null}
-          open={openAddTransaction}
-          handleClose={handleCloseModal}
-          callback={onCreateTransaction}
+    <Provider value={{
+      openAddTransaction,
+      setOpenAddTransaction,
+      includeGoalActive,
+      setIncludeGoalActive,
+      transactionModalType,
+      setTransactionModalType
+    }}>
+      <ContainerMain title={Titles.TRANSACTIONS} fullCard={false}>
+        <Controls
+          showFilter={showFilter}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          setShowFilter={setShowFilter}
+          handleChangeSearch={handleChangeSearch}
+          handleClearFilter={handleClearFilter}
+          handleFilter={handleFilter}
         />
-      )}
 
-      {confirmOpen && (
-        <Dialog
-          title="Excluir movimentação"
-          open={confirmOpen}
-          handleCloseConfirm={handleCloseDelete}
-          handleDelete={deleteTransact}
-        >
-          <Typography variant="body1" color="primary">
-            Deseja realmente excluir a movimentação de
-            {' '}
-            <b>{formatCurrencyString(objToAction?.value ?? 0)}</b>
-            ?
+        <Box mb={1}>
+          <Paper grid>
+            <Box>
+              <ToggleButtonGroup
+                exclusive
+                value={monthFilter}
+                onChange={handleSelectMonth}
+                className={styles.toggleMonthFilter}
+              >
+                {LABEL_MONTHS.map((item, index) => (
+                  <ToggleButton key={`month-filter-${index}`} value={index}>
+                    {item}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </Box>
+          </Paper>
+        </Box>
+
+        <Box mb={1} textAlign="center">
+          <Paper grid>
+            <Box display="flex" alignItems="center" justifyContent="end" gap={2}>
+              {(endDate === '' && startDate === '') && (
+                <Typography
+                  variant="subtitle1"
+                  component="div"
+                  dangerouslySetInnerHTML={{ __html: getNameMonthCurrentFilter(filter) }}
+                />
+              )}
+
+              <Typography variant="h6" component="div" color={Segments.Receita.color}>
+                +{formatCurrencyString(valuesTransactions.receive)}
+              </Typography>
+              <Typography variant="h6" component="div" color={Segments.Despesa.color}>
+                -{formatCurrencyString(valuesTransactions.expense)}
+              </Typography>
+              <Typography variant="h6" component="div" color={valuesTransactions.total > 0 ? Segments.Receita.color : Segments.Despesa.color}>
+                =
+                {' '}
+                {formatCurrencyString(valuesTransactions.total)}
+              </Typography>
+            </Box>
+          </Paper>
+        </Box>
+
+        <Box mb={2}>
+          <Typography variant="caption">
+            * Transações de metas não são mostradas por padrão. Utilize o filtro para incluí-las na listagem.
           </Typography>
-        </Dialog>
-      )}
-    </ContainerMain>
+        </Box>
+
+        <Box overflow="auto" flexGrow={1} pr={1}>
+          {transactions.length === 0 && (
+            <Box pb={1} mb={2} textAlign="center">
+              <Paper>
+                <Typography variant="body2">Nenhuma movimentação encontrada</Typography>
+              </Paper>
+            </Box>
+          )}
+
+          {viewTransactions.map((item, index) => (
+            <React.Fragment key={`viewTransaction-key-${index}`}>
+              <Box mt={3} mb={3} textAlign="center">
+                <Divider>
+                  <Box display="flex" justifyContent="center" alignItems="center">
+                    <Typography variant="body1">{item.dayLocale}</Typography>
+                  </Box>
+                </Divider>
+              </Box>
+
+              {item.transactions.map((item, index) => (
+                <React.Fragment key={`transaction-key-${index}`}>
+                  <TransactionItem transaction={item} handleConfirmDelete={handleConfirmDelete} />
+                </React.Fragment>
+              ))}
+            </React.Fragment>
+          ))}
+
+          {(totalTransactions >= DEFAULT_OVER_PAGESIZE) && !(transactions.length === totalTransactions) && (
+            <Box display="flex" justifyContent="center" mt={3} mb={1}>
+              <Button variant="outlined" onClick={handleChangePage}>
+                Carregar mais...
+              </Button>
+            </Box>
+          )}
+        </Box>
+
+        {openAddTransaction && (
+          <AddTransactionModal
+            type={transactionModalType}
+            objToEdit={null}
+            open={openAddTransaction}
+            handleClose={handleCloseModal}
+            callback={onCreateTransaction}
+          />
+        )}
+
+        {confirmOpen && (
+          <Dialog
+            title="Excluir movimentação"
+            open={confirmOpen}
+            handleCloseConfirm={handleCloseDelete}
+            handleDelete={deleteTransact}
+          >
+            <Typography variant="body1" color="primary">
+              Deseja realmente excluir a movimentação de
+              {' '}
+              <b>{formatCurrencyString(objToAction?.value ?? 0)}</b>
+              ?
+            </Typography>
+          </Dialog>
+        )}
+      </ContainerMain>
+    </Provider>
   )
 }
 

@@ -4,12 +4,13 @@ import { Box, Button } from '@mui/material'
 
 interface IProps {
   label: string
+  color?: "success" | "inherit" | "primary" | "secondary" | "error" | "info" | "warning"
   handleClick: () => void
 }
 
-const AddButton = ({ label, handleClick }: IProps) => {
+const AdditionButton = ({ label, color = "success", handleClick }: IProps) => {
   return (
-    <Button variant="contained" color="success" onClick={handleClick}>
+    <Button variant="contained" color={color} onClick={handleClick}>
       <Box display="flex" alignItems="center" gap={1}>
         <Box display="flex">
           <AddIcon />
@@ -23,4 +24,4 @@ const AddButton = ({ label, handleClick }: IProps) => {
   )
 }
 
-export default AddButton
+export default AdditionButton

@@ -5,45 +5,46 @@ import dayjs from 'dayjs'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
-import AddButton from '~/components/atoms/buttons/AddButton'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import Paper from '~/components/layout/Paper'
 import { DEFAULT_FORMAT_DATE, DEFAULT_SHORT_FORMAT_DATE } from '~/constants'
-import { IconFilter } from '~/constants/icons'
+import { IconFilter, IconTransaction } from '~/constants/icons'
+import colors from '~/layout/theme/colors'
+import { useTransactionContext } from './context'
 
-interface FiltersProps {
+interface ControlsProps {
   startDate: string
   setStartDate: (value: React.SetStateAction<string>) => void
   endDate: string
   setEndDate: (value: React.SetStateAction<string>) => void
   showFilter: boolean
   setShowFilter: (value: React.SetStateAction<boolean>) => void
-  includeGoalActive: boolean
-  setIncludeGoalActive: (value: React.SetStateAction<boolean>) => void
   handleChangeSearch: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  openAddTransaction: boolean
-  setOpenAddTransaction: (value: React.SetStateAction<boolean>) => void
   handleClearFilter: () => void
   handleFilter: () => void
 }
 
-const Filters = ({
+const Controls = ({
   showFilter,
   startDate,
   setStartDate,
   endDate,
   setEndDate,
   setShowFilter,
-  includeGoalActive,
-  setIncludeGoalActive,
-  setOpenAddTransaction,
-  openAddTransaction,
   handleChangeSearch,
   handleClearFilter,
   handleFilter
-}: FiltersProps) => {
+}: ControlsProps) => {
+  const {
+    includeGoalActive,
+    openAddTransaction,
+    setIncludeGoalActive,
+    setOpenAddTransaction,
+    setTransactionModalType
+  } = useTransactionContext()
+
   return (
     <Box display="flex" flexGrow={0} justifyContent="end" mb={1}>
       <Paper fullWidth grid>
@@ -58,8 +59,36 @@ const Filters = ({
             </IconButton>
           </Box>
 
-          <Box>
-            <AddButton label="Nova transação" handleClick={() => { setOpenAddTransaction(!openAddTransaction) }} />
+          <Box display="flex" alignItems="center" gap={1}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="success"
+              startIcon={
+                <Box display="flex" style={{ transform: 'rotate(180deg)' }}>
+                  <IconTransaction color={colors.background.main} size={20} />
+                </Box>
+              }
+              onClick={() => {
+                setTransactionModalType('income')
+                setOpenAddTransaction(!openAddTransaction)
+              }}
+            >
+              Receber
+            </Button>
+
+            <Button
+              fullWidth
+              variant="contained"
+              color="error"
+              startIcon={<IconTransaction color={colors.background.main} size={20} />}
+              onClick={() => {
+                setTransactionModalType('expense')
+                setOpenAddTransaction(!openAddTransaction)
+              }}
+            >
+              Gastar
+            </Button>
           </Box>
         </Box>
 
@@ -126,4 +155,4 @@ const Filters = ({
   )
 }
 
-export default Filters
+export default Controls

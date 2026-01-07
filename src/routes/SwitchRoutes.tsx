@@ -17,7 +17,7 @@ const SwitchRoutes = (): React.JSX.Element => (
       main={
         <>
           <Route path="/" element={<WithLayoutRoute layout={BaseLayout} component={Dashboard} />} />
-          <Route path="/dashboard" element={<WithLayoutRoute layout={BaseLayout} component={Dashboard} />} />
+          <Route path="/home" element={<WithLayoutRoute layout={BaseLayout} component={Dashboard} />} />
           <Route path="/users" element={<WithLayoutRoute layout={BaseLayout} component={Users} />} />
           <Route path="/categories" element={<WithLayoutRoute layout={BaseLayout} component={Categories} />} />
           <Route path="/transactions" element={<WithLayoutRoute layout={BaseLayout} component={Transactions} />} />

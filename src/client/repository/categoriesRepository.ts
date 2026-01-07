@@ -30,7 +30,9 @@ const categoriesRepository = (): ICategoriesRepository => {
         filter = ` WHERE name LIKE '%${name}%' OR segment LIKE '%${name}%'`
       }
 
-      const rows: CategoryType[] = await ipcRenderer.invoke('db-query', 'SELECT * FROM Categories' + filter)
+      const orderBy = ' ORDER BY segment DESC'
+
+      const rows: CategoryType[] = await ipcRenderer.invoke('db-query', `SELECT * FROM Categories ${filter} ${orderBy}`)
       return rows
     } catch (error) {
       return []

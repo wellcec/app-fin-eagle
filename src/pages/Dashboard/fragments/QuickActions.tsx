@@ -3,6 +3,7 @@ import { Box, Button, Typography } from '@mui/material'
 import Paper from '~/components/layout/Paper'
 import { IconTransaction } from '~/constants/icons'
 import { useNavigate } from 'react-router-dom'
+import colors from '~/layout/theme/colors'
 
 const QuickActions = (): React.JSX.Element => {
   const navigate = useNavigate()
@@ -21,14 +22,29 @@ const QuickActions = (): React.JSX.Element => {
             </Typography>
           </Box>
 
-          <Box display="flex" gap={2}>
+          <Box display="flex" alignItems="center" gap={1}>
             <Button
               fullWidth
-              variant="outlined"
-              startIcon={<IconTransaction size={20} />}
+              variant="contained"
+              color="success"
+              startIcon={
+                <Box display="flex" style={{ transform: 'rotate(180deg)' }}>
+                  <IconTransaction color={colors.background.main} size={20} />
+                </Box>
+              }
               onClick={() => { handleNavigate('Receita') }}
             >
-              Nova Transação
+              Receber
+            </Button>
+
+            <Button
+              fullWidth
+              variant="contained"
+              color="error"
+              startIcon={<IconTransaction color={colors.background.main} size={20} />}
+              onClick={() => { handleNavigate('Despesa') }}
+            >
+              Gastar
             </Button>
           </Box>
         </Box>

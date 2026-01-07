@@ -23,7 +23,7 @@ import Dialog from '~/components/molecules/Dialog'
 import BallColor from '~/components/atoms/BallColor'
 import useUtils from '~/shared/hooks/useUtils'
 import useTestsForm from '~/shared/hooks/useTestForm'
-import AddButton from '~/components/atoms/buttons/AddButton'
+import AdditionButton from '~/components/atoms/buttons/AdditionButton'
 import { Titles } from '~/constants/menus'
 
 const IconArrowSelect = (): React.JSX.Element => {
@@ -225,7 +225,7 @@ const Limits = (): React.JSX.Element => {
             </Box>
 
             <Box>
-              <AddButton label="Novo Limite" handleClick={handleNewLimit} />
+              <AdditionButton label="Novo Limite" handleClick={handleNewLimit} />
             </Box>
           </Box>
         </Paper>

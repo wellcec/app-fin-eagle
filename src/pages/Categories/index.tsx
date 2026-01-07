@@ -27,7 +27,7 @@ import transactionsRepository from '~/client/repository/transactionsRepository'
 import CheckBoxGoal from '~/components/atoms/inputs/CheckBoxGoal'
 import useUtils from '~/shared/hooks/useUtils'
 import colors from '~/layout/theme/colors'
-import AddButton from '~/components/atoms/buttons/AddButton'
+import AdditionButton from '~/components/atoms/buttons/AdditionButton'
 import { Titles } from '~/constants/menus'
 
 const IconArrowSelect = (): React.JSX.Element => {
@@ -195,7 +195,7 @@ const Categories = (): React.JSX.Element => {
             </Box>
 
             <Box>
-              <AddButton label="Nova categoria" handleClick={handleNewCategory} />
+              <AdditionButton label="Nova categoria" handleClick={handleNewCategory} />
             </Box>
           </Box>
         </Paper>

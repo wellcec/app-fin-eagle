@@ -36,7 +36,7 @@ const TransactionItem = ({ transaction, handleConfirmDelete }: TransactionItemPr
         <Grid container display="flex" alignItems="center">
           <Grid display="flex" alignItems="center" item xs={1}>
             {transaction.segment === DefaultsSegments.Receive && (
-              <Box style={{ transform: 'rotate(180deg)' }}>
+              <Box display="flex" style={{ transform: 'rotate(180deg)' }}>
                 <IconTransaction color={getColorSegment(transaction)} />
               </Box>
             )}
