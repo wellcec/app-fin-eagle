@@ -14,7 +14,7 @@ import { Provider } from './context'
 import LoginScreen from '~/pages/Login'
 
 const SwitchRoutes = (): React.JSX.Element => {
-  const [logged, setLogged] = useState<boolean>(false);
+  const [logged, setLogged] = useState<boolean>(true);
 
   return (
     <Provider value={{ logged, setLogged }}>

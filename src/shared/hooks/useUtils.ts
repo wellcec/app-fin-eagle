@@ -6,6 +6,7 @@ interface IUtils {
   formatCurrencyString: (value: number) => string
   currencyToNumber: (value: string) => number
   normalizeText: (value: string) => string
+  getProgressColor: (percentage: number) => 'success' | 'warning' | 'info'
 }
 
 const useUtils = (): IUtils => {
@@ -68,6 +69,12 @@ const useUtils = (): IUtils => {
       .replace(/[^a-zA-Z0-9 ]/g, '')
   }
 
+  const getProgressColor = (percentage: number): 'success' | 'warning' | 'info' => {
+    if (percentage >= 100) return 'info'
+    if (percentage >= 80) return 'warning'
+    return 'success'
+  }
+
   return {
     formatFormCurrency,
     formatNumber,
@@ -75,7 +82,8 @@ const useUtils = (): IUtils => {
     formatCurrencyString,
     formatNumberInput,
     currencyToNumber,
-    normalizeText
+    normalizeText,
+    getProgressColor
   }
 }
 

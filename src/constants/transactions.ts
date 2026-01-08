@@ -1,6 +1,7 @@
 import { endOfMonth, format, startOfMonth } from 'date-fns'
 import { FilterTransactionType } from '~/client/models/transactions'
 import { DEFAULT_FORMAT_DATE, DEFAULT_OVER_PAGESIZE } from '.'
+import { CategoryTypeEnum } from './categories'
 
 export const emptyFilter: FilterTransactionType = {
   term: '',
@@ -10,5 +11,5 @@ export const emptyFilter: FilterTransactionType = {
   endDate: format(endOfMonth(new Date()), DEFAULT_FORMAT_DATE),
   startDate: format(startOfMonth(new Date()), DEFAULT_FORMAT_DATE),
   segment: '',
-  isGoal: 0
+  isGoal: CategoryTypeEnum.Default
 }

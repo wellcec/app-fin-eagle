@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import makeStyles from '@mui/styles/makeStyles'
 import { Box } from '@mui/material'
-import InputColors from 'react-input-color'
+import { SwatchesPicker } from 'react-color'
 
 type ColorType = {
   hex: string
@@ -22,18 +22,16 @@ const useStyles = makeStyles(() => ({
 
 const InputColor = ({ ...rest }): React.JSX.Element => {
   const styles = useStyles()
+  const [current, setCurrent] = useState<string>()
 
   const change = (color: ColorType): void => {
+    setCurrent(color.hex)
     rest.onChange(color.hex)
   }
 
   return (
     <Box className={styles.input}>
-      <InputColors
-        initialValue="#5e72e4"
-        onChange={change}
-        placement="right"
-      />
+      <SwatchesPicker height={300} onChange={change} hex={current} color={current} />
     </Box>
   )
 }

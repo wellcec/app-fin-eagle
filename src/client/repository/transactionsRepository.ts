@@ -5,6 +5,7 @@ import { Guid } from 'guid-typescript'
 import { format, startOfMonth, endOfMonth } from 'date-fns'
 import { DEFAULT_FORMAT_DATE, DefaultsSegments } from '~/constants'
 import { FilterTransactionType, TotalTransactionByCategoryType, TotalTransactionDashType, TotalTransactionType, TransactionsResponseType, TransactionType } from '../models/transactions'
+import { CategoryTypeEnum } from '~/constants/categories'
 
 const { ipcRenderer } = require('electron')
 
@@ -27,7 +28,9 @@ const transactionsRepository = (): ITransactionRepository => {
       const _description = term !== '' ? ` AND (t.description LIKE '%${term}%' OR t.description LIKE '%${term}%' OR c.name LIKE '%${term}%') ` : ''
       const _category = category !== '' ? ` AND t.idCategory = '${category}'` : ''
       const _segment = segment !== '' ? ` AND c.Segment = '${segment}'` : ''
-      const _isGoal = isGoal !== undefined ? ` AND c.isGoal = ${isGoal}` : ''
+
+      const allExpenseCategoriesFilter = ` ${isGoal === CategoryTypeEnum.Default ? ` AND c.isGoal <> ${CategoryTypeEnum.Goal} ` : ` AND c.isGoal = ${isGoal}`} `
+      const _isGoal = isGoal !== undefined ? allExpenseCategoriesFilter : ''
 
       const formattedStartDate = format(filter.startDate, DEFAULT_FORMAT_DATE)
       const formattedEndDate = format(filter.endDate, DEFAULT_FORMAT_DATE)
@@ -173,7 +176,8 @@ const transactionsRepository = (): ITransactionRepository => {
                 SUM(t.value) AS total
             FROM Transactions t
             INNER JOIN Categories c ON t.idCategory = c.id
-            GROUP BY c.name, c.segment
+            WHERE c.isGoal = 0
+            GROUP BY c.name, c.segment;
       `
 
       const data: TotalTransactionByCategoryType[] = await ipcRenderer.invoke('db-query', query)
@@ -209,6 +213,7 @@ const transactionsRepository = (): ITransactionRepository => {
         WHERE 
           c.Segment = 'Despesa'
           AND t.date BETWEEN '${startOfMonthDate}' AND '${endOfMonthDate}'
+          AND c.isGoal = 0
         ORDER BY t.value DESC
         LIMIT 3
       `

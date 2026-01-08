@@ -16,7 +16,8 @@ const startup = (): IStartup => {
         "segment" VARCHAR(10) NOT NULL,
         "color" VARCHAR(20) NOT NULL DEFAULT '',
         "isGoal" INTEGER NOT NULL DEFAULT 0,
-        "valueGoal" REAL NOT NULL DEFAULT 0,
+        "valueGoal" REAL NULL DEFAULT 0,
+        "installments" INTEGER NULL DEFAULT 0,
         "createdAt" DATETIME NOT NULL DEFAULT '',
         "updatedAt" DATETIME NOT NULL DEFAULT ''
         );`,

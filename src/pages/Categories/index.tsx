@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Button, Divider, Grid, Hidden, IconButton, MenuItem, Select, Theme, Typography, useMediaQuery } from '@mui/material'
+import { Box, Button, Divider, Grid, IconButton, MenuItem, Select, Theme, Typography, useMediaQuery } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star'
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
 import * as Yup from 'yup'
 
 import ContainerMain from '~/components/layout/ContainerMain'
@@ -24,11 +25,29 @@ import BallColor from '~/components/atoms/BallColor'
 import { SegmentTransactionType } from '~/client/models/transactions'
 import Chip from '~/components/atoms/Chip'
 import transactionsRepository from '~/client/repository/transactionsRepository'
-import CheckBoxGoal from '~/components/atoms/inputs/CheckBoxGoal'
 import useUtils from '~/shared/hooks/useUtils'
 import colors from '~/layout/theme/colors'
 import AdditionButton from '~/components/atoms/buttons/AdditionButton'
 import { Titles } from '~/constants/menus'
+import { makeStyles } from '@mui/styles'
+import useTestsForm from '~/shared/hooks/useTestForm'
+import { CategoryTypeEnum } from '~/constants/categories'
+
+const useStyles = makeStyles(() => (
+  {
+    toggleCategoryType: {
+      border: "1px solid #80808047",
+      borderRadius: 14,
+      padding: 8
+    }
+  }
+))
+
+const categoriesType = [
+  { value: 0, label: 'Default' },
+  { value: 1, label: 'Meta' },
+  { value: 2, label: 'Dívida' }
+]
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -39,13 +58,15 @@ interface TypeForm {
   type: SegmentTransactionType
   isGoal: number
   valueGoal: string
+  installments: number
 }
 
 const DEFAULT_VALUES: TypeForm = {
   name: '',
   type: DefaultsSegments.Receive,
-  isGoal: 0,
-  valueGoal: ''
+  isGoal: CategoryTypeEnum.Default,
+  valueGoal: '',
+  installments: 0
 }
 
 const emptyFilter: SampleFilterType = {
@@ -55,6 +76,8 @@ const emptyFilter: SampleFilterType = {
 }
 
 const Categories = (): React.JSX.Element => {
+  const styles = useStyles()
+
   const [action, setAction] = useState<ActionsType>(ACTIONS.create)
   const [filter, setFilter] = useState<SampleFilterType>(emptyFilter)
   const [categories, setCategories] = useState<CategoryType[]>([])
@@ -62,13 +85,16 @@ const Categories = (): React.JSX.Element => {
   const [color, setColor] = useState<string>('#fff')
   const [objToAction, setObjToAction] = useState<CategoryType>()
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false)
+  const [categoryType, setCategoryType] = useState<number>(CategoryTypeEnum.Default)
 
   const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
+
   const { debounceWait } = useDebounce()
   const { getCategories, createCategory, deleteCategory } = categoriesRepository()
   const { transactionByCategory } = transactionsRepository()
   const { notifyError, notifySuccess, notifyWarning } = useAlerts()
   const { formatNumberInput, formatFormCurrency, formatCurrencyRequest, formatCurrencyString } = useUtils()
+  const { greaterThanZero, greaterThanZeroCurrency } = useTestsForm()
 
   const formik = useFormik({
     initialValues: DEFAULT_VALUES,
@@ -77,8 +103,14 @@ const Categories = (): React.JSX.Element => {
       type: Yup.string().required(PREENCHIMENTO_OBRIGATORIO),
       isGoal: Yup.number().notRequired(),
       valueGoal: Yup.string().when('isGoal', ([isGoal], schema) => {
-        if (isGoal === 1) {
-          return schema.required('Valor da meta é obrigatório');
+        if (isGoal === CategoryTypeEnum.Goal || isGoal === CategoryTypeEnum.Debit) {
+          return schema.required('Valor é obrigatório ao adicionar Meta ou Dívida').test(greaterThanZeroCurrency);
+        }
+        return schema.notRequired();
+      }),
+      installments: Yup.number().when('isGoal', ([isGoal], schema) => {
+        if (isGoal === CategoryTypeEnum.Debit) {
+          return schema.required('Quantidade de parcelas é obrigatório').test(greaterThanZero);
         }
         return schema.notRequired();
       })
@@ -91,7 +123,8 @@ const Categories = (): React.JSX.Element => {
         segment: data.type,
         color,
         isGoal: data.isGoal,
-        valueGoal: data.isGoal === 1 ? formatCurrencyRequest(data.valueGoal) : 0
+        valueGoal: data.isGoal === CategoryTypeEnum.Goal || data.isGoal === CategoryTypeEnum.Debit ? formatCurrencyRequest(data.valueGoal) : undefined,
+        installments: data.isGoal === CategoryTypeEnum.Debit ? data.installments : undefined
       }
 
       createCategory(newCategory).then(
@@ -170,10 +203,6 @@ const Categories = (): React.JSX.Element => {
 
   const handleCloseDelete = (): void => { setConfirmOpen(false) }
 
-  const handleChangeStatus = (checked: boolean): void => {
-    formik.setFieldValue('isGoal', checked ? 1 : 0)
-  }
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, prop: string): void => {
     const { value } = event.target
     const numericValue = formatNumberInput(value)
@@ -181,7 +210,19 @@ const Categories = (): React.JSX.Element => {
 
     formik.setFieldValue(prop, formattedValue)
   }
+
+  const handleChangeInstallments = (event: React.ChangeEvent<HTMLInputElement>, prop: string) => {
+    const { value } = event.target
+    formik.setFieldValue(prop, parseInt(value))
+  }
+
+  const handleChangeCategoryType = (value: number) => {
+    setCategoryType(value)
+    formik.setFieldValue('isGoal', value)
+  }
+
   useEffect(() => {
+    setCategoryType(0)
     getAll()
   }, [])
 
@@ -230,10 +271,17 @@ const Categories = (): React.JSX.Element => {
                 </Grid>
 
                 <Grid item xs={4}>
-                  {item.isGoal === 1 && (
+                  {item.isGoal === CategoryTypeEnum.Goal && (
                     <Box display="flex" alignItems="end" gap={1}>
                       <StarIcon htmlColor={colors.danger.main} />
                       <Typography variant="body1">{formatCurrencyString(item.valueGoal ?? 0)}</Typography>
+                    </Box>
+                  )}
+
+                  {item.isGoal === CategoryTypeEnum.Debit && (
+                    <Box display="flex" alignItems="end" gap={1}>
+                      <ReceiptLongOutlinedIcon htmlColor={colors.error.light} />
+                      <Typography variant="body1">{`${formatCurrencyString(item.valueGoal ?? 0)} em ${item.installments ?? 0} parcelas`}</Typography>
                     </Box>
                   )}
                 </Grid>
@@ -268,90 +316,110 @@ const Categories = (): React.JSX.Element => {
       )}
 
       <Modal title={action === 'create' ? 'Nova Categoria' : 'Atualizar Categoria'} open={openModal} handleClose={() => { setOpenModal(false) }}>
-        <Box minWidth={downSM ? 0 : 600} maxWidth={900} mb={3}>
-          <Grid container>
-            <Grid item xs={12} sm={6}>
-              <Box display="flex" flexDirection="column">
-                <Box mb={2}>
-                  <InputForm fullWidth title="Título*" helperText formik={formik} propField="name">
-                    <InputText
-                      placeholder="Informe um nome"
-                      {...formik.getFieldProps('name')}
-                      error={formik.touched.name && !!formik.errors.name}
-                    />
-                  </InputForm>
-                </Box>
-
-                <Box mb={2}>
-                  <InputForm fullWidth title="Tipo*" helperText formik={formik} propField="type">
-                    <Select
-                      variant="outlined"
-                      size="small"
-                      {...formik.getFieldProps('type')}
-                      error={formik.touched.type && !!formik.errors.type}
-                      IconComponent={IconArrowSelect}
-                    >
-                      <MenuItem value="Receita">
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={Segments.Receita.color} size={MEDIUM_BALL_SIZE} />
-                          <Box>
-                            Receita
-                          </Box>
-                        </Box>
-                      </MenuItem>
-
-                      <MenuItem value="Despesa">
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={Segments.Despesa.color} size={MEDIUM_BALL_SIZE} />
-                          <Box>
-                            Despesa
-                          </Box>
-                        </Box>
-                      </MenuItem>
-                    </Select>
-                  </InputForm>
-                </Box>
-
-                {formik.values.type === DefaultsSegments.Expense && (
-                  <Box mb={2}>
-                    <CheckBoxGoal
-                      checked={formik.values.isGoal === 1}
-                      onChange={(_, checked) => { handleChangeStatus(checked) }}
-                    />
-                  </Box>
-                )}
-
-                {formik.values.isGoal === 1 && (
-                  <Box>
-                    <InputForm fullWidth title="Quanto*" helperText formik={formik} propField="valueGoal">
-                      <InputText
-                        placeholder="Informe um valor"
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                        {...formik.getFieldProps('valueGoal')}
-                        error={formik.touched.valueGoal && !!formik.errors.valueGoal}
-                        value={formik.values.valueGoal}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChange(event, 'valueGoal') }}
-                      />
-                    </InputForm>
-                  </Box>
-                )}
-              </Box>
-            </Grid>
-
-            <Hidden smDown>
-              <Grid item display="flex" justifyContent="center" xs={1}>
-                <Divider orientation="vertical" />
-              </Grid>
-            </Hidden>
-
-            <Grid item xs={12} sm={5}>
-              <Box display="flex" justifyContent="center" alignItems="center" textAlign="center" height={1}>
-                <InputForm fullWidth title="Cor correspondente" propField="name">
-                  <InputColor onChange={handleChangeColor} />
+        <Box minWidth={downSM ? 0 : 600} mb={3}>
+          <Box display="flex" gap={1}>
+            <Box display="flex" flexDirection="column" width={360}>
+              <Box mb={2}>
+                <InputForm fullWidth title="Título*" helperText formik={formik} propField="name">
+                  <InputText
+                    placeholder="Informe um nome"
+                    {...formik.getFieldProps('name')}
+                    error={formik.touched.name && !!formik.errors.name}
+                  />
                 </InputForm>
               </Box>
-            </Grid>
-          </Grid>
+
+              <Box mb={2}>
+                <InputForm fullWidth title="Tipo*" helperText formik={formik} propField="type">
+                  <Select
+                    variant="outlined"
+                    size="small"
+                    {...formik.getFieldProps('type')}
+                    error={formik.touched.type && !!formik.errors.type}
+                    IconComponent={IconArrowSelect}
+                  >
+                    <MenuItem value="Receita">
+                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                        <BallColor color={Segments.Receita.color} size={MEDIUM_BALL_SIZE} />
+                        <Box>
+                          Receita
+                        </Box>
+                      </Box>
+                    </MenuItem>
+
+                    <MenuItem value="Despesa">
+                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                        <BallColor color={Segments.Despesa.color} size={MEDIUM_BALL_SIZE} />
+                        <Box>
+                          Despesa
+                        </Box>
+                      </Box>
+                    </MenuItem>
+                  </Select>
+                </InputForm>
+              </Box>
+
+              {formik.values.type === DefaultsSegments.Expense && (
+                <Box mb={2}>
+                  <Box mb={1}>
+                    <Typography variant="body1" component="span">Sub tipo*</Typography>
+                  </Box>
+
+                  <Box display="flex" gap={1} justifyContent="center" alignItems="center" className={styles.toggleCategoryType}>
+                    {categoriesType.map((item, index) => (
+                      <React.Fragment key={`button-type-${index}`}>
+                        <Button
+                          variant={categoryType === item.value ? 'contained' : 'outlined'}
+                          onClick={() => { handleChangeCategoryType(item.value) }}
+                        >
+                          {item.label}
+                        </Button>
+                      </React.Fragment>
+                    ))}
+                  </Box>
+                </Box>
+              )}
+
+              {formik.values.isGoal !== CategoryTypeEnum.Default && (
+                <Box mb={2}>
+                  <InputForm fullWidth title="Quanto*" helperText formik={formik} propField="valueGoal">
+                    <InputText
+                      placeholder="Informe um valor"
+                      {...formik.getFieldProps('valueGoal')}
+                      error={formik.touched.valueGoal && !!formik.errors.valueGoal}
+                      value={formik.values.valueGoal}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChange(event, 'valueGoal') }}
+                    />
+                  </InputForm>
+                </Box>
+              )}
+
+              {formik.values.isGoal === CategoryTypeEnum.Debit && (
+                <Box>
+                  <InputForm fullWidth title="Em quantas parcelas*" helperText formik={formik} propField="installments">
+                    <InputText
+                      type="number"
+                      placeholder="Informe o número de parcelas"
+                      {...formik.getFieldProps('installments')}
+                      error={formik.touched.installments && !!formik.errors.installments}
+                      value={formik.values.installments}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChangeInstallments(event, 'installments') }}
+                    />
+                  </InputForm>
+                </Box>
+              )}
+            </Box>
+
+            <Box display="flex" justifyContent="center" width={35}>
+              <Divider orientation="vertical" />
+            </Box>
+
+            <Box display="flex" justifyContent="center" alignItems="center" textAlign="center" height={1} flex="1">
+              <InputForm fullWidth title="Cor correspondente" propField="name">
+                <InputColor onChange={handleChangeColor} />
+              </InputForm>
+            </Box>
+          </Box>
         </Box>
 
         <Divider />

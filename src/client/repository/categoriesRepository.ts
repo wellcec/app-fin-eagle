@@ -14,11 +14,20 @@ export type GoalWithProgressType = CategoryType & {
   isAchieved: boolean
 }
 
+export type GoalDebitProgressType = CategoryType & {
+  currentInstallments: number
+  valueTotal: number
+  valuePaid: number
+  percentageProgress: number
+  isAchieved: boolean
+}
+
 interface ICategoriesRepository {
   getCategories: (name?: string) => Promise<CategoryType[]>
   createCategory: (category: CategoryType) => Promise<boolean>
   deleteCategory: (id: string) => Promise<boolean>
   getGoalsWithProgress: () => Promise<GoalWithProgressType[]>
+  getDebitsWithProgress: () => Promise<GoalDebitProgressType[]>
 }
 
 const categoriesRepository = (): ICategoriesRepository => {
@@ -44,14 +53,15 @@ const categoriesRepository = (): ICategoriesRepository => {
       const date = new Date()
 
       const query = `
-      INSERT INTO Categories (id, name, segment, color, isGoal, valueGoal, createdAt, updatedAt)
+      INSERT INTO Categories (id, name, segment, color, isGoal, valueGoal, installments, createdAt, updatedAt)
       VALUES (
         '${Guid.create()}',
         '${category.name}',
         '${category.segment}',
         '${category.color}',
         '${category.isGoal}',
-        '${category.valueGoal}',
+        ${category.valueGoal ? `${category.valueGoal}` : 'NULL'},
+        ${category.installments ? `${category.installments}` : 'NULL'},
         '${format(date, DEFAULT_FORMAT_DATE)}',
         '${format(date, DEFAULT_FORMAT_DATE)}'
       )
@@ -111,11 +121,53 @@ const categoriesRepository = (): ICategoriesRepository => {
     }
   }
 
+  const getDebitsWithProgress = async (): Promise<GoalDebitProgressType[]> => {
+    try {
+      const query = `
+        SELECT 
+          c.id,
+          c.name,
+          c.segment,
+          c.color,
+          c.isGoal,
+          c.valueGoal,
+          c.installments,
+          c.createdAt,
+          c.updatedAt,
+          COALESCE(COUNT(t.id), 0) as currentInstallments
+        FROM Categories c
+        LEFT JOIN Transactions t ON t.idCategory = c.id 
+          AND c.segment = '${DefaultsSegments.Expense}'
+        WHERE c.isGoal = 2
+        GROUP BY c.id, c.name, c.segment, c.color, c.isGoal, c.valueGoal, c.createdAt, c.updatedAt
+        ORDER BY c.name
+      `
+
+      const rows: any[] = await ipcRenderer.invoke('db-query', query)
+
+      return rows.map((row) => {
+        const percentage = row.currentInstallments > 0 ? (row.currentInstallments / row.installments) * 100 : 0
+
+        return ({
+          ...row,
+          valueTotal: row.installments * row.valueGoal,
+          valuePaid: row.currentInstallments * row.valueGoal,
+          percentageProgress: row.currentInstallments === row.installments ? 100 : percentage,
+          isAchieved: row.currentAmount >= row.valueGoal
+        })
+      })
+    } catch (error) {
+      console.error('Error getting debits with progress:', error)
+      return []
+    }
+  }
+
   return {
     getCategories,
     createCategory,
     deleteCategory,
-    getGoalsWithProgress
+    getGoalsWithProgress,
+    getDebitsWithProgress
   }
 }
 

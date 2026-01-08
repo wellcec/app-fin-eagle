@@ -13,6 +13,7 @@ import QuickActions from './fragments/QuickActions'
 import LatestTransactions from './fragments/LatestTransactions'
 import TopExpenses from './fragments/TopExpenses'
 import NoTransactionsWarning from './NoTransactionsWarning'
+import DebitsProgress from './DebitsProgress'
 
 const Dashboard = (): React.JSX.Element => {
   return (
@@ -27,6 +28,7 @@ const Dashboard = (): React.JSX.Element => {
         <Grid display="flex" flexDirection="column" item md={12} lg={6} gap={2}>
           <CategoryScore />
           <TopExpenses />
+          <DebitsProgress />
           <GoalProgress />
         </Grid>
 

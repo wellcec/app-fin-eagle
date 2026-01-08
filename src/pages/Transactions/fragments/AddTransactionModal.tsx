@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Divider, MenuItem, Select } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star'
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import dayjs from 'dayjs'
@@ -23,6 +24,7 @@ import useAlerts from '~/shared/alerts/useAlerts'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import { IconDoubleArrowDown } from '~/constants/icons'
 import colors from '~/layout/theme/colors'
+import { CategoryTypeEnum } from '~/constants/categories'
 
 const IconArrowSelect = (): React.JSX.Element => {
   return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
@@ -55,6 +57,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
   const [categories, setCategories] = useState<CategoryType[]>([])
   const [segment, setSegment] = useState<SegmentTransactionType>(DefaultsSegments.Receive)
   const [dateTransaction, setDateTransaction] = useState<string>('')
+  const [inputEnable, setInputEnable] = useState<boolean>(false)
 
   const { notifyError, notifySuccess } = useAlerts()
   const { formatNumberInput, formatFormCurrency, formatCurrencyRequest } = useUtils()
@@ -150,6 +153,30 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
     setSegment(type === 'income' ? DefaultsSegments.Receive : DefaultsSegments.Expense)
   }, [type])
 
+  useEffect(() => {
+    const categoryId = formik.values.category
+
+    if (!categoryId) {
+      setInputEnable(false)
+      formik.setFieldValue('value', '')
+      return
+    }
+
+    const category = categories.find(c => c.id === categoryId)
+
+    if (category?.isGoal !== CategoryTypeEnum.Debit) {
+      setInputEnable(false)
+      formik.setFieldValue('value', '')
+      return
+    }
+
+    const numericValue = category?.valueGoal ?? 0
+    const formattedValue = formatFormCurrency(numericValue)
+
+    setInputEnable(true)
+    formik.setFieldValue('value', formattedValue)
+  }, [formik.values.category, categories])
+
   return (
     <Modal
       title={action === 'create' ? 'Nova Transação' : 'Atualizar Transação'}
@@ -160,6 +187,41 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
         <Box minWidth={450} mb={3}>
           <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
             <Box flex={1}>
+              <InputForm fullWidth title="Com o que" helperText formik={formik} propField="category">
+                {categories.length > 0 && (
+                  <Select
+                    variant="outlined"
+                    size="small"
+                    {...formik.getFieldProps('category')}
+                    IconComponent={IconArrowSelect}
+                  >
+                    {categories.map((item, index) => (
+                      <MenuItem key={`cat-add-transaction-${index}`} value={item.id}>
+                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                          <BallColor color={item.color} size={22} />
+
+                          <Box>
+                            {item.name}
+                          </Box>
+
+                          {item.isGoal === CategoryTypeEnum.Goal && (
+                            <StarIcon htmlColor={colors.danger.main} />
+                          )}
+
+                          {item.isGoal === CategoryTypeEnum.Debit && (
+                            <ReceiptLongOutlinedIcon htmlColor={colors.error.light} />
+                          )}
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              </InputForm>
+            </Box>
+          </Box>
+
+          <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
+            <Box flex={1}>
               <InputForm fullWidth title="Quanto" helperText formik={formik} propField="value">
                 <InputText
                   placeholder="Informe um valor"
@@ -168,6 +230,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
                   error={formik.touched.value && !!formik.errors.value}
                   value={formik.values.value}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => { handleChange(event, 'value') }}
+                  disabled={inputEnable}
                 />
               </InputForm>
             </Box>
@@ -185,35 +248,6 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
                     setDateTransaction(format(newDate, DEFAULT_FORMAT_DATE))
                   }}
                 />
-              </InputForm>
-            </Box>
-          </Box>
-
-          <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
-            <Box flex={1}>
-              <InputForm fullWidth title="Com o que" helperText formik={formik} propField="category">
-                {categories.length > 0 && (
-                  <Select
-                    variant="outlined"
-                    size="small"
-                    {...formik.getFieldProps('category')}
-                    IconComponent={IconArrowSelect}
-                  >
-                    {categories.map((item, index) => (
-                      <MenuItem key={`cat-add-transaction-${index}`} value={item.id}>
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={item.color} size={22} />
-                          <Box>
-                            {item.name}
-                          </Box>
-                          {item.isGoal === 1 && (
-                            <StarIcon htmlColor={colors.danger.main} />
-                          )}
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
               </InputForm>
             </Box>
           </Box>

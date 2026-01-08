@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Grid, IconButton, Typography } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star'
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
 import { format } from 'date-fns'
 import makeStyles from '@mui/styles/makeStyles'
 import Paper from '~/components/layout/Paper'
@@ -10,6 +11,7 @@ import colors from '~/layout/theme/colors'
 import { TransactionType } from '~/client/models/transactions'
 import Chip from '~/components/atoms/Chip'
 import useUtils from '~/shared/hooks/useUtils'
+import { CategoryTypeEnum } from '~/constants/categories'
 
 const useStyles = makeStyles(() => ({
   description: {
@@ -62,8 +64,13 @@ const TransactionItem = ({ transaction, handleConfirmDelete }: TransactionItemPr
           <Grid item xs={2} display="flex">
             <Box display="flex" alignItems="center" gap={1}>
               <Chip label={transaction.name ?? ''} color={transaction.color ?? 'info'} />
-              {transaction.isGoal === 1 && (
+
+              {transaction.isGoal === CategoryTypeEnum.Goal && (
                 <StarIcon htmlColor={colors.danger.main} />
+              )}
+
+              {transaction.isGoal === CategoryTypeEnum.Debit && (
+                <ReceiptLongOutlinedIcon htmlColor={colors.error.light} />
               )}
             </Box>
           </Grid>

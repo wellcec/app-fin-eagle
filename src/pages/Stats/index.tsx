@@ -32,7 +32,8 @@ const defaultFilter: FilterTransactionType = {
   category: '',
   endDate: format(addDays(new Date(), 1), DEFAULT_FORMAT_DATE),
   startDate: format(subYears(new Date(), 1), DEFAULT_FORMAT_DATE),
-  segment: ''
+  segment: '',
+  isGoal: 0
 }
 
 type SizeType = {

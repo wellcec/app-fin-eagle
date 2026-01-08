@@ -14,7 +14,6 @@ const usersRepository = (): UserRepository => {
   const getUser = async (password: string): Promise<UsersType> => {
     const hashPassword = btoa(`${HASH}:${password}`)
 
-    console.log(hashPassword)
     const rows: UsersType[] = await ipcRenderer.invoke('db-query', `SELECT * FROM users WHERE password = '${hashPassword}'`)
     return rows[0]
   }

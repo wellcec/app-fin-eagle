@@ -7,6 +7,7 @@ export type CategoryType = {
   color: string
   isGoal: number
   valueGoal?: number
+  installments?: number
   createdAt?: Date
   updatedAt?: Date
 }
