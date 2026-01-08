@@ -129,8 +129,8 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
 
   const handleKeydown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
     if (event.key === 'Enter') {
-      event.preventDefault();
-      formik.submitForm();
+      event.preventDefault()
+      formik.submitForm()
     }
   }
 

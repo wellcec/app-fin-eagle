@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useLoginContext } from './context'
+import { useNavigate } from 'react-router-dom'
 
 interface IProps {
   layout: React.FunctionComponent<any>
@@ -7,6 +9,15 @@ interface IProps {
 
 const WithLayoutRoute = (props: IProps): React.JSX.Element => {
   const { layout: Layout, component: Component } = props
+
+  const { logged } = useLoginContext()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!logged) {
+      navigate('/login')
+    }
+  }, [logged]);
 
   return (
     <Layout>

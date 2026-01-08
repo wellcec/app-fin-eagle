@@ -1,11 +1,5 @@
 export type UsersType = {
   id: string
-  idSerie: string
-  name: string
-  email: string
-  document: string
+  username: string
   password: string
-  isAdmin: boolean
-  createdAt: Date
-  updatedAt: Date
 }

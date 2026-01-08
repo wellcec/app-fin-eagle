@@ -47,14 +47,8 @@ const startup = (): IStartup => {
         );`,
         `CREATE TABLE IF NOT EXISTS "users"(
         "id" VARCHAR(36) NOT NULL,
-        "idSerie" VARCHAR(36) NOT NULL,
         "name" VARCHAR(250) NOT NULL,
-        "email" VARCHAR(250) NOT NULL,
-        "document" VARCHAR(11) NOT NULL,
         "password" VARCHAR(50) NOT NULL,
-        "isAdmin" TINYINT NOT NULL,
-        "createdAt" DATETIME NOT NULL,
-        "updatedAt" DATETIME NOT NULL
       );`
       ]
 

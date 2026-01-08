@@ -23,6 +23,7 @@ import iconRevenueDashboard from '../assets/icons/icon-receives.svg'
 import iconDowns from '../assets/icons/icon-downs.svg'
 import iconTransaction from '../assets/icons/icon-money-transaction.svg'
 import iconInformation from '../assets/icons/icon-info.svg'
+import iconLock from '../assets/icons/icon-lock.svg'
 
 import colors from '../layout/theme/colors'
 
@@ -119,4 +120,8 @@ export const IconTransaction = ({ color = colors.text.quaternary, size = SIZE_IC
 
 export const IconInformation = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
   <SVG src={iconInformation} width={size} height={size} fill={color} />
+)
+
+export const IconLock = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconLock} width={size} height={size} fill={color} />
 )
