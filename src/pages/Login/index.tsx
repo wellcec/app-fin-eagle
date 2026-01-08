@@ -3,13 +3,15 @@ import { Box, Button, IconButton, InputAdornment, OutlinedInput, Typography } fr
 
 import makeStyles from '@mui/styles/makeStyles'
 import Paper from '~/components/layout/Paper'
-import bg from '../../assets/images/bg-login.svg'
+import bgRaw from '../../assets/images/bg-login.svg?raw'
 import logo from '../../assets/images/logogranna.png'
 import { IconLock } from '~/constants/icons'
 import usersRepository from '~/client/repository/usersRepository'
 import { useLoginContext } from '~/routes/context'
 import { useNavigate } from 'react-router'
 import useAlerts from '~/shared/alerts/useAlerts'
+
+const bg = `data:image/svg+xml,${encodeURIComponent(bgRaw)}`
 
 const useStyles = makeStyles(() => ({
   paper: {
@@ -27,6 +29,12 @@ const useStyles = makeStyles(() => ({
   },
   button: {
     height: 50,
+  },
+  login: {
+    backgroundImage: `url("${bg}")`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
   }
 }))
 
@@ -46,7 +54,7 @@ const LoginScreen = () => {
         setLogged(authenticated)
 
         if (authenticated) {
-          navigate('/')
+          navigate('/home')
           return
         }
 
@@ -73,12 +81,7 @@ const LoginScreen = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      sx={{
-        backgroundImage: `url(${bg})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
+      className={styles.login}
     >
       <Paper className={styles.paper}>
         <Box width={300} height={300} p={3} onKeyDown={handleKeydown}>
