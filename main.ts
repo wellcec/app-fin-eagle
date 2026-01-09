@@ -15,16 +15,19 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = (): void => {
+  const DEV_MODE: boolean = MAIN_WINDOW_VITE_DEV_SERVER_URL !== undefined || MAIN_WINDOW_VITE_DEV_SERVER_URL !== null
+
   const mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
-    titleBarStyle: 'default',
+    titleBarStyle: 'hidden',
     resizable: true,
     autoHideMenuBar: true,
     center: true,
     roundedCorners: true, // Cantos arredondados (Windows 11)
     icon: path.join(__dirname, '../src/assets/images/logogranna.png'),
     webPreferences: {
+      devTools: DEV_MODE,
       nodeIntegration: true,
       contextIsolation: false,
       preload: path.join(__dirname, 'preload.js')
@@ -37,7 +40,6 @@ const createWindow = (): void => {
   })
 
   const devServerURL = createURLRoute(MAIN_WINDOW_VITE_DEV_SERVER_URL, 'main')
-
   const fileRoute = createFileRoute(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`), 'main')
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -58,7 +60,34 @@ const createWindow = (): void => {
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.webContents.openDevTools()
+  } else {
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      const forbidden =
+        input.key === 'F12' ||
+        input.key === 'Alt' ||
+        (input.control && input.shift && input.key.toLowerCase() === 'i')
+
+      if (forbidden) {
+        event.preventDefault()
+      }
+    })
   }
+
+  ipcMain.on('window-minimize', () => {
+    mainWindow.minimize()
+  })
+
+  ipcMain.on('window-maximize', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow.maximize()
+    }
+  })
+
+  ipcMain.on('window-close', () => {
+    mainWindow.close()
+  })
 }
 
 app.on('ready', createWindow)

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+
 import startup from '~/client/repository/startup'
 import Alerts from '~/components/layout/Alerts'
 import Theme from '~/layout'
+import Controls from '~/layout/Controls'
 import { AlertType } from '~/models'
 import SwitchRoutes from '~/routes/SwitchRoutes'
 import AlertsContext from '~/shared/alerts/AlertContext'
@@ -22,6 +24,8 @@ const App = (): React.JSX.Element => {
       <Provider store={store}>
         <PersistGate persistor={persist}>
           <Theme>
+            <Controls />
+
             <ProviderAlerts value={{ alert, setAlert }}>
               <Alerts />
               <SwitchRoutes />

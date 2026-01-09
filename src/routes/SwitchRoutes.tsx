@@ -14,10 +14,12 @@ import { Provider } from './context'
 import LoginScreen from '~/pages/Login'
 
 const SwitchRoutes = (): React.JSX.Element => {
-  const [logged, setLogged] = useState<boolean>(true);
+  const [logged, setLogged] = useState<boolean>(false)
+  const [userId, setUserId] = useState<string>('')
+  const [username, setUsername] = useState<string>('')
 
   return (
-    <Provider value={{ logged, setLogged }}>
+    <Provider value={{ logged, setLogged, userId, setUserId, username, setUsername }}>
       <Router
         main={
           <>

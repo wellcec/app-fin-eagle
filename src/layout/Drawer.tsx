@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Box, Divider, IconButton, List, ListItem, ListItemButton,
+  Box, Button, Divider, IconButton, List, ListItem, ListItemButton,
   ListItemIcon, ListItemText, Drawer as MuiDrawer, Typography,
   useTheme, type Theme
 } from '@mui/material'
@@ -14,6 +14,7 @@ import colors from './theme/colors'
 import useStyles from './styles'
 
 import animation from '~/assets/animations/Rupee Investment.json'
+import { useLoginContext } from '~/routes/context'
 
 const drawerWidth = 272
 const paperWidth = 240
@@ -50,6 +51,7 @@ const Drawer = ({ openDrawer, setOpenDrawer, downSM }: DrawerProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useTheme()
+  const { username, setLogged, setUserId, setUsername } = useLoginContext()
 
   const switchRoute = (path: string): void => {
     if (downSM) {
@@ -57,6 +59,12 @@ const Drawer = ({ openDrawer, setOpenDrawer, downSM }: DrawerProps) => {
     }
 
     navigate(path)
+  }
+
+  const handleSignOut = () => {
+    setLogged(false)
+    setUserId('')
+    setUsername('')
   }
 
   const isCurrentPath = (paths: string[]): boolean => paths.includes(location.pathname)
@@ -104,10 +112,11 @@ const Drawer = ({ openDrawer, setOpenDrawer, downSM }: DrawerProps) => {
             pt={4}
             display="flex"
             alignItems="center"
+            flexDirection="column"
             style={{ cursor: 'pointer' }}
             onClick={() => { setOpenDrawer(!openDrawer) }}
           >
-            <Box width={210} height={200}>
+            <Box width={210} height={200} mb={2}>
               <Player
                 src={animation}
                 className="player"
@@ -115,8 +124,21 @@ const Drawer = ({ openDrawer, setOpenDrawer, downSM }: DrawerProps) => {
                 autoplay
               />
             </Box>
+
+            <Box mb={1}>
+              <Typography variant="subtitle1" color="primary">
+                Olá, {username}
+              </Typography>
+            </Box>
+
+            <Box width={1}>
+              <Button variant="text" color="error" fullWidth onClick={handleSignOut}>
+                Sair
+              </Button>
+            </Box>
           </Box>
         )}
+
 
         {!openDrawer && (
           <IconButton onClick={() => { setOpenDrawer(!openDrawer) }}>

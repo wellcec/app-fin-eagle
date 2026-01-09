@@ -24,6 +24,9 @@ import iconDowns from '../assets/icons/icon-downs.svg'
 import iconTransaction from '../assets/icons/icon-money-transaction.svg'
 import iconInformation from '../assets/icons/icon-info.svg'
 import iconLock from '../assets/icons/icon-lock.svg'
+import iconUser from '../assets/icons/icon-user.svg'
+import iconEyeOpened from '../assets/icons/icon-eye-opened.svg'
+import iconEyeClosed from '../assets/icons/icon-eye-closed.svg'
 
 import colors from '../layout/theme/colors'
 
@@ -125,3 +128,16 @@ export const IconInformation = ({ color = colors.text.quaternary, size = SIZE_IC
 export const IconLock = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
   <SVG src={iconLock} width={size} height={size} fill={color} />
 )
+
+export const IconUser = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconUser} width={size} height={size} fill={color} />
+)
+
+export const IconEyeOpened = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconEyeOpened} width={size} height={size} fill={color} />
+)
+
+export const IconEyeClosed = ({ color = colors.text.quaternary, size = SIZE_ICONS }: IColor): React.JSX.Element => (
+  <SVG src={iconEyeClosed} width={size} height={size} fill={color} />
+)
+
