@@ -23,17 +23,27 @@ const CategoryScore = (): React.JSX.Element => {
   useEffect(() => {
     getTotalByCategory().then(
       (response) => {
+
         if (response) {
-          const biggerExpense = response.filter(x => x.segment === DefaultsSegments.Expense).reduce((max, item) =>
-            item.total > max.total ? item : max
-          )
+          const arrExpense = response.filter(x => x.segment === DefaultsSegments.Expense)
 
-          const biggerReceive = response.filter(x => x.segment === DefaultsSegments.Receive).reduce((max, item) =>
-            item.total > max.total ? item : max
-          )
+          if (arrExpense.length > 0) {
+            const biggerExpense = arrExpense.reduce((max, item) =>
+              item.total > max.total ? item : max
+            )
 
-          setExpense(biggerExpense)
-          setReceive(biggerReceive)
+            setExpense(biggerExpense)
+          }
+
+          const arrReceive = response.filter(x => x.segment === DefaultsSegments.Receive)
+
+          if (arrReceive.length > 0) {
+            const biggerReceive = arrReceive.reduce((max, item) =>
+              item.total > max.total ? item : max
+            )
+
+            setReceive(biggerReceive)
+          }
         } else {
           setExpense(undefined)
           setReceive(undefined)

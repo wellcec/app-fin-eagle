@@ -4,7 +4,7 @@ import {
 } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 
-import { IconSearch } from '~/constants/icons'
+import { Icon } from '../icons'
 
 const useStyles = makeStyles(() => ({
   inputSearch: {
@@ -36,7 +36,7 @@ const InputSearch = ({ placeholder, onChange }: IProps): React.JSX.Element => {
         startAdornment={(
           <InputAdornment position="start">
             <IconButton edge="start">
-              <IconSearch />
+              <Icon name="search" />
             </IconButton>
           </InputAdornment>
         )}

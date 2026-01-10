@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren } from 'react'
+import React, { ReactNode, type PropsWithChildren } from 'react'
 import {
   Box, Modal as ComponentModal, Fade, IconButton, Paper, type Theme, Typography
 } from '@mui/material'
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) => {
 interface IProps {
   color?: string
   open: boolean
-  title?: string
+  title?: ReactNode
   handleClose: () => void
 }
 

@@ -12,9 +12,10 @@ import Schedules from '~/pages/Schedules'
 import Limits from '~/pages/Limits'
 import { Provider } from './context'
 import LoginScreen from '~/pages/Login'
+import BankAccounts from '~/pages/BankAccounts'
 
 const SwitchRoutes = (): React.JSX.Element => {
-  const [logged, setLogged] = useState<boolean>(false)
+  const [logged, setLogged] = useState<boolean>(true)
   const [userId, setUserId] = useState<string>('')
   const [username, setUsername] = useState<string>('')
 
@@ -29,6 +30,7 @@ const SwitchRoutes = (): React.JSX.Element => {
             <Route path="/home" element={<WithLayoutRoute layout={BaseLayout} component={Dashboard} />} />
             <Route path="/users" element={<WithLayoutRoute layout={BaseLayout} component={Users} />} />
             <Route path="/categories" element={<WithLayoutRoute layout={BaseLayout} component={Categories} />} />
+            <Route path="/banks" element={<WithLayoutRoute layout={BaseLayout} component={BankAccounts} />} />
             <Route path="/transactions" element={<WithLayoutRoute layout={BaseLayout} component={Transactions} />} />
             <Route path="/stats" element={<WithLayoutRoute layout={BaseLayout} component={Stats} />} />
             <Route path="/calendar" element={<WithLayoutRoute layout={BaseLayout} component={Schedules} />} />

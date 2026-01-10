@@ -12,21 +12,25 @@ const useStyles = makeStyles(() => ({
 }))
 
 interface IProps {
-  label: string
+  label?: string
+  fullWidth?: boolean
   color: string
 }
 
-const Chip = ({ label, color }: IProps) => {
+const Chip = ({ label, color, fullWidth = false }: IProps) => {
   const styles = useStyles()
 
   return (
     <ChipCustom
       className={styles.root}
-      label={label}
+      label={label ?? null}
       variant="filled"
       style={{
         color: 'white',
-        backgroundColor: color
+        backgroundColor: color,
+        ...(fullWidth && ({
+          width: '100%'
+        }))
       }}
     />
   )

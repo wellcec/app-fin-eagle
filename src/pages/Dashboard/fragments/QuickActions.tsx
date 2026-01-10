@@ -1,9 +1,9 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import Paper from '~/components/layout/Paper'
-import { IconTransaction } from '~/constants/icons'
 import { useNavigate } from 'react-router-dom'
 import colors from '~/layout/theme/colors'
+import { Icon } from '~/components/atoms/icons'
 
 const QuickActions = (): React.JSX.Element => {
   const navigate = useNavigate()
@@ -29,7 +29,7 @@ const QuickActions = (): React.JSX.Element => {
               color="success"
               startIcon={
                 <Box display="flex" style={{ transform: 'rotate(180deg)' }}>
-                  <IconTransaction color={colors.background.main} size={20} />
+                  <Icon name="transaction" color={colors.background.main} size={20} />
                 </Box>
               }
               onClick={() => { handleNavigate('Receita') }}
@@ -41,7 +41,7 @@ const QuickActions = (): React.JSX.Element => {
               fullWidth
               variant="contained"
               color="error"
-              startIcon={<IconTransaction color={colors.background.main} size={20} />}
+              startIcon={<Icon name="transaction" color={colors.background.main} size={20} />}
               onClick={() => { handleNavigate('Despesa') }}
             >
               Gastar

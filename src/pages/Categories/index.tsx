@@ -8,12 +8,11 @@ import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import { ACTIONS, ActionsType, SampleFilterType } from '~/models'
-import DEFAULT_PAGESIZE, { DEFAULT_GAP_IZE, DefaultsSegments, MEDIUM_BALL_SIZE, Segments, SMALL_BALL_SIZE } from '~/constants'
+import DEFAULT_PAGESIZE, { DEFAULT_GAP_SIZE, DefaultsSegments, MEDIUM_BALL_SIZE, Segments, SMALL_BALL_SIZE } from '~/constants'
 import useDebounce from '~/shared/hooks/useDebounce'
 import categoriesRepository from '~/client/repository/categoriesRepository'
 import { CategoryType } from '~/client/models/categories'
 import useAlerts from '~/shared/alerts/useAlerts'
-import { IconDelete, IconDoubleArrowDown } from '~/constants/icons'
 import Modal from '~/components/molecules/Modal'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import InputText from '~/components/atoms/inputs/InputText'
@@ -32,6 +31,7 @@ import { Titles } from '~/constants/menus'
 import { makeStyles } from '@mui/styles'
 import useTestsForm from '~/shared/hooks/useTestForm'
 import { CategoryTypeEnum } from '~/constants/categories'
+import { Icon } from '~/components/atoms/icons'
 
 const useStyles = makeStyles(() => (
   {
@@ -50,7 +50,7 @@ const categoriesType = [
 ]
 
 const IconArrowSelect = (): React.JSX.Element => {
-  return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
+  return <Box mr={1} mt={0.5}><Icon name="doubleArrowDown" /></Box>
 }
 
 interface TypeForm {
@@ -156,7 +156,7 @@ const Categories = (): React.JSX.Element => {
       (response) => {
         if (response > 0) {
           setConfirmOpen(false)
-          notifyWarning(`Não foi possível excluir a categoria pois existem transações com a categoria ${objToAction?.name}`)
+          notifyWarning(`Não foi possível excluir pois existem transações com a categoria ${objToAction?.name}`)
           return
         }
 
@@ -289,7 +289,7 @@ const Categories = (): React.JSX.Element => {
                 <Grid item xs={12} md={3} display="flex" alignItems="flex-end" justifyContent="flex-end" gap={1}>
                   <Box>
                     <IconButton title="Excluir" onClick={() => { handleConfirmDelete(item) }}>
-                      <IconDelete />
+                      <Icon name="delete" />
                     </IconButton>
                   </Box>
                 </Grid>
@@ -339,7 +339,7 @@ const Categories = (): React.JSX.Element => {
                     IconComponent={IconArrowSelect}
                   >
                     <MenuItem value="Receita">
-                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_SIZE}>
                         <BallColor color={Segments.Receita.color} size={MEDIUM_BALL_SIZE} />
                         <Box>
                           Receita
@@ -348,7 +348,7 @@ const Categories = (): React.JSX.Element => {
                     </MenuItem>
 
                     <MenuItem value="Despesa">
-                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_SIZE}>
                         <BallColor color={Segments.Despesa.color} size={MEDIUM_BALL_SIZE} />
                         <Box>
                           Despesa
@@ -382,7 +382,7 @@ const Categories = (): React.JSX.Element => {
 
               {formik.values.isGoal !== CategoryTypeEnum.Default && (
                 <Box mb={2}>
-                  <InputForm fullWidth title="Quanto*" helperText formik={formik} propField="valueGoal">
+                  <InputForm fullWidth title="Quanto* (Valor individual da parcela)" helperText formik={formik} propField="valueGoal">
                     <InputText
                       placeholder="Informe um valor"
                       {...formik.getFieldProps('valueGoal')}

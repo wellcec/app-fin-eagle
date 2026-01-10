@@ -78,7 +78,7 @@ const TodaySchedules = (): React.JSX.Element => {
               }}
             >
               <Box display="flex" justifyContent="space-between" alignItems="start" mb={1}>
-                <Typography variant="subtitle1" fontWeight="600" color="text.primary">
+                <Typography variant="subtitle2" fontWeight={400} color="text.primary">
                   {schedule.title}
                 </Typography>
 
@@ -92,6 +92,7 @@ const TodaySchedules = (): React.JSX.Element => {
                       variant="outlined"
                     />
                   )}
+
                   <Chip
                     label={getSegmentTitle(schedule.segment)}
                     size="small"

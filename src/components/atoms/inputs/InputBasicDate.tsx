@@ -3,7 +3,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import 'dayjs/locale/pt-br'
-import { IconCalendar } from '~/constants/icons'
+import { Icon } from '../icons'
+
+const IconCalendar = () => <Icon name="calendar" />
 
 const InputBasicDate = ({ ...rest }): React.JSX.Element => {
   return (

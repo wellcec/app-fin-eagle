@@ -2,8 +2,8 @@ import React from 'react'
 
 import { ChartsType } from '~/models/charts'
 import { DefaultThemeType } from '../models'
-import { IconChartSimpleBar, IconChartSimplePizza } from '~/constants/icons'
 import { SegmentTransactionType } from '~/client/models/transactions'
+import { Icon } from '~/components/atoms/icons'
 
 export const DEFAULT_THEME: DefaultThemeType = {
   id: 'default',
@@ -48,7 +48,7 @@ export const SMALL_BALL_SIZE = 16
 export const DEFAULT_PAGESIZE = 10
 export const DEFAULT_OVER_PAGESIZE = 10000
 
-export const DEFAULT_GAP_IZE = 1.5
+export const DEFAULT_GAP_SIZE = 2
 
 export const DAYS_WEEK = [
   { eng: 'Sunday', pt: 'Dom' },
@@ -68,13 +68,13 @@ export const TypesCharts: ChartsType[] = [
     id: 0,
     key: 'SimpleMonth',
     title: 'Ganhos e Gastos',
-    icon: (color) => <IconChartSimpleBar color={color} />
+    icon: (color) => <Icon name="chartBar" color={color} />
   },
   {
     id: 1,
     key: 'SimpleCategories',
     title: 'Balanço por categoria',
-    icon: (color) => <IconChartSimplePizza color={color} />
+    icon: (color) => <Icon name="chartPizza" color={color} />
   }
 ]
 

@@ -34,7 +34,7 @@ const Alerts = (): React.JSX.Element => {
             open={open}
             onClose={handleClose}
             autoHideDuration={4000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
             <Alert onClose={handleClose} severity={alert.type} sx={{ width: '100%' }} variant="filled">
               <Typography variant="body1">

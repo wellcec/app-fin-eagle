@@ -3,6 +3,7 @@ export type SegmentTransactionType = 'Receita' | 'Despesa' | 'Lembrete'
 export type TransactionType = {
   id?: string
   idCategory: string
+  idBankAccount: string
   value: number
   description: string
   segment?: SegmentTransactionType
@@ -10,6 +11,8 @@ export type TransactionType = {
   name?: string
   color?: string
   isGoal?: number
+  bankName?: string
+  bankColor?: string
   createdAt?: Date
 }
 

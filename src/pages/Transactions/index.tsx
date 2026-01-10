@@ -21,7 +21,7 @@ import TransactionItem from './fragments/TransactionItem'
 import useTransactions from '~/shared/hooks/useTransactions'
 import { emptyFilter } from '~/constants/transactions'
 import { TransactionModalType } from '~/models'
-import { Provider } from './fragments/context'
+import { Provider } from './context'
 
 const useStyles = makeStyles(() => ({
   toggleMonthFilter: {

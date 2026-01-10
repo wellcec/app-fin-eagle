@@ -2,16 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getDaysInMonth, format, startOfMonth, addMonths, subMonths, endOfMonth } from 'date-fns'
 import { blue } from '@mui/material/colors'
 import AddIcon from '@mui/icons-material/Add'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { Avatar, Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, IconButton, MenuItem, Select, Theme, Typography, Paper as PaperMui } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 
 import ContainerMain from '~/components/layout/ContainerMain'
-import { DAYS_WEEK, DEFAULT_GAP_IZE, DefaultsSegments, LABEL_MONTHS, Segments, SMALL_BALL_SIZE } from '~/constants'
+import { DAYS_WEEK, DEFAULT_GAP_SIZE, DefaultsSegments, LABEL_MONTHS, Segments, SMALL_BALL_SIZE } from '~/constants'
 import Paper from '~/components/layout/Paper'
-import { IconDelete, IconDoubleArrowDown, IconRevenue, IconSingleArrowLeftCircule, IconSingleArrowRightCircule } from '~/constants/icons'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import BallColor from '~/components/atoms/BallColor'
 import { SegmentTransactionType } from '~/client/models/transactions'
@@ -22,6 +20,10 @@ import useAlerts from '~/shared/alerts/useAlerts'
 import ViewCalendarType from '~/models/schedules'
 import Modal from '~/components/molecules/Modal'
 import { Titles } from '~/constants/menus'
+import { Icon } from '~/components/atoms/icons'
+import Description from './fragments/Description'
+import SchedulesForDayItem from './fragments/SchedulesForDayItem'
+import useSchedules from '~/shared/hooks/useSchedules'
 
 const ICON_SIZE = 25
 const CUSTOM_BALL_SIZE = 32
@@ -34,7 +36,7 @@ const STEPS = {
 }
 
 const IconArrowSelect = (): React.JSX.Element => {
-  return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
+  return <Box mr={1} mt={0.5}><Icon name="doubleArrowDown" /></Box>
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -85,9 +87,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       }
     }
   },
-  boxSchedulesDetails: {
-    borderRadius: 8
-  },
   currentDay: {
     border: '2px solid cornflowerblue',
     '& h6': {
@@ -122,6 +121,7 @@ const Schedules = (): React.JSX.Element => {
   const styles = useStyles()
   const { getSchedulesByDay, getSchedulesByRange, createSchedule, deleteSchedule } = schedulesRepository()
   const { notifyWarning, notifyError, notifySuccess } = useAlerts()
+  const { buildViewCalendar } = useSchedules()
 
   const nowDayAsNumber = (day: number): boolean => {
     const now = new Date()
@@ -133,37 +133,6 @@ const Schedules = (): React.JSX.Element => {
     const year = currentDate.getFullYear()
 
     return (day === nowDay && nowMonth === month && nowYear === year)
-  }
-
-  const buildViewCalendar = (data: ScheduleType[]): void => {
-    const dataToDisplay: ViewCalendarType[] = []
-
-    for (const schedule of data) {
-      const strDate = schedule.date?.toString() + 'T00:00:00Z'
-      const dateOfSchedule = new Date(strDate)
-      const dayAsNumber = (dateOfSchedule.getUTCDate() ?? 0)
-
-      const isExpense = schedule.segment === DefaultsSegments.Expense
-      const isReceived = schedule.segment === DefaultsSegments.Receive
-      const isReminder = schedule.segment === DefaultsSegments.Reminder
-
-      const dayFromList = dataToDisplay.find((d) => d.day === dayAsNumber)
-      if (!dayFromList) {
-        dataToDisplay.push({
-          day: dayAsNumber,
-          expenses: isExpense || (isExpense && schedule.isRecurrent === 1) ? 1 : 0,
-          received: isReceived || (isReceived && schedule.isRecurrent === 1) ? 1 : 0,
-          reminders: isReminder || (isReminder && schedule.isRecurrent === 1) ? 1 : 0
-        })
-      } else {
-        const index = dataToDisplay.indexOf(dayFromList)
-        dataToDisplay[index].expenses = isExpense ? dataToDisplay[index].expenses + 1 : dataToDisplay[index].expenses
-        dataToDisplay[index].received = isReceived ? dataToDisplay[index].received + 1 : dataToDisplay[index].received
-        dataToDisplay[index].reminders = isReminder ? dataToDisplay[index].reminders + 1 : dataToDisplay[index].reminders
-      }
-    }
-
-    setViewCalendar(dataToDisplay)
   }
 
   const getViewCalendar = (day: number, type: SegmentTransactionType): number => {
@@ -205,7 +174,7 @@ const Schedules = (): React.JSX.Element => {
 
     getSchedulesByRange(startMonth, endMonth).then(
       (response) => {
-        buildViewCalendar(response.data)
+        buildViewCalendar(response.data, setViewCalendar)
       }
     )
   }, [currentDate])
@@ -263,7 +232,7 @@ const Schedules = (): React.JSX.Element => {
         setChooseDay(item)
         setShowForm(!showForm)
         setScheduleToShow(undefined)
-        setIsAdding(false)
+        setIsAdding(response.data.length === 0)
         setSteps(STEPS.adding)
       }
     )
@@ -293,7 +262,7 @@ const Schedules = (): React.JSX.Element => {
           setTitle('')
           getSchedulesForDay()
           getCurrentDate()
-          setIsAdding(!isAdding)
+          setIsAdding(false)
           return
         }
 
@@ -321,15 +290,11 @@ const Schedules = (): React.JSX.Element => {
     setScheduleToShow(item)
   }
 
-  const handleHideSchedule = (): void => {
-    setSteps(STEPS.adding)
-    setScheduleToShow(undefined)
-  }
-
   useEffect(() => {
     getCurrentDate()
   }, [currentDate])
 
+  console.log(isAdding)
   return (
     <>
       <ContainerMain title={Titles.CALENDAR} fullCard={false}>
@@ -338,7 +303,7 @@ const Schedules = (): React.JSX.Element => {
             <Box display="flex" flexWrap="wrap" gap={2} alignItems="center" justifyContent="space-around">
               <Box>
                 <IconButton onClick={handlePreviousMonth}>
-                  <IconSingleArrowLeftCircule size={ICON_SIZE} />
+                  <Icon name="singleArrowLeftCircule" size={ICON_SIZE} />
                 </IconButton>
               </Box>
 
@@ -350,7 +315,7 @@ const Schedules = (): React.JSX.Element => {
 
               <Box>
                 <IconButton onClick={handleNextMonth}>
-                  <IconSingleArrowRightCircule size={ICON_SIZE} />
+                  <Icon name="singleArrowRightCircule" size={ICON_SIZE} />
                 </IconButton>
               </Box>
             </Box>
@@ -415,7 +380,7 @@ const Schedules = (): React.JSX.Element => {
       </ContainerMain>
 
       <Modal open={showForm} handleClose={() => { toggleDrawer(!showForm) }}>
-        <Box>
+        <Box minWidth={SCREEN_SIZE}>
           <Typography variant="h6" color="text.main" display="flex" justifyContent="center" alignItems="center">
             O que fazer dia
             <Box m={2}>
@@ -428,40 +393,20 @@ const Schedules = (): React.JSX.Element => {
         {steps === STEPS.adding && (
           <Box>
             <Box display="block" px={2} gap={1}>
-              <Box display="flex" flexDirection="column" justifyContent="end" width={SCREEN_SIZE}>
-                <Box display="flex" justifyContent={isAdding ? 'start' : 'end'} mb={2}>
-                  <Button
-                    onClick={handleAdding}
-                    color={isAdding ? 'warning' : 'success'}
-                    variant={isAdding ? 'outlined' : 'contained'}
-                  >
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Box display="flex">
-                        {isAdding ? <ArrowBackIosIcon fontSize="small" /> : <AddIcon fontSize="small" />}
-                      </Box>
+              {(schedulesForDay.length === 0 && !isAdding) && (
+                <Box pb={1} mb={2} textAlign="center">
+                  <Typography mb={3} variant="body2">Então... você não tem nenhum lembrete para esse dia</Typography>
 
-                      <Box>
-                        {isAdding ? 'Voltar' : 'Novo'}
-                      </Box>
-                    </Box>
+                  <Button variant="outlined" color="success" onClick={handleAdding}>
+                    Adicione algum
                   </Button>
                 </Box>
-
-                {(schedulesForDay.length === 0 && !isAdding) && (
-                  <Box textAlign="center">
-                    <Typography variant="subtitle1" color="primary">
-                      <i>
-                        Nenhum lembrete pra esse dia
-                      </i>
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
+              )}
 
               {isAdding && (
                 <Box width={SCREEN_SIZE}>
                   <Box display="flex" gap={2} flex={1} mb={1}>
-                    <InputForm fullWidth title="Lembrar de">
+                    <InputForm fullWidth title="Tipo">
                       <Select
                         variant="outlined"
                         size="small"
@@ -470,7 +415,7 @@ const Schedules = (): React.JSX.Element => {
                         IconComponent={IconArrowSelect}
                       >
                         <MenuItem value="Lembrete">
-                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_SIZE}>
                             <BallColor color={Segments.Lembrete.color} size={SMALL_BALL_SIZE} />
                             <Box>
                               {DefaultsSegments.Reminder}
@@ -479,7 +424,7 @@ const Schedules = (): React.JSX.Element => {
                         </MenuItem>
 
                         <MenuItem value="Despesa">
-                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_SIZE}>
                             <BallColor color={Segments.Despesa.color} size={SMALL_BALL_SIZE} />
                             <Box>
                               {DefaultsSegments.Expense}
@@ -488,7 +433,7 @@ const Schedules = (): React.JSX.Element => {
                         </MenuItem>
 
                         <MenuItem value="Receita">
-                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                          <Box display="flex" alignItems="center" gap={DEFAULT_GAP_SIZE}>
                             <BallColor color={Segments.Receita.color} size={SMALL_BALL_SIZE} />
                             <Box>
                               {DefaultsSegments.Receive}
@@ -498,7 +443,7 @@ const Schedules = (): React.JSX.Element => {
                       </Select>
                     </InputForm>
 
-                    <InputForm fullWidth title="Título" propField="title">
+                    <InputForm fullWidth title="Lembrar de" propField="title">
                       <InputText
                         placeholder="Informe um título"
                         value={title}
@@ -513,7 +458,7 @@ const Schedules = (): React.JSX.Element => {
                         multiline
                         rows={8}
                         value={description}
-                        placeholder="Informe uma descrição"
+                        placeholder="Informe uma observação"
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => { setDescription(event.target.value) }}
                       />
                     </InputForm>
@@ -538,73 +483,55 @@ const Schedules = (): React.JSX.Element => {
                       </FormGroup>
                     </Box>
 
-                    <Button variant="contained" color="primary" onClick={handleSaveSchedule}>
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <Box>
-                          Salvar
+                    <Box display="flex" gap={1}>
+                      {(isAdding) && (
+                        <Button variant="outlined" color="primary" onClick={() => { toggleDrawer(!showForm) }}>
+                          <Box display="flex" alignItems="center" gap={1}>
+                            <Box>
+                              Cancelar
+                            </Box>
+                          </Box>
+                        </Button>
+                      )}
+
+                      <Button variant="contained" color="primary" onClick={handleSaveSchedule}>
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <Box>
+                            Salvar
+                          </Box>
                         </Box>
-                      </Box>
-                    </Button>
+                      </Button>
+                    </Box>
                   </Box>
                 </Box>
               )}
 
               {(schedulesForDay.length > 0 && !isAdding) && (
                 <Box mt={2} width={SCREEN_SIZE}>
-                  {schedulesForDay.map((item, index) => (
-                    <React.Fragment key={`fragment-schedules-day-${index}`}>
-                      <Box
-                        my={1}
-                        px={2}
-                        py={1}
-                        key={`schedulesForDay-${index}`}
-                        className={styles.boxSchedulesDetails}
-                        sx={{ border: `1px solid ${Segments[item.segment].color}` }}
-                      >
-                        <Box display="flex" justifyContent="space-between">
-                          <Box>
-                            <Typography variant="body1" sx={{ color: Segments[item.segment].color }} fontWeight={600}>
-                              {item.segment}
-                            </Typography>
-                          </Box>
+                  <Box mb={2}>
+                    {schedulesForDay.map((item, index) => (
+                      <React.Fragment key={`fragment-schedules-day-${index}`}>
+                        <SchedulesForDayItem
+                          item={item}
+                          handleDeleteSchedule={handleDeleteSchedule}
+                          handleShowSchedule={handleShowSchedule}
+                        />
+                      </React.Fragment>
+                    ))}
+                  </Box>
 
-                          <Box>
-                            <Typography variant="body1" color="GrayText" component="div">
-                              {item.isRecurrent === 1 ? <Typography color="InfoText">Recorrente</Typography> : 'Não recorrente'}
-                            </Typography>
-                          </Box>
-                        </Box>
+                  <Divider />
 
-                        <Box display="flex">
-                          <Box display="flex" alignItems="center" flex={1}>
-                            <Typography variant="subtitle2" color="primary" >
-                              {item.title}
-                            </Typography>
-                          </Box>
-
-                          <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-                            <IconButton title="Ver descrição" onClick={() => { handleShowSchedule(item) }}>
-                              <IconRevenue color={Segments[item.segment].color} />
-                            </IconButton>
-
-                            <IconButton title="Excluir" onClick={() => { handleDeleteSchedule(item?.id ?? '') }}>
-                              <IconDelete />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      </Box>
-
-                      {schedulesForDay.length === 0 && (
-                        <Box>
-                          <Typography variant="subtitle2" color="primary">
-                            <i>
-                              Nenhum lembrete cadastrado
-                            </i>
-                          </Typography>
-                        </Box>
-                      )}
-                    </React.Fragment>
-                  ))}
+                  <Box display="flex" justifyContent="end" mt={2}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={handleAdding}
+                      startIcon={<AddIcon fontSize="small" />}
+                    >
+                      Novo lembrete
+                    </Button>
+                  </Box>
                 </Box>
               )}
             </Box>
@@ -612,29 +539,12 @@ const Schedules = (): React.JSX.Element => {
         )}
 
         {steps === STEPS.description && (
-          <Box>
-            <Box>
-              <Box display="flex" alignItems="center" gap={1} mb={1}>
-                <Box>
-                  <IconButton onClick={handleHideSchedule}>
-                    <IconSingleArrowLeftCircule size={ICON_SIZE} />
-                  </IconButton>
-                </Box>
-
-                <Typography variant="h6" color="primary">
-                  {scheduleToShow?.title}
-                </Typography>
-              </Box>
-
-              <Divider color={Segments[scheduleToShow?.segment ?? DefaultsSegments.Reminder].color} />
-
-              <Box whiteSpace="pre-wrap" py={2} width={SCREEN_SIZE}>
-                <Typography variant="body1" color="primary">
-                  {scheduleToShow?.description}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
+          <Description
+            scheduleToShow={scheduleToShow}
+            setSteps={setSteps}
+            steps={STEPS}
+            SCREEN_SIZE={SCREEN_SIZE}
+          />
         )}
       </Modal>
     </>

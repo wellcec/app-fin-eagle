@@ -5,12 +5,12 @@ import makeStyles from '@mui/styles/makeStyles'
 import Paper from '~/components/layout/Paper'
 import bgRaw from '../../assets/images/bg-login.svg?raw'
 import logo from '../../assets/images/logogranna.png'
-import { IconEyeClosed, IconEyeOpened, IconLock, IconUser } from '~/constants/icons'
 import usersRepository from '~/client/repository/usersRepository'
 import { useLoginContext } from '~/routes/context'
 import { useNavigate } from 'react-router'
 import useAlerts from '~/shared/alerts/useAlerts'
 import { UsersType } from '~/client/models/users'
+import { Icon } from '~/components/atoms/icons'
 
 const bg = `data:image/svg+xml,${encodeURIComponent(bgRaw)}`
 
@@ -159,7 +159,7 @@ const LoginScreen = () => {
                   startAdornment={(
                     <InputAdornment position="start">
                       <IconButton edge="start">
-                        <IconLock />
+                        <Icon name="lock" />
                       </IconButton>
                     </InputAdornment>
                   )}
@@ -205,7 +205,7 @@ const LoginScreen = () => {
                   startAdornment={(
                     <InputAdornment position="start">
                       <IconButton edge="start">
-                        <IconUser />
+                        <Icon name="user" />
                       </IconButton>
                     </InputAdornment>
                   )}
@@ -224,7 +224,7 @@ const LoginScreen = () => {
                   startAdornment={(
                     <InputAdornment position="start">
                       <IconButton edge="start" onClick={() => { setViewpass(!viewpass) }}>
-                        {viewpass ? <IconEyeOpened /> : <IconEyeClosed />}
+                        {viewpass ? <Icon name="eyeOpened" /> : <Icon name="eyeClosed" />}
                       </IconButton>
                     </InputAdornment>
                   )}
@@ -243,7 +243,7 @@ const LoginScreen = () => {
                   startAdornment={(
                     <InputAdornment position="start">
                       <IconButton edge="start">
-                        <IconLock />
+                        <Icon name="lock" />
                       </IconButton>
                     </InputAdornment>
                   )}

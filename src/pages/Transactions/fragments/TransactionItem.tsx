@@ -6,12 +6,12 @@ import { format } from 'date-fns'
 import makeStyles from '@mui/styles/makeStyles'
 import Paper from '~/components/layout/Paper'
 import { DEFAULT_BR_FORMAT_DATE, DefaultsSegments, Segments } from '~/constants'
-import { IconDelete, IconTransaction } from '~/constants/icons'
 import colors from '~/layout/theme/colors'
 import { TransactionType } from '~/client/models/transactions'
 import Chip from '~/components/atoms/Chip'
 import useUtils from '~/shared/hooks/useUtils'
 import { CategoryTypeEnum } from '~/constants/categories'
+import { Icon } from '~/components/atoms/icons'
 
 const useStyles = makeStyles(() => ({
   description: {
@@ -39,12 +39,12 @@ const TransactionItem = ({ transaction, handleConfirmDelete }: TransactionItemPr
           <Grid display="flex" alignItems="center" item xs={1}>
             {transaction.segment === DefaultsSegments.Receive && (
               <Box display="flex" style={{ transform: 'rotate(180deg)' }}>
-                <IconTransaction color={getColorSegment(transaction)} />
+                <Icon name="transaction" color={getColorSegment(transaction)} />
               </Box>
             )}
 
             {transaction.segment === DefaultsSegments.Expense && (
-              <IconTransaction color={getColorSegment(transaction)} />
+              <Icon name="transaction" color={getColorSegment(transaction)} />
             )}
           </Grid>
 
@@ -61,10 +61,14 @@ const TransactionItem = ({ transaction, handleConfirmDelete }: TransactionItemPr
             </Typography>
           </Grid>
 
+          <Grid item xs={1}>
+            <Chip label={transaction.bankName ?? ''} color={transaction.bankColor ?? 'info'} />
+          </Grid>
+
           <Grid item xs={2} display="flex">
             <Box display="flex" alignItems="center" gap={1}>
-              <Chip label={transaction.name ?? ''} color={transaction.color ?? 'info'} />
 
+              <Chip label={transaction.name ?? ''} color={transaction.color ?? 'info'} />
               {transaction.isGoal === CategoryTypeEnum.Goal && (
                 <StarIcon htmlColor={colors.danger.main} />
               )}
@@ -75,14 +79,14 @@ const TransactionItem = ({ transaction, handleConfirmDelete }: TransactionItemPr
             </Box>
           </Grid>
 
-          <Grid item xs={5} display="flex">
+          <Grid item xs={4} display="flex">
             <Typography variant="body1" className={styles.description}>{transaction.description}</Typography>
           </Grid>
 
           <Grid item xs={1} display="flex" alignItems="flex-end" justifyContent="flex-end" gap={1}>
             <Box display="flex">
               <IconButton title="Excluir" onClick={() => { handleConfirmDelete(transaction) }} sx={{ padding: 0 }}>
-                <IconDelete />
+                <Icon name="delete" />
               </IconButton>
             </Box>
           </Grid>

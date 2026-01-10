@@ -7,6 +7,7 @@ import iconCategories from '../assets/icons/icon-categories.svg'
 import iconStats from '../assets/icons/icon-stats.svg'
 import iconWatchCalendar from '../assets/icons/icon-watch-calendar.svg'
 import iconLimits from '../assets/icons/icon-limits.svg'
+import iconBank from '../assets/icons/icon-bank.svg'
 
 import { IMenuItem } from '../models'
 
@@ -16,6 +17,7 @@ export const Titles = {
   DASHBOARD: 'Home',
   TRANSACTIONS: 'Transações',
   CATEGORIES: 'Categorias',
+  BANKACOUNTS: 'Contas',
   STATS: 'Estatísticas',
   CALENDAR: 'Calendário',
   LIMITS: 'Limites'
@@ -39,6 +41,12 @@ export const MenuItems: IMenuItem[] = [
     path: '/categories',
     paths: ['/categories'],
     icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconCategories} width={size} height={size} />)
+  },
+  {
+    title: Titles.BANKACOUNTS,
+    path: '/banks',
+    paths: ['/banks'],
+    icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconBank} width={size} height={size} />)
   },
   {
     title: Titles.LIMITS,

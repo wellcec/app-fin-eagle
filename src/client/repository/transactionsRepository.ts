@@ -15,6 +15,7 @@ interface ITransactionRepository {
   createTransaction: (transaction: TransactionType) => Promise<boolean>
   deleteTransaction: (id: string) => Promise<boolean>
   transactionByCategory: (categoryId?: string) => Promise<number>
+  transactionByBankAccount: (bankAccountId: string) => Promise<number>
   getTotalByCategory: () => Promise<TotalTransactionByCategoryType[]>
   getTopExpenses: (month: Date) => Promise<TransactionType[]>
 }
@@ -25,7 +26,7 @@ const transactionsRepository = (): ITransactionRepository => {
       const { term, category, segment, isGoal, page, take } = filter
       const offset = (page - 1) * take
 
-      const _description = term !== '' ? ` AND (t.description LIKE '%${term}%' OR t.description LIKE '%${term}%' OR c.name LIKE '%${term}%') ` : ''
+      const _term = term !== '' ? ` AND (t.description LIKE '%${term}%' OR t.description LIKE '%${term}%' OR c.name LIKE '%${term}%' OR b.name LIKE '%${term}%') ` : ''
       const _category = category !== '' ? ` AND t.idCategory = '${category}'` : ''
       const _segment = segment !== '' ? ` AND c.Segment = '${segment}'` : ''
 
@@ -42,21 +43,24 @@ const transactionsRepository = (): ITransactionRepository => {
           t.idCategory,
           t.value,
           t.description,
-          c.segment,
           t.date,
+          c.segment,
           c.name,
           c.color,
           c.isGoal,
           c.valueGoal,
+          b.name as bankName,
+          b.color as bankColor,
           t.createdAt
         FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id
+        INNER JOIN BankAccounts b ON t.idBankAccount = b.id
         WHERE 
           1=1
           ${_datefilter}
           ${_segment}
           ${_isGoal}
-          ${_description}
+          ${_term}
           ${_category}
         ORDER BY  t.date DESC
         LIMIT ${take} OFFSET ${offset}
@@ -65,12 +69,13 @@ const transactionsRepository = (): ITransactionRepository => {
       const queryCount = `
         SELECT Count(*) as Total FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id
+        INNER JOIN BankAccounts b ON t.idBankAccount = b.id
         WHERE 
           1=1
           ${_datefilter}
           ${_segment}
           ${_isGoal}
-          ${_description}
+          ${_term}
           ${_category}
       `
       const count: TotalTransactionType[] = await ipcRenderer.invoke('db-query', queryCount)
@@ -99,12 +104,13 @@ const transactionsRepository = (): ITransactionRepository => {
       const date = new Date()
 
       const query = `
-      INSERT INTO Transactions (id, idCategory, value, description, date, createdAt)
+      INSERT INTO Transactions (id, idCategory, value, description, idBankAccount, date, createdAt)
       VALUES (
         '${Guid.create()}',
         '${transaction.idCategory}',
         '${transaction.value}',
         '${transaction.description}',
+        '${transaction.idBankAccount}',
         '${format(transaction.date ?? date, DEFAULT_FORMAT_DATE)}',
         '${format(date, DEFAULT_FORMAT_DATE)}'
       )
@@ -133,6 +139,16 @@ const transactionsRepository = (): ITransactionRepository => {
   const transactionByCategory = async (categoryId?: string): Promise<number> => {
     try {
       const queryCount = `SELECT Count(*) as Total FROM Transactions WHERE idCategory = '${categoryId}'`
+      const count: TotalTransactionType[] = await ipcRenderer.invoke('db-query', queryCount)
+      return count[0].Total
+    } catch (error) {
+      return 0
+    }
+  }
+
+  const transactionByBankAccount = async (bankAccountId: string): Promise<number> => {
+    try {
+      const queryCount = `SELECT Count(*) as Total FROM Transactions WHERE idBankAccount = '${bankAccountId}'`
       const count: TotalTransactionType[] = await ipcRenderer.invoke('db-query', queryCount)
       return count[0].Total
     } catch (error) {
@@ -233,6 +249,7 @@ const transactionsRepository = (): ITransactionRepository => {
     createTransaction,
     deleteTransaction,
     transactionByCategory,
+    transactionByBankAccount,
     getTotalByCategory,
     getTopExpenses
   }

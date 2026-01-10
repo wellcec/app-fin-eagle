@@ -6,14 +6,13 @@ import ContainerMain from '~/components/layout/ContainerMain'
 import Paper from '~/components/layout/Paper'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import { ACTIONS, ActionsType, SampleFilterType } from '~/models'
-import DEFAULT_PAGESIZE, { DEFAULT_GAP_IZE, DefaultsSegments, SMALL_BALL_SIZE } from '~/constants'
+import DEFAULT_PAGESIZE, { DEFAULT_GAP_SIZE, DefaultsSegments, SMALL_BALL_SIZE } from '~/constants'
 import useDebounce from '~/shared/hooks/useDebounce'
 import limitsRepository from '~/client/repository/limitsRepository'
 import categoriesRepository from '~/client/repository/categoriesRepository'
 import { LimitType, LimitWithCategoryType } from '~/client/models/limits'
 import { CategoryType } from '~/client/models/categories'
 import useAlerts from '~/shared/alerts/useAlerts'
-import { IconDelete, IconDoubleArrowDown, IconEdit } from '~/constants/icons'
 import Modal from '~/components/molecules/Modal'
 import InputForm from '~/components/atoms/inputs/InputForm'
 import InputText from '~/components/atoms/inputs/InputText'
@@ -25,9 +24,10 @@ import useUtils from '~/shared/hooks/useUtils'
 import useTestsForm from '~/shared/hooks/useTestForm'
 import AdditionButton from '~/components/atoms/buttons/AdditionButton'
 import { Titles } from '~/constants/menus'
+import { Icon } from '~/components/atoms/icons'
 
 const IconArrowSelect = (): React.JSX.Element => {
-  return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
+  return <Box mr={1} mt={0.5}><Icon name="doubleArrowDown" /></Box>
 }
 
 interface TypeForm {
@@ -288,12 +288,12 @@ const Limits = (): React.JSX.Element => {
                 <Grid item xs={12} md={2} display="flex" alignItems="flex-end" justifyContent="flex-end" gap={1}>
                   <Box>
                     <IconButton title="Editar" onClick={() => { handleEditLimit(item) }}>
-                      <IconEdit />
+                      <Icon name="edit" />
                     </IconButton>
                   </Box>
                   <Box>
                     <IconButton title="Excluir" onClick={() => { handleConfirmDelete(item) }}>
-                      <IconDelete />
+                      <Icon name="delete" />
                     </IconButton>
                   </Box>
                 </Grid>
@@ -334,7 +334,7 @@ const Limits = (): React.JSX.Element => {
                 >
                   {categories.map((cat) => (
                     <MenuItem key={cat.id} value={cat.id}>
-                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
+                      <Box display="flex" alignItems="center" gap={DEFAULT_GAP_SIZE}>
                         <BallColor color={cat.color} size={SMALL_BALL_SIZE} />
                         <Box>
                           {cat.name}

@@ -10,9 +10,9 @@ import InputForm from '~/components/atoms/inputs/InputForm'
 import InputSearch from '~/components/atoms/inputs/InputSearch'
 import Paper from '~/components/layout/Paper'
 import { DEFAULT_FORMAT_DATE, DEFAULT_SHORT_FORMAT_DATE } from '~/constants'
-import { IconFilter, IconTransaction } from '~/constants/icons'
 import colors from '~/layout/theme/colors'
-import { useTransactionContext } from './context'
+import { useTransactionContext } from '../context'
+import { Icon } from '~/components/atoms/icons'
 
 interface ControlsProps {
   startDate: string
@@ -50,12 +50,12 @@ const Controls = ({
       <Paper fullWidth grid>
         <Box display="flex" flexWrap="wrap" gap={2} alignItems="center" mb={showFilter ? 2 : 0}>
           <Box flexGrow={1}>
-            <InputSearch placeholder="Procure por descrição" onChange={handleChangeSearch} />
+            <InputSearch placeholder="Procure por categoria, descrição ou banco" onChange={handleChangeSearch} />
           </Box>
 
           <Box>
             <IconButton title="Filtrar" onClick={() => { setShowFilter(!showFilter) }}>
-              <IconFilter />
+              <Icon name="filter" />
             </IconButton>
           </Box>
 
@@ -66,7 +66,7 @@ const Controls = ({
               color="success"
               startIcon={
                 <Box display="flex" style={{ transform: 'rotate(180deg)' }}>
-                  <IconTransaction color={colors.background.main} size={20} />
+                  <Icon name="transaction" color={colors.background.main} size={20} />
                 </Box>
               }
               onClick={() => {
@@ -81,7 +81,7 @@ const Controls = ({
               fullWidth
               variant="contained"
               color="error"
-              startIcon={<IconTransaction color={colors.background.main} size={20} />}
+              startIcon={<Icon name="transaction" color={colors.background.main} size={20} />}
               onClick={() => {
                 setTransactionModalType('expense')
                 setOpenAddTransaction(!openAddTransaction)

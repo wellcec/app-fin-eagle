@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { TotalTransactionDashType } from '~/client/models/transactions'
 import transactionsRepository from '~/client/repository/transactionsRepository'
 import { Segments } from '~/constants'
-import { IconBalance, IconDowns, IconRevenues } from '~/constants/icons'
 import GeneralScoreItem from './fragments/GeneralScoreItem'
+import { Icon } from '~/components/atoms/icons'
 
 const DEFAULT_SIZE_ICONS = 30
 
@@ -36,10 +36,10 @@ const GeneralScore = (): React.JSX.Element => {
     <Box display="flex" flexWrap="wrap" gap={3}>
       <Box flex="auto">
         <GeneralScoreItem
-          label="Saldo"
+          label="Saldo Geral"
           value={data?.TotalGeral ?? 0}
           color={getColorValue(data?.TotalGeral ?? 0)}
-          icon={<IconBalance size={DEFAULT_SIZE_ICONS} />}
+          icon={<Icon name="balance" size={DEFAULT_SIZE_ICONS} />}
         />
       </Box>
 
@@ -48,7 +48,7 @@ const GeneralScore = (): React.JSX.Element => {
           value={data?.TotalReceita ?? 0}
           label="Receitas"
           color={Segments.Receita.color}
-          icon={<IconRevenues color={Segments.Receita.color} size={DEFAULT_SIZE_ICONS} />}
+          icon={<Icon name="revenues" color={Segments.Receita.color} size={DEFAULT_SIZE_ICONS} />}
         />
       </Box>
 
@@ -57,7 +57,7 @@ const GeneralScore = (): React.JSX.Element => {
           label="Gastos"
           value={data?.TotalDespesa ?? 0}
           color={Segments.Despesa.color}
-          icon={<IconDowns color={Segments.Despesa.color} size={DEFAULT_SIZE_ICONS} />}
+          icon={<Icon name="downs" color={Segments.Despesa.color} size={DEFAULT_SIZE_ICONS} />}
         />
       </Box>
     </Box>

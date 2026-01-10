@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Button, Divider, MenuItem, Select } from '@mui/material'
-import StarIcon from '@mui/icons-material/Star'
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
+import { Box, Button, Divider } from '@mui/material'
+
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import dayjs from 'dayjs'
@@ -16,19 +15,17 @@ import InputForm from '~/components/atoms/inputs/InputForm'
 import InputText from '~/components/atoms/inputs/InputText'
 import useUtils from '~/shared/hooks/useUtils'
 import InputBasicDate from '~/components/atoms/inputs/InputBasicDate'
-import { DEFAULT_FORMAT_DATE, DEFAULT_GAP_IZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments } from '~/constants'
-import BallColor from '~/components/atoms/BallColor'
+import { DEFAULT_FORMAT_DATE, DEFAULT_GAP_SIZE, DEFAULT_SHORT_FORMAT_DATE, DefaultsSegments } from '~/constants'
+
 import categoriesRepository from '~/client/repository/categoriesRepository'
 import useTestsForm from '~/shared/hooks/useTestForm'
 import useAlerts from '~/shared/alerts/useAlerts'
 import transactionsRepository from '~/client/repository/transactionsRepository'
-import { IconDoubleArrowDown } from '~/constants/icons'
-import colors from '~/layout/theme/colors'
 import { CategoryTypeEnum } from '~/constants/categories'
-
-const IconArrowSelect = (): React.JSX.Element => {
-  return <Box mr={1} mt={0.5}><IconDoubleArrowDown /></Box>
-}
+import { BankAccountType } from '~/client/models/bankAccounts'
+import bankAccountsRepository from '~/client/repository/bankAccountsRepository'
+import BanksAccounts from './BanksAccounts'
+import Categories from './Categories'
 
 type TypeForm = {
   value: string
@@ -55,12 +52,15 @@ interface IProps {
 const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: IProps): React.JSX.Element => {
   const [action, setAction] = useState<ActionsType>(ACTIONS.create)
   const [categories, setCategories] = useState<CategoryType[]>([])
+  const [bankAccounts, setBankAccounts] = useState<BankAccountType[]>([])
+  const [selectedBank, setSelectedBank] = useState<BankAccountType>()
   const [segment, setSegment] = useState<SegmentTransactionType>(DefaultsSegments.Receive)
   const [dateTransaction, setDateTransaction] = useState<string>('')
   const [inputEnable, setInputEnable] = useState<boolean>(false)
 
-  const { notifyError, notifySuccess } = useAlerts()
+  const { notifyError, notifySuccess, notifyWarning } = useAlerts()
   const { formatNumberInput, formatFormCurrency, formatCurrencyRequest } = useUtils()
+  const { getAccounts } = bankAccountsRepository()
   const { getCategories } = categoriesRepository()
   const { createTransaction } = transactionsRepository()
   const { greaterThanZeroCurrency } = useTestsForm()
@@ -76,11 +76,17 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: (data: TypeForm) => {
+      if (!selectedBank) {
+        notifyWarning('Selecione uma conta para continuar')
+        return
+      }
+
       const newTransaction: TransactionType = {
         value: formatCurrencyRequest(data.value),
         description: data.description,
         date: data.date,
-        idCategory: data.category
+        idCategory: data.category,
+        idBankAccount: selectedBank?.id ?? ''
       }
 
       createTransaction(newTransaction).then(
@@ -113,6 +119,20 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
     )
   }, [getCategories, segment])
 
+  const loadBanksAccounts = useCallback(() => {
+    getAccounts().then(
+      (response) => {
+        const data = response ?? []
+
+        if (data.length > 0) {
+          setSelectedBank(data[0])
+        }
+
+        setBankAccounts(data)
+      }
+    )
+  }, [getCategories, segment])
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, prop: string): void => {
     const { value } = event.target
     const numericValue = formatNumberInput(value)
@@ -137,6 +157,10 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
     }
   }
 
+  const handleSelectBank = (selected: BankAccountType) => {
+    setSelectedBank(selected)
+  }
+
   useEffect(() => {
     setFieldValue('date', new Date())
 
@@ -147,6 +171,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
 
   useEffect(() => {
     loadCategories(segment)
+    loadBanksAccounts()
   }, [segment])
 
   useEffect(() => {
@@ -185,42 +210,16 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
     >
       <Box onKeyDown={handleKeydown}>
         <Box minWidth={450} mb={3}>
-          <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
-            <Box flex={1}>
-              <InputForm fullWidth title="Com o que" helperText formik={formik} propField="category">
-                {categories.length > 0 && (
-                  <Select
-                    variant="outlined"
-                    size="small"
-                    {...formik.getFieldProps('category')}
-                    IconComponent={IconArrowSelect}
-                  >
-                    {categories.map((item, index) => (
-                      <MenuItem key={`cat-add-transaction-${index}`} value={item.id}>
-                        <Box display="flex" alignItems="center" gap={DEFAULT_GAP_IZE}>
-                          <BallColor color={item.color} size={22} />
+          <BanksAccounts
+            selectedBank={selectedBank}
+            type={type}
+            bankAccounts={bankAccounts}
+            handleSelectBank={handleSelectBank}
+          />
 
-                          <Box>
-                            {item.name}
-                          </Box>
+          <Categories categories={categories} formik={formik} />
 
-                          {item.isGoal === CategoryTypeEnum.Goal && (
-                            <StarIcon htmlColor={colors.danger.main} />
-                          )}
-
-                          {item.isGoal === CategoryTypeEnum.Debit && (
-                            <ReceiptLongOutlinedIcon htmlColor={colors.error.light} />
-                          )}
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              </InputForm>
-            </Box>
-          </Box>
-
-          <Box display="grid" gap={DEFAULT_GAP_IZE} mb={2}>
+          <Box display="grid" gap={DEFAULT_GAP_SIZE} mb={2}>
             <Box flex={1}>
               <InputForm fullWidth title="Quanto" helperText formik={formik} propField="value">
                 <InputText

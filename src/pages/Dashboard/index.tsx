@@ -14,13 +14,19 @@ import LatestTransactions from './fragments/LatestTransactions'
 import TopExpenses from './fragments/TopExpenses'
 import NoTransactionsWarning from './NoTransactionsWarning'
 import DebitsProgress from './DebitsProgress'
+import BanksScore from './BanksScore'
 
 const Dashboard = (): React.JSX.Element => {
   return (
     <ContainerMain title={Titles.DASHBOARD} fullCard isPaper={false}>
       <Box display="flex" flexDirection="column" gap={2} mb={2}>
         <LimitAlerts />
-        <QuickActions />
+
+        <Box display="flex" gap={2} flexWrap="wrap">
+          <BanksScore />
+          <QuickActions />
+        </Box>
+
         <GeneralScore />
       </Box>
 

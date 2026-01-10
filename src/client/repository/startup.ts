@@ -21,6 +21,7 @@ const startup = (): IStartup => {
         "createdAt" DATETIME NOT NULL DEFAULT '',
         "updatedAt" DATETIME NOT NULL DEFAULT ''
         );`,
+
         `CREATE TABLE IF NOT EXISTS "Schedules" (
         "id" VARCHAR(36) NOT NULL,
         "title" VARCHAR(200) NULL,
@@ -30,6 +31,7 @@ const startup = (): IStartup => {
         "createdAt" DATETIME NOT NULL,
         "isRecurrent" INTEGER NOT NULL
         );`,
+
         `CREATE TABLE IF NOT EXISTS "Transactions"(
         "id" VARCHAR(36) NOT NULL,
         "idCategory" VARCHAR(36) NOT NULL,
@@ -38,6 +40,7 @@ const startup = (): IStartup => {
         "date" DATETIME NOT NULL DEFAULT 0,
         "createdAt" DATETIME NOT NULL DEFAULT 0
         );`,
+
         `CREATE TABLE IF NOT EXISTS "Limits" (
         "id" VARCHAR(36) NOT NULL,
         "idCategory" VARCHAR(36) NOT NULL,
@@ -46,11 +49,19 @@ const startup = (): IStartup => {
         "createdAt" DATETIME NULL DEFAULT NULL,
         "updatedAt" DATETIME NULL DEFAULT NULL
         );`,
+
         `CREATE TABLE IF NOT EXISTS "users"(
         "id" VARCHAR(36) NOT NULL,
         "name" VARCHAR(250) NOT NULL,
-        "password" VARCHAR(50) NOT NULL,
-      );`
+        "password" VARCHAR(50) NOT NULL
+        );`,
+
+        `CREATE TABLE IF NOT EXISTS "BankAccounts" (
+        "id" VARCHAR(36) NOT NULL,
+        "name" VARCHAR(50) NOT NULL,
+        "color" VARCHAR(20) NOT NULL DEFAULT '',
+        "createdAt" DATETIME NOT NULL DEFAULT ''
+        );`
       ]
 
       for (const query of startQuery) {

@@ -7,7 +7,6 @@ import {
 import { Player } from '@lottiefiles/react-lottie-player'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { type CSSObject } from '@mui/material/styles'
-import { IconMenuHamburguer } from '~/constants/icons'
 import { MenuItems } from '~/constants/menus'
 import Version from './Version'
 import colors from './theme/colors'
@@ -15,6 +14,7 @@ import useStyles from './styles'
 
 import animation from '~/assets/animations/Rupee Investment.json'
 import { useLoginContext } from '~/routes/context'
+import { Icon } from '~/components/atoms/icons'
 
 const drawerWidth = 272
 const paperWidth = 240
@@ -142,7 +142,7 @@ const Drawer = ({ openDrawer, setOpenDrawer, downSM }: DrawerProps) => {
 
         {!openDrawer && (
           <IconButton onClick={() => { setOpenDrawer(!openDrawer) }}>
-            <IconMenuHamburguer color={colors.text.secondary} />
+            <Icon name="menuHamburguer" color={colors.text.secondary} />
           </IconButton>
         )}
       </Box>

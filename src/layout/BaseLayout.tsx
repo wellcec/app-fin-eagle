@@ -13,8 +13,8 @@ import { styled } from '@mui/material/styles'
 import iconLogo from '../assets/images/logogranna.png'
 import colors from '../layout/theme/colors'
 
-import { IconMenuHamburguer } from '../constants/icons'
 import Drawer from './Drawer'
+import { Icon } from '~/components/atoms/icons'
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && prop !== 'mobile' })<{
   open?: boolean
@@ -54,7 +54,7 @@ const BaseLayout = ({ children }: PropsWithChildren): React.JSX.Element => {
             <Box display="flex" justifyContent="space-between" width={1}>
               <Box p={2.1} >
                 <IconButton onClick={() => { setOpenDrawer(!openDrawer) }}>
-                  <IconMenuHamburguer color={colors.primary.main} />
+                  <Icon name="menuHamburguer" color={colors.primary.main} />
                 </IconButton>
               </Box>
 
