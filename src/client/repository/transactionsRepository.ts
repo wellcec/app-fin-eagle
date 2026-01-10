@@ -165,7 +165,7 @@ const transactionsRepository = (): ITransactionRepository => {
             SUM(CASE WHEN c.segment = '${DefaultsSegments.Receive}' THEN t.value ELSE -t.value END) AS TotalGeral
         FROM Transactions t
         INNER JOIN Categories c ON t.idCategory = c.id
-        WHERE c.isGoal = 0;
+        WHERE c.isGoal <> 1;
       `
 
       const data: TotalTransactionDashType[] = await ipcRenderer.invoke('db-query', query)
