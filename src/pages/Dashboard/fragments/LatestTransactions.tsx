@@ -42,7 +42,7 @@ const LatestTransactions = (): React.JSX.Element => {
 
   return (
     <Box flex="auto">
-      <Paper>
+      <Paper fit>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="subtitle1" fontWeight={500}>
             Últimas Transações

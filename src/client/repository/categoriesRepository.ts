@@ -12,22 +12,17 @@ export type GoalWithProgressType = CategoryType & {
   currentAmount: number
   percentageProgress: number
   isAchieved: boolean
-}
-
-export type GoalDebitProgressType = CategoryType & {
   currentInstallments: number
   valueTotal: number
   valuePaid: number
-  percentageProgress: number
-  isAchieved: boolean
 }
 
 interface ICategoriesRepository {
   getCategories: (name?: string) => Promise<CategoryType[]>
   createCategory: (category: CategoryType) => Promise<boolean>
   deleteCategory: (id: string) => Promise<boolean>
-  getGoalsWithProgress: () => Promise<GoalWithProgressType[]>
-  getDebitsWithProgress: () => Promise<GoalDebitProgressType[]>
+  getGoalsWithProgress: (idCategory?: string) => Promise<GoalWithProgressType[]>
+  getDebitsWithProgress: (idCategory?: string) => Promise<GoalWithProgressType[]>
 }
 
 const categoriesRepository = (): ICategoriesRepository => {
@@ -87,8 +82,10 @@ const categoriesRepository = (): ICategoriesRepository => {
     }
   }
 
-  const getGoalsWithProgress = async (): Promise<GoalWithProgressType[]> => {
+  const getGoalsWithProgress = async (idCategory?: string): Promise<GoalWithProgressType[]> => {
     try {
+      const _term = (idCategory !== undefined || idCategory === '') ? ` AND c.id = '${idCategory}'` : ''
+
       const query = `
         SELECT 
           c.id,
@@ -105,6 +102,7 @@ const categoriesRepository = (): ICategoriesRepository => {
           AND c.segment = '${DefaultsSegments.Expense}'
         WHERE 
           c.isGoal = 1
+          ${_term}
         GROUP BY c.id, c.name, c.segment, c.color, c.isGoal, c.valueGoal, c.createdAt, c.updatedAt
         ORDER BY c.name
       `
@@ -122,8 +120,10 @@ const categoriesRepository = (): ICategoriesRepository => {
     }
   }
 
-  const getDebitsWithProgress = async (): Promise<GoalDebitProgressType[]> => {
+  const getDebitsWithProgress = async (idCategory?: string): Promise<GoalWithProgressType[]> => {
     try {
+      const _term = (idCategory !== undefined || idCategory === '') ? ` AND c.id = '${idCategory}'` : ''
+
       const query = `
         SELECT 
           c.id,
@@ -141,6 +141,7 @@ const categoriesRepository = (): ICategoriesRepository => {
           AND c.segment = '${DefaultsSegments.Expense}'
         WHERE 
           c.isGoal = 2
+          ${_term}
         GROUP BY c.id, c.name, c.segment, c.color, c.isGoal, c.valueGoal, c.createdAt, c.updatedAt
         ORDER BY c.name
       `

@@ -8,7 +8,7 @@ import iconStats from '../assets/icons/icon-stats.svg'
 import iconWatchCalendar from '../assets/icons/icon-watch-calendar.svg'
 import iconLimits from '../assets/icons/icon-limits.svg'
 import iconBank from '../assets/icons/icon-bank.svg'
-//import iconArchieved from '../assets/icons/icon-goal-archieved.svg'
+import iconArchieved from '../assets/icons/icon-goal-archieved.svg'
 
 import { IMenuItem } from '../models'
 
@@ -62,13 +62,12 @@ export const MenuItems: IMenuItem[] = [
     paths: ['/calendar'],
     icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconWatchCalendar} width={size} height={size} />)
   },
-  // TODO: fazer tela de listagem para metas e dividas concluidas
-  // {
-  //   title: Titles.ARCHIEVED,
-  //   path: '/archieveds',
-  //   paths: ['/archieveds'],
-  //   icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconArchieved} width={size} height={size} />)
-  // },
+  {
+    title: Titles.ARCHIEVED,
+    path: '/archieveds',
+    paths: ['/archieveds'],
+    icon: (size: number = SIZE_ICONS_HOME) => (<SVG src={iconArchieved} width={size} height={size} />)
+  },
   {
     title: Titles.STATS,
     path: '/stats',

@@ -13,6 +13,7 @@ import Limits from '~/pages/Limits'
 import { Provider } from './context'
 import LoginScreen from '~/pages/Login'
 import BankAccounts from '~/pages/BankAccounts'
+import Archieveds from '~/pages/Archieveds'
 
 const SwitchRoutes = (): React.JSX.Element => {
   const [logged, setLogged] = useState<boolean>(true)
@@ -35,6 +36,7 @@ const SwitchRoutes = (): React.JSX.Element => {
             <Route path="/stats" element={<WithLayoutRoute layout={BaseLayout} component={Stats} />} />
             <Route path="/calendar" element={<WithLayoutRoute layout={BaseLayout} component={Schedules} />} />
             <Route path="/limits" element={<WithLayoutRoute layout={BaseLayout} component={Limits} />} />
+            <Route path="/archieveds" element={<WithLayoutRoute layout={BaseLayout} component={Archieveds} />} />
           </>
         }
       />

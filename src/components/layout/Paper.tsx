@@ -26,9 +26,10 @@ interface IProps {
   grid?: boolean
   color?: string
   bgColor?: string
+  fit?: boolean
 }
 
-const Paper = ({ children, className = '', fullWidth = false, grid = false, color, bgColor }: PropsWithChildren<IProps>): React.JSX.Element => {
+const Paper = ({ children, className = '', fullWidth = false, grid = false, color, bgColor, fit = false }: PropsWithChildren<IProps>): React.JSX.Element => {
   const styles = useStyles()
 
   const fullWidthClass = fullWidth ? styles.fullWidth : ''
@@ -42,6 +43,10 @@ const Paper = ({ children, className = '', fullWidth = false, grid = false, colo
         }),
         ...(bgColor && {
           backgroundColor: bgColor
+        }),
+        ...(fit && {
+          height: '100%',
+          boxSizing: 'border-box'
         })
       }}
     >

@@ -35,12 +35,12 @@ const Dashboard = (): React.JSX.Element => {
           <CategoryScore />
           <TopExpenses />
           <DebitsProgress />
-          <GoalProgress />
         </Grid>
 
         <Grid display="flex" flexDirection="column" item md={12} lg={6} gap={2}>
           <LatestTransactions />
           <TodaySchedules />
+          <GoalProgress />
         </Grid>
       </Grid>
 

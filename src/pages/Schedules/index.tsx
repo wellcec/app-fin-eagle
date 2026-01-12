@@ -294,7 +294,6 @@ const Schedules = (): React.JSX.Element => {
     getCurrentDate()
   }, [currentDate])
 
-  console.log(isAdding)
   return (
     <>
       <ContainerMain title={Titles.CALENDAR} fullCard={false}>

@@ -61,7 +61,7 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
   const { notifyError, notifySuccess, notifyWarning } = useAlerts()
   const { formatNumberInput, formatFormCurrency, formatCurrencyRequest } = useUtils()
   const { getAccounts } = bankAccountsRepository()
-  const { getCategories } = categoriesRepository()
+  const { getCategories, getGoalsWithProgress, getDebitsWithProgress } = categoriesRepository()
   const { createTransaction } = transactionsRepository()
   const { greaterThanZeroCurrency } = useTestsForm()
 
@@ -105,19 +105,42 @@ const AddTransactionModal = ({ open, handleClose, callback, objToEdit, type }: I
 
   const { setFieldValue } = formik
 
-  const loadCategories = useCallback((segmentChosen: string) => {
-    getCategories(segmentChosen).then(
-      (response) => {
-        const data = response ?? []
+  const loadCategories = useCallback(async (segmentChosen: string) => {
+    const response = await getCategories(segmentChosen)
 
-        if (data.length > 0) {
-          setFieldValue('category', data[0].id)
+    if (response.length === 0) return
+
+    setFieldValue('category', response[0].id)
+
+    const categoriesWithAvailability = await Promise.all(
+      response.map(async (category) => {
+        if (category.isGoal === CategoryTypeEnum.Goal) {
+          const progress = await getGoalsWithProgress(category.id ?? '')
+          return {
+            category,
+            available: !progress?.[0]?.isAchieved
+          }
         }
 
-        setCategories(data)
-      }
+        if (category.isGoal === CategoryTypeEnum.Debit) {
+          const progress = await getDebitsWithProgress(category.id ?? '')
+          return {
+            category,
+            available: !progress?.[0]?.isAchieved
+          }
+        }
+
+        return { category, available: true }
+      })
     )
-  }, [getCategories, segment])
+
+    const availableCategories = categoriesWithAvailability
+      .filter(x => x.available)
+      .map(x => x.category)
+
+    setCategories(availableCategories)
+
+  }, [getCategories, getGoalsWithProgress, getDebitsWithProgress, setFieldValue])
 
   const loadBanksAccounts = useCallback(() => {
     getAccounts().then(
