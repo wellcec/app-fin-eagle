@@ -13,11 +13,6 @@ interface IconProps {
 
 export const Icon = ({ name, size = DEFAULT_SIZE, color = colors.text.quaternary }: IconProps): React.JSX.Element => {
   return (
-    <SVG
-      src={iconsMap[name]}
-      width={size}
-      height={size}
-      fill={color}
-    />
+    <SVG src={iconsMap[name]} width={size} height={size} fill={color} />
   )
 }

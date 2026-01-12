@@ -33,7 +33,7 @@ const NoTransactionsWarning = () => {
           <Icon name="information" color={colors.danger.main} />
 
           <Typography variant="body2" color="primary">
-            Voçê ainda não possui transações cadastradas para o mês atual. Adicione receitas e despesas para começar a acompanhar suas finanças!
+            Voçê ainda não possui transações cadastradas. Adicione receitas e despesas para começar a acompanhar suas finanças!
           </Typography>
         </Box>
       </Paper>

@@ -9,7 +9,7 @@ interface IStartup {
 const startup = (): IStartup => {
   const startDatabase = async (): Promise<void> => {
     try {
-      const startQuery: string[] = [`
+      const startQuerys: string[] = [`
         CREATE TABLE IF NOT EXISTS "Categories" (
         "id" VARCHAR(36) NOT NULL,
         "name" VARCHAR(50) NOT NULL,
@@ -64,9 +64,8 @@ const startup = (): IStartup => {
         );`
       ]
 
-      for (const query of startQuery) {
-        // await ipcRenderer.invoke('db-query', query)
-      }
+      const query = startQuerys.join(' ')
+      // await ipcRenderer.invoke('db-query', query)
     } catch (error) {
       console.error(error)
     }

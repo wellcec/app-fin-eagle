@@ -31,27 +31,31 @@ const bankAccountsRepository = (): IBankAccountsRepository => {
           b.id,
           b.color,
           b.name,
-          SUM(
-            CASE 
-              WHEN c.segment = 'Receita' THEN t.value
-              WHEN c.segment = 'Despesa' THEN -t.value
-              ELSE 0
-            END
+          COALESCE(
+            SUM(
+              CASE 
+                WHEN c.segment = 'Receita' THEN t.value
+                WHEN c.segment = 'Despesa' THEN -t.value
+                ELSE 0
+              END
+            ),
+            0
           ) AS totalValue
-        FROM Transactions t
-        INNER JOIN Categories c ON t.idCategory = c.id
-        INNER JOIN BankAccounts b ON t.idBankAccount = b.id
-        WHERE 
-          c.isGoal <> 1
+        FROM BankAccounts b
+        LEFT JOIN Transactions t ON t.idBankAccount = b.id
+        LEFT JOIN Categories c ON t.idCategory = c.id AND c.isGoal <> 1
+        WHERE  
+          c.id IS NULL OR c.isGoal <> 1
           ${filter}
-        GROUP BY b.id, b.name
-        ${orderBy}
-        ${limit};
+        GROUP BY b.id, b.color, b.name
+          ${orderBy}
+          ${limit};
       `
 
       const rows: BankAccountType[] = await ipcRenderer.invoke('db-query', query)
       return rows
     } catch (error) {
+      console.error('Error:', error)
       return []
     }
   }

@@ -1,7 +1,7 @@
 {
   "name": "granna",
   "productName": "Granna",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "App para controle financeiro pessoal",
   "main": ".vite/build/main.js",
   "scripts": {

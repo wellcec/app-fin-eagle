@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => (
 ))
 
 const categoriesType = [
-  { value: 0, label: 'Default' },
+  { value: 0, label: 'Normal' },
   { value: 1, label: 'Meta' },
   { value: 2, label: 'Dívida' }
 ]
@@ -320,7 +320,7 @@ const Categories = (): React.JSX.Element => {
           <Box display="flex" gap={1}>
             <Box display="flex" flexDirection="column" width={360}>
               <Box mb={2}>
-                <InputForm fullWidth title="Título*" helperText formik={formik} propField="name">
+                <InputForm fullWidth title="Nome da categoria*" helperText formik={formik} propField="name">
                   <InputText
                     placeholder="Informe um nome"
                     {...formik.getFieldProps('name')}
@@ -382,7 +382,7 @@ const Categories = (): React.JSX.Element => {
 
               {formik.values.isGoal !== CategoryTypeEnum.Default && (
                 <Box mb={2}>
-                  <InputForm fullWidth title="Quanto* (Valor individual da parcela)" helperText formik={formik} propField="valueGoal">
+                  <InputForm fullWidth title={`Quanto* ${formik.values.isGoal === CategoryTypeEnum.Debit ? '(Valor individual da parcela)' : ''}`} helperText formik={formik} propField="valueGoal">
                     <InputText
                       placeholder="Informe um valor"
                       {...formik.getFieldProps('valueGoal')}

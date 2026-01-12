@@ -36,12 +36,12 @@ const categoriesRepository = (): ICategoriesRepository => {
       let filter = ''
 
       if (name && name !== '') {
-        filter = ` WHERE name LIKE '%${name}%' OR segment LIKE '%${name}%'`
+        filter = ` AND name LIKE '%${name}%' OR segment LIKE '%${name}%'`
       }
 
-      const orderBy = ' ORDER BY segment DESC'
+      const orderBy = ' ORDER BY segment DESC, name ASC '
 
-      const rows: CategoryType[] = await ipcRenderer.invoke('db-query', `SELECT * FROM Categories ${filter} ${orderBy}`)
+      const rows: CategoryType[] = await ipcRenderer.invoke('db-query', `SELECT * FROM Categories WHERE 1=1 ${filter} ${orderBy}`)
       return rows
     } catch (error) {
       return []
@@ -103,7 +103,8 @@ const categoriesRepository = (): ICategoriesRepository => {
         FROM Categories c
         LEFT JOIN Transactions t ON t.idCategory = c.id 
           AND c.segment = '${DefaultsSegments.Expense}'
-        WHERE c.isGoal = 1
+        WHERE 
+          c.isGoal = 1
         GROUP BY c.id, c.name, c.segment, c.color, c.isGoal, c.valueGoal, c.createdAt, c.updatedAt
         ORDER BY c.name
       `
@@ -138,7 +139,8 @@ const categoriesRepository = (): ICategoriesRepository => {
         FROM Categories c
         LEFT JOIN Transactions t ON t.idCategory = c.id 
           AND c.segment = '${DefaultsSegments.Expense}'
-        WHERE c.isGoal = 2
+        WHERE 
+          c.isGoal = 2
         GROUP BY c.id, c.name, c.segment, c.color, c.isGoal, c.valueGoal, c.createdAt, c.updatedAt
         ORDER BY c.name
       `

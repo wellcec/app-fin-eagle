@@ -25,6 +25,7 @@ import iconUser from '~/assets/icons/icon-user.svg'
 import iconEyeOpened from '~/assets/icons/icon-eye-opened.svg'
 import iconEyeClosed from '~/assets/icons/icon-eye-closed.svg'
 import iconBank from '~/assets/icons/icon-bank.svg'
+import iconArchieved from '~/assets/icons/icon-goal-archieved.svg'
 
 export const iconsMap = {
   edit: iconEdit,
@@ -53,7 +54,8 @@ export const iconsMap = {
   user: iconUser,
   eyeOpened: iconEyeOpened,
   eyeClosed: iconEyeClosed,
-  bank: iconBank
+  bank: iconBank,
+  archieved: iconArchieved
 } as const
 
 export type IconName = keyof typeof iconsMap
